@@ -24,17 +24,17 @@ const PressRecognition = () => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, delay: 0.35 }}
   >
-    <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-10 pb-3 border-b border-gallery-border">
-      Press &amp; Recognition
+    <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-12 pb-3 border-b border-gallery-border">
+      Press &amp; Critical Recognition
     </p>
-    <div className="space-y-10">
+    <div className="space-y-12">
       {press.map((item) => (
         <div key={item.source}>
-          <blockquote className="font-serif text-lg md:text-xl font-light leading-[1.6] text-foreground/75 italic">
+          <blockquote className="font-serif text-xl md:text-2xl font-light leading-[1.55] text-foreground/75 italic">
             "{item.quote}"
           </blockquote>
-          <p className="mt-3 text-[11px] tracking-[0.15em] uppercase text-muted-foreground/60">
-            {item.source}
+          <p className="mt-4 text-[11px] tracking-[0.2em] uppercase text-muted-foreground/50">
+            — {item.source}
           </p>
         </div>
       ))}
