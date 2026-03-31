@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import SignatureSvg from "@/assets/signature.svg?react";
 
 const navItems = [
   { label: "Selected Works", href: "/selected-works" },
