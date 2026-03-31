@@ -1,20 +1,16 @@
 import { Link } from "react-router-dom";
-import CollectorSignup from "@/components/CollectorSignup";
 
 const Footer = () => {
   return (
     <footer className="border-t border-gallery-border bg-background">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        {/* Newsletter row */}
-        <div className="py-16 md:py-20 border-b border-gallery-border">
-          <CollectorSignup variant="footer" />
-        </div>
-
         {/* Links row */}
-        <div className="py-10 md:py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="py-14 md:py-18 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
           <div>
-            <p className="font-serif text-xl mb-4">Abílio Marcos</p>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
+            <p className="font-serif text-lg md:text-xl mb-5 tracking-[0.02em]">
+              Abílio Marcos
+            </p>
+            <p className="text-[12px] text-muted-foreground leading-[1.8] max-w-xs">
               Contemporary abstract-expressionist painter.
               <br />
               Portugal & International.
@@ -22,8 +18,10 @@ const Footer = () => {
           </div>
 
           <div>
-            <p className="text-xs tracking-[0.15em] uppercase text-muted-foreground mb-4">Navigate</p>
-            <div className="flex flex-col gap-2">
+            <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-5">
+              Navigate
+            </p>
+            <div className="flex flex-col gap-3">
               {[
                 { label: "Selected Works", href: "/selected-works" },
                 { label: "All Works", href: "/works" },
@@ -34,7 +32,7 @@ const Footer = () => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-[13px] text-foreground/45 hover:text-foreground transition-colors duration-300"
                 >
                   {link.label}
                 </Link>
@@ -43,12 +41,20 @@ const Footer = () => {
           </div>
 
           <div>
-            <p className="text-xs tracking-[0.15em] uppercase text-muted-foreground mb-4">Inquiries</p>
-            <div className="flex flex-col gap-2">
-              <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-5">
+              Inquiries
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/contact"
+                className="text-[13px] text-foreground/45 hover:text-foreground transition-colors duration-300"
+              >
                 Contact
               </Link>
-              <Link to="/commission" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link
+                to="/commission"
+                className="text-[13px] text-foreground/45 hover:text-foreground transition-colors duration-300"
+              >
                 Commission a Work
               </Link>
             </div>
@@ -56,11 +62,11 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="py-6 border-t border-gallery-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-muted-foreground">
+        <div className="py-6 border-t border-gallery-border flex flex-col md:flex-row justify-between items-center gap-3">
+          <p className="text-[11px] text-muted-foreground">
             © {new Date().getFullYear()} Abílio Marcos. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[11px] text-muted-foreground">
             All artworks and images are copyright of the artist.
           </p>
         </div>

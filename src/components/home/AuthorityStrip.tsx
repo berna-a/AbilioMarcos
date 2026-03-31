@@ -9,29 +9,29 @@ const authorityItems = [
 
 const AuthorityStrip = () => {
   return (
-    <section className="py-12 md:py-16 px-6 md:px-10 border-t border-gallery-border">
+    <section className="py-16 md:py-20 px-6 md:px-10 border-t border-gallery-border">
       <div className="max-w-[1400px] mx-auto">
         <motion.p
-          className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-6 text-center"
+          className="text-[10px] tracking-[0.35em] uppercase text-muted-foreground mb-8 md:mb-10 text-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7 }}
         >
           In Collections & Exhibitions
         </motion.p>
 
         <motion.div
-          className="flex flex-wrap justify-center gap-x-10 gap-y-3"
+          className="flex flex-wrap justify-center gap-x-12 md:gap-x-16 gap-y-4"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
         >
           {authorityItems.map((item) => (
             <span
               key={item}
-              className="text-sm text-muted-foreground font-light"
+              className="text-[13px] md:text-sm text-foreground/45 font-light tracking-[0.02em]"
             >
               {item}
             </span>

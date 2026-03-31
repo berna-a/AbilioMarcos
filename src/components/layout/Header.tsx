@@ -38,22 +38,25 @@ const Header = () => {
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Artist name / logo */}
-            <Link to="/" className="font-serif text-lg md:text-xl tracking-wide text-foreground">
+          <div className="flex items-center justify-between h-14 md:h-[72px]">
+            {/* Artist name */}
+            <Link
+              to="/"
+              className="font-serif text-base md:text-lg tracking-[0.03em] text-foreground"
+            >
               Abílio Marcos
             </Link>
 
-            {/* Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-8">
+            {/* Desktop nav — more visible, better spaced */}
+            <nav className="hidden lg:flex items-center gap-7 xl:gap-9">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`text-xs tracking-[0.15em] uppercase transition-colors duration-300 ${
+                  className={`text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 ${
                     location.pathname === item.href
                       ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-foreground/50 hover:text-foreground"
                   }`}
                 >
                   {item.label}
@@ -61,9 +64,9 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile toggle */}
             <button
-              className="lg:hidden text-foreground p-2"
+              className="lg:hidden text-foreground p-2 -mr-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -73,7 +76,7 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -83,20 +86,20 @@ const Header = () => {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-40 bg-background flex flex-col justify-center items-center"
           >
-            <nav className="flex flex-col items-center gap-8">
+            <nav className="flex flex-col items-center gap-7">
               {navItems.map((item, i) => (
                 <motion.div
                   key={item.href}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                  transition={{ delay: i * 0.04, duration: 0.3 }}
                 >
                   <Link
                     to={item.href}
                     className={`font-serif text-2xl tracking-wide transition-colors ${
                       location.pathname === item.href
                         ? "text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
+                        : "text-foreground/50 hover:text-foreground"
                     }`}
                   >
                     {item.label}
