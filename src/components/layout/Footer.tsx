@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import SignatureSvg from "@/assets/signature.svg?react";
 
 const Footer = () => {
   return (
