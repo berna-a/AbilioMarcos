@@ -8,9 +8,9 @@ const Footer = () => {
         {/* Links row */}
         <div className="py-14 md:py-18 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
           <div>
-            <p className="font-serif text-lg md:text-xl mb-5 tracking-[0.02em]">
-              Abílio Marcos
-            </p>
+            <Link to="/" className="text-foreground inline-block mb-5">
+              <SignatureSvg className="h-7 md:h-8 w-auto" />
+            </Link>
             <p className="text-[12px] text-muted-foreground leading-[1.8] max-w-xs">
               Contemporary abstract-expressionist painter.
               <br />
