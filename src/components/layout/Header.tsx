@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import SignatureSvg from "@/assets/signature.svg?react";
+import SignatureLogo from "./SignatureLogo";
 
 const navItems = [
   { label: "Selected Works", href: "/selected-works" },
@@ -47,13 +47,14 @@ const Header = () => {
             {/* Artist name */}
             <Link
               to="/"
+              aria-label="Abílio Marcos"
               className={`transition-colors duration-700 ${
                 heroState
                   ? "text-white/90 hover:text-white"
                   : "text-foreground"
               }`}
             >
-              <SignatureSvg className="h-7 md:h-8 w-auto" />
+              <SignatureLogo className="h-7 w-[9.25rem] md:h-8 md:w-[10.5rem]" />
             </Link>
 
             {/* Desktop nav */}
