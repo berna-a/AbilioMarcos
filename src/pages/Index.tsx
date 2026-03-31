@@ -1,16 +1,36 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useCallback } from "react";
+import Layout from "@/components/layout/Layout";
+import IntroAnimation from "@/components/IntroAnimation";
+import HeroSection from "@/components/home/HeroSection";
+import FeaturedWorks from "@/components/home/FeaturedWorks";
+import StatementSection from "@/components/home/StatementSection";
+import CollectorSection from "@/components/home/CollectorSection";
+import AuthorityStrip from "@/components/home/AuthorityStrip";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [showIntro, setShowIntro] = useState(() => {
+    // Only show intro once per session
+    if (sessionStorage.getItem("intro_seen")) return false;
+    return true;
+  });
+
+  const handleIntroComplete = useCallback(() => {
+    sessionStorage.setItem("intro_seen", "true");
+    setShowIntro(false);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <>
+      {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
+      <Layout>
+        <HeroSection />
+        <FeaturedWorks />
+        <StatementSection />
+        <AuthorityStrip />
+        <CollectorSection />
+      </Layout>
+    </>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
