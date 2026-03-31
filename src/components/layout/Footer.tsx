@@ -29,7 +29,7 @@ const Footer = () => {
                 { label: "Collections", href: "/collections" },
                 { label: "Studio", href: "/studio" },
                 { label: "About", href: "/about" },
-              ].map((link) => (
+              ].map((link: { label: string; href: string }) => (
                 <Link
                   key={link.href}
                   to={link.href}
