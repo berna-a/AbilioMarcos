@@ -17,9 +17,10 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => setIsScrolled(window.scrollY > 80);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -28,49 +29,73 @@ const Header = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // On homepage over the hero: light text on dark. Once scrolled (or non-home pages): dark text on light bg.
+  const heroState = isHome && !isScrolled;
+
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
           isScrolled
             ? "bg-background/95 backdrop-blur-sm border-b border-gallery-border"
-            : "bg-transparent"
+            : "bg-transparent border-b border-transparent"
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-          <div className="flex items-center justify-between h-14 md:h-[72px]">
+          <div className="flex items-center justify-between h-16 md:h-[76px]">
             {/* Artist name */}
             <Link
               to="/"
-              className="font-serif text-base md:text-lg tracking-[0.03em] text-foreground"
+              className={`font-serif text-[17px] md:text-[19px] tracking-[0.04em] transition-colors duration-700 ${
+                heroState
+                  ? "text-white/90 hover:text-white"
+                  : "text-foreground"
+              }`}
             >
               Abílio Marcos
             </Link>
 
-            {/* Desktop nav — more visible, better spaced */}
+            {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-7 xl:gap-9">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={`text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 ${
-                    location.pathname === item.href
-                      ? "text-foreground"
-                      : "text-foreground/50 hover:text-foreground"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    className={`text-[11px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
+                      heroState
+                        ? isActive
+                          ? "text-white"
+                          : "text-white/65 hover:text-white/90"
+                        : isActive
+                          ? "text-foreground"
+                          : "text-foreground/40 hover:text-foreground/75"
+                    }`}
+                  >
+                    {item.label}
+                    {/* Active indicator — subtle bottom line */}
+                    {isActive && (
+                      <span
+                        className={`absolute -bottom-1 left-0 right-0 h-px transition-colors duration-700 ${
+                          heroState ? "bg-white/40" : "bg-foreground/25"
+                        }`}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Mobile toggle */}
             <button
-              className="lg:hidden text-foreground p-2 -mr-2"
+              className={`lg:hidden p-2 -mr-2 transition-colors duration-700 ${
+                heroState ? "text-white/80" : "text-foreground"
+              }`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -87,25 +112,28 @@ const Header = () => {
             className="fixed inset-0 z-40 bg-background flex flex-col justify-center items-center"
           >
             <nav className="flex flex-col items-center gap-7">
-              {navItems.map((item, i) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04, duration: 0.3 }}
-                >
-                  <Link
-                    to={item.href}
-                    className={`font-serif text-2xl tracking-wide transition-colors ${
-                      location.pathname === item.href
-                        ? "text-foreground"
-                        : "text-foreground/50 hover:text-foreground"
-                    }`}
+              {navItems.map((item, i) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.3 }}
                   >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                      to={item.href}
+                      className={`font-serif text-2xl tracking-wide transition-colors ${
+                        isActive
+                          ? "text-foreground"
+                          : "text-foreground/40 hover:text-foreground/70"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </nav>
           </motion.div>
         )}
