@@ -8,6 +8,7 @@ import About from "./pages/About";
 import Studio from "./pages/Studio";
 import Contact from "./pages/Contact";
 import SelectedWorks from "./pages/SelectedWorks";
+import AllWorks from "./pages/AllWorks";
 import Collections from "./pages/Collections";
 import NotFound from "./pages/NotFound";
 
