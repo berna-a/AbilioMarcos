@@ -72,7 +72,6 @@ const artworksData: Record<string, {
   },
 };
 
-// Generate fallback entries for IDs not explicitly defined
 const getArtwork = (id: string) => {
   if (artworksData[id]) return artworksData[id];
   const num = parseInt(id) || 1;
@@ -91,19 +90,20 @@ const getArtwork = (id: string) => {
   };
 };
 
-const statusLabel: Record<string, string> = {
-  available: "Available",
-  reserved: "Reserved",
-  sold: "Sold",
+const statusDisplay: Record<string, { label: string; className: string }> = {
+  available: { label: "Available", className: "text-foreground" },
+  reserved: { label: "Reserved", className: "text-muted-foreground italic" },
+  sold: { label: "Sold", className: "text-muted-foreground" },
 };
 
 const ArtworkDetail = () => {
   const { id } = useParams<{ id: string }>();
   const artwork = getArtwork(id || "1");
+  const status = statusDisplay[artwork.status];
 
   return (
     <Layout>
-      <div className="pt-28 md:pt-36 pb-20 md:pb-32">
+      <div className="pt-28 md:pt-40 pb-24 md:pb-40">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
           {/* Back link */}
@@ -111,26 +111,26 @@ const ArtworkDetail = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="mb-10 md:mb-14"
+            className="mb-12 md:mb-20"
           >
             <Link
               to="/works"
-              className="inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
+              className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              All Works
+              <ArrowLeft className="w-3 h-3" />
+              Back to Archive
             </Link>
           </motion.div>
 
-          {/* Primary image + Metadata */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 mb-20 md:mb-32">
+          {/* Primary image + Information */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 mb-28 md:mb-40">
 
             {/* Primary image */}
             <motion.div
               className="lg:col-span-7 xl:col-span-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
             >
               <div
                 className="w-full aspect-[4/5] md:aspect-[3/4]"
@@ -138,99 +138,88 @@ const ArtworkDetail = () => {
               />
             </motion.div>
 
-            {/* Metadata column */}
+            {/* Information column */}
             <motion.div
-              className="lg:col-span-5 xl:col-span-4 flex flex-col justify-between"
+              className="lg:col-span-5 xl:col-span-4 flex flex-col"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.15 }}
             >
-              <div>
-                {/* Collection label */}
-                <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
-                  {artwork.collection}
-                </span>
+              {/* Collection */}
+              <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
+                {artwork.collection}
+              </span>
 
-                {/* Title */}
-                <h1 className="font-serif text-4xl md:text-5xl lg:text-[3.5rem] font-light text-foreground mt-4 mb-6 leading-[1.1]">
-                  {artwork.title}
-                </h1>
+              {/* Title */}
+              <h1 className="font-serif text-[2.75rem] md:text-[3.25rem] lg:text-[3.5rem] font-light text-foreground leading-[1.05] mb-3">
+                {artwork.title}
+              </h1>
 
-                {/* Year */}
-                <p className="text-sm text-muted-foreground mb-8">
-                  {artwork.year}
-                </p>
+              {/* Year */}
+              <p className="font-serif text-lg text-muted-foreground italic mb-12">
+                {artwork.year}
+              </p>
 
-                {/* Divider */}
-                <div className="h-px bg-border mb-8" />
+              {/* Metadata */}
+              <div className="space-y-5 mb-12">
+                <MetadataLine label="Medium" value={artwork.medium} />
+                <MetadataLine label="Dimensions" value={artwork.dimensions} />
+                <MetadataLine
+                  label="Status"
+                  value={status.label}
+                  valueClassName={status.className}
+                />
+                {artwork.price && (
+                  <MetadataLine label="Price" value={artwork.price} />
+                )}
+              </div>
 
-                {/* Details */}
-                <div className="space-y-4 mb-10">
-                  <DetailRow label="Medium" value={artwork.medium} />
-                  <DetailRow label="Dimensions" value={artwork.dimensions} />
-                  <DetailRow
-                    label="Status"
-                    value={statusLabel[artwork.status]}
-                    valueClass={
-                      artwork.status === "available"
-                        ? "text-foreground"
-                        : artwork.status === "reserved"
-                          ? "text-muted-foreground italic"
-                          : "text-muted-foreground"
-                    }
-                  />
-                  {artwork.price && (
-                    <DetailRow label="Price" value={artwork.price} />
-                  )}
-                </div>
+              {/* Divider */}
+              <div className="h-px bg-border mb-12" />
 
-                {/* Divider */}
-                <div className="h-px bg-border mb-8" />
-
-                {/* CTAs */}
-                <div className="space-y-3">
-                  {artwork.status === "available" && (
-                    <Link
-                      to="/contact"
-                      className="block w-full py-3.5 text-center text-[11px] tracking-[0.2em] uppercase bg-foreground text-background hover:bg-foreground/90 transition-colors duration-300"
-                    >
-                      Acquire This Work
-                    </Link>
-                  )}
+              {/* Actions — quieter, more art-world */}
+              <div className="space-y-0 mt-auto">
+                {artwork.status === "available" && (
                   <Link
                     to="/contact"
-                    className="block w-full py-3.5 text-center text-[11px] tracking-[0.2em] uppercase border border-border text-foreground hover:bg-accent/50 transition-colors duration-300"
+                    className="block w-full py-4 text-center text-[10px] tracking-[0.25em] uppercase bg-foreground text-background hover:bg-foreground/85 transition-colors duration-500"
                   >
-                    Inquire
+                    Acquire This Work
                   </Link>
+                )}
+                <Link
+                  to="/contact"
+                  className="block w-full py-4 text-center text-[10px] tracking-[0.25em] uppercase border-x border-b border-border text-foreground hover:bg-accent/30 transition-colors duration-500"
+                >
+                  Inquire
+                </Link>
+                <div className="pt-6">
                   <Link
                     to="/contact"
-                    className="block w-full py-3 text-center text-[11px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300"
+                    className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500"
                   >
-                    Request a Commission
+                    Request a Commission →
                   </Link>
                 </div>
               </div>
             </motion.div>
           </div>
 
-          {/* Secondary images / detail views */}
+          {/* Detail views */}
           {artwork.gradients.length > 1 && (
             <motion.section
-              className="mb-20 md:mb-32"
+              className="mb-28 md:mb-40"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
             >
-              <h2 className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-8">
-                Detail Views
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+              <SectionLabel>Detail Views</SectionLabel>
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
                 {artwork.gradients.slice(1).map((grad, i) => (
                   <div
                     key={i}
-                    className="aspect-square hover:opacity-90 transition-opacity duration-500 cursor-pointer"
+                    className="aspect-[5/4] hover:opacity-90 transition-opacity duration-700 cursor-pointer"
                     style={{ background: grad }}
                   />
                 ))}
@@ -238,43 +227,43 @@ const ArtworkDetail = () => {
             </motion.section>
           )}
 
-          {/* Process note */}
+          {/* Artist's note */}
           {artwork.processNote && (
             <motion.section
-              className="mb-20 md:mb-32 max-w-2xl"
-              initial={{ opacity: 0, y: 16 }}
+              className="mb-28 md:mb-40"
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7 }}
             >
-              <h2 className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-6">
-                Artist's Note
-              </h2>
-              <p className="font-serif text-lg md:text-xl leading-relaxed text-foreground/80">
-                {artwork.processNote}
-              </p>
+              <div className="max-w-2xl">
+                <SectionLabel>Artist's Note</SectionLabel>
+                <p className="font-serif text-xl md:text-2xl leading-[1.65] text-foreground/75 tracking-[-0.01em]">
+                  {artwork.processNote}
+                </p>
+              </div>
             </motion.section>
           )}
 
           {/* Provenance */}
           {artwork.provenance && artwork.provenance.length > 0 && (
             <motion.section
-              className="mb-20 md:mb-32 max-w-2xl"
-              initial={{ opacity: 0, y: 16 }}
+              className="mb-28 md:mb-40"
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7 }}
             >
-              <h2 className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-6">
-                Provenance
-              </h2>
-              <ul className="space-y-2">
-                {artwork.provenance.map((entry, i) => (
-                  <li key={i} className="text-sm text-foreground/70 leading-relaxed">
-                    {entry}
-                  </li>
-                ))}
-              </ul>
+              <div className="max-w-2xl">
+                <SectionLabel>Provenance</SectionLabel>
+                <ul className="space-y-3">
+                  {artwork.provenance.map((entry, i) => (
+                    <li key={i} className="text-[13px] md:text-sm text-foreground/60 leading-relaxed tracking-wide">
+                      {entry}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </motion.section>
           )}
 
@@ -283,14 +272,12 @@ const ArtworkDetail = () => {
             <motion.section
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
             >
-              <div className="h-px bg-border mb-14" />
-              <h2 className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-10">
-                Related Works
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+              <div className="h-px bg-border mb-16 md:mb-20" />
+              <SectionLabel className="mb-12 md:mb-14">Further Viewing</SectionLabel>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 {artwork.relatedIds.slice(0, 3).map((relId) => {
                   const rel = getArtwork(relId);
                   return (
@@ -300,13 +287,13 @@ const ArtworkDetail = () => {
                       className="group"
                     >
                       <div
-                        className="aspect-[4/5] mb-3 group-hover:opacity-90 transition-opacity duration-500"
+                        className="aspect-[4/5] mb-4 group-hover:opacity-85 transition-opacity duration-700"
                         style={{ background: rel.gradients[0] }}
                       />
-                      <p className="font-serif text-base text-foreground group-hover:text-foreground/80 transition-colors duration-300">
+                      <p className="font-serif text-base md:text-lg text-foreground group-hover:text-foreground/70 transition-colors duration-500 leading-tight">
                         {rel.title}
                       </p>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                      <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mt-1.5">
                         {rel.medium}, {rel.year}
                       </p>
                     </Link>
@@ -321,21 +308,36 @@ const ArtworkDetail = () => {
   );
 };
 
-// Small helper
-const DetailRow = ({
+/* ── Helpers ── */
+
+const SectionLabel = ({
+  children,
+  className = "mb-8 md:mb-10",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <h2 className={`text-[10px] tracking-[0.3em] uppercase text-muted-foreground ${className}`}>
+    {children}
+  </h2>
+);
+
+const MetadataLine = ({
   label,
   value,
-  valueClass = "text-foreground",
+  valueClassName = "text-foreground",
 }: {
   label: string;
   value: string;
-  valueClass?: string;
+  valueClassName?: string;
 }) => (
   <div className="flex justify-between items-baseline">
-    <span className="text-[11px] tracking-[0.15em] uppercase text-muted-foreground">
+    <span className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
       {label}
     </span>
-    <span className={`text-sm ${valueClass}`}>{value}</span>
+    <span className={`text-[13px] md:text-sm tracking-wide ${valueClassName}`}>
+      {value}
+    </span>
   </div>
 );
 
