@@ -9,6 +9,7 @@ import Studio from "./pages/Studio";
 import Contact from "./pages/Contact";
 import SelectedWorks from "./pages/SelectedWorks";
 import AllWorks from "./pages/AllWorks";
+import ArtworkDetail from "./pages/ArtworkDetail";
 import Collections from "./pages/Collections";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/selected-works" element={<SelectedWorks />} />
           <Route path="/works" element={<AllWorks />} />
+          <Route path="/artwork/:id" element={<ArtworkDetail />} />
           <Route path="/collections" element={<Collections />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

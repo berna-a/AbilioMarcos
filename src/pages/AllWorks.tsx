@@ -383,7 +383,7 @@ const AllWorks = () => {
                       viewport={{ once: true, margin: "-30px" }}
                       transition={{ duration: 0.45, delay: 0.04 * (i % 3) }}
                     >
-                      <Link to={`/works/${work.id}`} className="group block">
+                      <Link to={`/artwork/${work.id}`} className="group block">
                         <div
                           className={`w-full transition-opacity duration-500 group-hover:opacity-90 ${
                             work.orientation === "landscape"
