@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import artistPortrait from "@/assets/abilio-marcos.png";
 
 const BiographyStatement = () => (
   <motion.section
@@ -8,21 +9,8 @@ const BiographyStatement = () => (
     transition={{ duration: 0.6, delay: 0.2 }}
   >
     <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
-      {/* Portrait */}
-      <div className="md:col-span-5">
-        <div
-          className="aspect-[3/4] w-full"
-          style={{
-            background: "linear-gradient(145deg, hsl(30 15% 40%), hsl(35 20% 55%))",
-          }}
-        />
-        <p className="mt-3 text-[11px] text-muted-foreground/60">
-          Abílio Marcos in his studio, Lisbon.
-        </p>
-      </div>
-
-      {/* Biography */}
-      <div className="md:col-span-7">
+      {/* Biography — left */}
+      <div className="md:col-span-7 order-2 md:order-1">
         <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6 pb-3 border-b border-gallery-border">
           Biography
         </p>
@@ -48,6 +36,20 @@ const BiographyStatement = () => (
             where the landscape, light, and solitude inform the emotional core of his paintings.
           </p>
         </div>
+      </div>
+
+      {/* Portrait — right */}
+      <div className="md:col-span-5 order-1 md:order-2">
+        <div className="aspect-[3/4] w-full overflow-hidden">
+          <img
+            src={artistPortrait}
+            alt="Abílio Marcos"
+            className="w-full h-full object-cover object-top"
+          />
+        </div>
+        <p className="mt-3 text-[11px] text-muted-foreground/60">
+          Abílio Marcos in his studio, Lisbon.
+        </p>
       </div>
     </div>
   </motion.section>
