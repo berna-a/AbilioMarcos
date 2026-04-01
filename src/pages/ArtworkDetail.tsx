@@ -111,7 +111,7 @@ const ArtworkDetail = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="mb-12 md:mb-20"
+            className="mb-14 md:mb-24"
           >
             <Link
               to="/works"
@@ -123,11 +123,11 @@ const ArtworkDetail = () => {
           </motion.div>
 
           {/* Primary image + Information */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 mb-28 md:mb-40">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 mb-32 md:mb-48">
 
             {/* Primary image */}
             <motion.div
-              className="lg:col-span-7 xl:col-span-8"
+              className="lg:col-span-7"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
@@ -140,28 +140,28 @@ const ArtworkDetail = () => {
 
             {/* Information column */}
             <motion.div
-              className="lg:col-span-5 xl:col-span-4 flex flex-col"
+              className="lg:col-span-5 flex flex-col lg:py-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.15 }}
             >
-              {/* Collection */}
-              <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
+              {/* Collection label */}
+              <span className="text-[10px] tracking-[0.35em] uppercase text-muted-foreground mb-8">
                 {artwork.collection}
               </span>
 
-              {/* Title */}
-              <h1 className="font-serif text-[2.75rem] md:text-[3.25rem] lg:text-[3.5rem] font-light text-foreground leading-[1.05] mb-3">
+              {/* Title — larger, more authoritative */}
+              <h1 className="font-serif text-[3rem] md:text-[3.5rem] lg:text-[3.75rem] font-light text-foreground leading-[1.02] mb-2">
                 {artwork.title}
               </h1>
 
               {/* Year */}
-              <p className="font-serif text-lg text-muted-foreground italic mb-12">
+              <p className="font-serif text-xl md:text-2xl text-muted-foreground italic mb-14 lg:mb-16">
                 {artwork.year}
               </p>
 
               {/* Metadata */}
-              <div className="space-y-5 mb-12">
+              <div className="space-y-6 mb-14 lg:mb-16">
                 <MetadataLine label="Medium" value={artwork.medium} />
                 <MetadataLine label="Dimensions" value={artwork.dimensions} />
                 <MetadataLine
@@ -175,47 +175,45 @@ const ArtworkDetail = () => {
               </div>
 
               {/* Divider */}
-              <div className="h-px bg-border mb-12" />
+              <div className="h-px bg-border mb-14 lg:mb-16" />
 
-              {/* Actions — quieter, more art-world */}
-              <div className="space-y-0 mt-auto">
+              {/* Actions — editorial text links, not buttons */}
+              <nav className="space-y-6 mt-auto" aria-label="Artwork actions">
                 {artwork.status === "available" && (
                   <Link
                     to="/contact"
-                    className="block w-full py-4 text-center text-[10px] tracking-[0.25em] uppercase bg-foreground text-background hover:bg-foreground/85 transition-colors duration-500"
+                    className="block text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500"
                   >
                     Acquire This Work
                   </Link>
                 )}
                 <Link
                   to="/contact"
-                  className="block w-full py-4 text-center text-[10px] tracking-[0.25em] uppercase border-x border-b border-border text-foreground hover:bg-accent/30 transition-colors duration-500"
+                  className="block text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500"
                 >
                   Inquire
                 </Link>
-                <div className="pt-6">
-                  <Link
-                    to="/contact"
-                    className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500"
-                  >
-                    Request a Commission →
-                  </Link>
-                </div>
-              </div>
+                <Link
+                  to="/contact"
+                  className="block text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500"
+                >
+                  Request a Commission
+                </Link>
+              </nav>
             </motion.div>
           </div>
 
           {/* Detail views */}
           {artwork.gradients.length > 1 && (
             <motion.section
-              className="mb-28 md:mb-40"
+              className="mb-32 md:mb-48"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
             >
               <SectionLabel>Detail Views</SectionLabel>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {artwork.gradients.slice(1).map((grad, i) => (
                   <div
                     key={i}
@@ -230,15 +228,15 @@ const ArtworkDetail = () => {
           {/* Artist's note */}
           {artwork.processNote && (
             <motion.section
-              className="mb-28 md:mb-40"
+              className="mb-32 md:mb-48"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7 }}
             >
               <div className="max-w-2xl">
-                <SectionLabel>Artist's Note</SectionLabel>
-                <p className="font-serif text-xl md:text-2xl leading-[1.65] text-foreground/75 tracking-[-0.01em]">
+                <SectionLabel className="mb-10 md:mb-12">Artist's Note</SectionLabel>
+                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground/80 tracking-[-0.005em]">
                   {artwork.processNote}
                 </p>
               </div>
@@ -248,17 +246,17 @@ const ArtworkDetail = () => {
           {/* Provenance */}
           {artwork.provenance && artwork.provenance.length > 0 && (
             <motion.section
-              className="mb-28 md:mb-40"
+              className="mb-32 md:mb-48"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7 }}
             >
               <div className="max-w-2xl">
-                <SectionLabel>Provenance</SectionLabel>
-                <ul className="space-y-3">
+                <SectionLabel className="mb-10 md:mb-12">Provenance</SectionLabel>
+                <ul className="space-y-4">
                   {artwork.provenance.map((entry, i) => (
-                    <li key={i} className="text-[13px] md:text-sm text-foreground/60 leading-relaxed tracking-wide">
+                    <li key={i} className="text-sm md:text-[0.938rem] text-foreground/65 leading-[1.7] tracking-wide">
                       {entry}
                     </li>
                   ))}
@@ -275,9 +273,9 @@ const ArtworkDetail = () => {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
             >
-              <div className="h-px bg-border mb-16 md:mb-20" />
-              <SectionLabel className="mb-12 md:mb-14">Further Viewing</SectionLabel>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+              <div className="h-px bg-border mb-20 md:mb-24" />
+              <SectionLabel className="mb-14 md:mb-16">Further Viewing</SectionLabel>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
                 {artwork.relatedIds.slice(0, 3).map((relId) => {
                   const rel = getArtwork(relId);
                   return (
@@ -287,14 +285,17 @@ const ArtworkDetail = () => {
                       className="group"
                     >
                       <div
-                        className="aspect-[4/5] mb-4 group-hover:opacity-85 transition-opacity duration-700"
+                        className="aspect-[4/5] mb-5 group-hover:opacity-85 transition-opacity duration-700"
                         style={{ background: rel.gradients[0] }}
                       />
-                      <p className="font-serif text-base md:text-lg text-foreground group-hover:text-foreground/70 transition-colors duration-500 leading-tight">
+                      <p className="font-serif text-lg md:text-xl text-foreground group-hover:text-foreground/70 transition-colors duration-500 leading-tight">
                         {rel.title}
                       </p>
-                      <p className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mt-1.5">
-                        {rel.medium}, {rel.year}
+                      <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-2">
+                        {rel.medium}
+                      </p>
+                      <p className="font-serif text-sm text-muted-foreground italic mt-1">
+                        {rel.year}
                       </p>
                     </Link>
                   );
@@ -317,7 +318,7 @@ const SectionLabel = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <h2 className={`text-[10px] tracking-[0.3em] uppercase text-muted-foreground ${className}`}>
+  <h2 className={`text-[11px] tracking-[0.3em] uppercase text-muted-foreground ${className}`}>
     {children}
   </h2>
 );
@@ -332,10 +333,10 @@ const MetadataLine = ({
   valueClassName?: string;
 }) => (
   <div className="flex justify-between items-baseline">
-    <span className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+    <span className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground">
       {label}
     </span>
-    <span className={`text-[13px] md:text-sm tracking-wide ${valueClassName}`}>
+    <span className={`text-sm md:text-[0.938rem] tracking-wide ${valueClassName}`}>
       {value}
     </span>
   </div>
