@@ -1,16 +1,30 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getFeaturedArtworks } from "@/lib/artworks";
+import { Artwork } from "@/lib/types";
 
-const featuredWorks = [
-  { id: "1", title: "Erosion of Light", year: 2024, medium: "Oil on canvas", gradient: "linear-gradient(145deg, hsl(15 35% 35%), hsl(30 45% 55%))" },
-  { id: "2", title: "Meridian", year: 2023, medium: "Acrylic & mixed media", gradient: "linear-gradient(145deg, hsl(200 25% 30%), hsl(180 20% 50%))" },
-  { id: "3", title: "Residual Warmth", year: 2024, medium: "Oil on linen", gradient: "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))" },
+const placeholderWorks = [
+  { id: "1", title: "Erosion of Light", year: 2024, medium: "Oil on canvas", slug: "erosion-of-light", gradient: "linear-gradient(145deg, hsl(15 35% 35%), hsl(30 45% 55%))", primary_image_url: null },
+  { id: "2", title: "Meridian", year: 2023, medium: "Acrylic & mixed media", slug: "meridian", gradient: "linear-gradient(145deg, hsl(200 25% 30%), hsl(180 20% 50%))", primary_image_url: null },
+  { id: "3", title: "Residual Warmth", year: 2024, medium: "Oil on linen", slug: "residual-warmth", gradient: "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))", primary_image_url: null },
 ];
 
 const FeaturedWorks = () => {
+  const [works, setWorks] = useState<any[]>(placeholderWorks);
+
+  useEffect(() => {
+    getFeaturedArtworks().then((data) => {
+      if (data.length > 0) setWorks(data.slice(0, 3));
+    });
+  }, []);
+
+  const getLink = (work: any) => work.slug ? `/artwork/${work.slug}` : `/artwork/${work.id}`;
+  const getImage = (work: any) => work.primary_image_url;
+  const getGradient = (work: any) => work.gradient || "linear-gradient(145deg, hsl(30 20% 30%), hsl(35 25% 45%))";
+
   return (
     <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto">
-      {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -18,48 +32,38 @@ const FeaturedWorks = () => {
         transition={{ duration: 0.7 }}
         className="mb-14 md:mb-18"
       >
-        <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">
-          Featured
-        </p>
-        <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-light leading-tight">
-          Selected Works
-        </h2>
+        <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">Featured</p>
+        <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-light leading-tight">Selected Works</h2>
       </motion.div>
 
-      {/* Asymmetric editorial grid */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10">
-        {/* Hero piece — dominant */}
-        <motion.div
-          className="md:col-span-7"
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.7 }}
-        >
-          <Link to={`/works/${featuredWorks[0].id}`} className="group block">
-            <div
-              className="aspect-[4/5] w-full"
-              style={{ background: featuredWorks[0].gradient }}
-            />
-            <div className="mt-5 flex justify-between items-baseline">
-              <div>
-                <p className="font-serif text-lg md:text-xl tracking-[0.01em]">
-                  {featuredWorks[0].title}
-                </p>
-                <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">
-                  {featuredWorks[0].medium}
-                </p>
+        {works[0] && (
+          <motion.div
+            className="md:col-span-7"
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.7 }}
+          >
+            <Link to={getLink(works[0])} className="group block">
+              {getImage(works[0]) ? (
+                <img src={getImage(works[0])} alt={works[0].title} className="aspect-[4/5] w-full object-cover" />
+              ) : (
+                <div className="aspect-[4/5] w-full" style={{ background: getGradient(works[0]) }} />
+              )}
+              <div className="mt-5 flex justify-between items-baseline">
+                <div>
+                  <p className="font-serif text-lg md:text-xl tracking-[0.01em]">{works[0].title}</p>
+                  <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{works[0].medium}</p>
+                </div>
+                <p className="text-[11px] tracking-[0.05em] text-muted-foreground">{works[0].year}</p>
               </div>
-              <p className="text-[11px] tracking-[0.05em] text-muted-foreground">
-                {featuredWorks[0].year}
-              </p>
-            </div>
-          </Link>
-        </motion.div>
+            </Link>
+          </motion.div>
+        )}
 
-        {/* Secondary pieces — stacked */}
         <div className="md:col-span-5 flex flex-col gap-8 md:gap-10">
-          {featuredWorks.slice(1).map((work, i) => (
+          {works.slice(1).map((work, i) => (
             <motion.div
               key={work.id}
               initial={{ opacity: 0, y: 25 }}
@@ -67,23 +71,18 @@ const FeaturedWorks = () => {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}
             >
-              <Link to={`/works/${work.id}`} className="group block">
-                <div
-                  className="aspect-[3/2] w-full"
-                  style={{ background: work.gradient }}
-                />
+              <Link to={getLink(work)} className="group block">
+                {getImage(work) ? (
+                  <img src={getImage(work)} alt={work.title} className="aspect-[3/2] w-full object-cover" />
+                ) : (
+                  <div className="aspect-[3/2] w-full" style={{ background: getGradient(work) }} />
+                )}
                 <div className="mt-5 flex justify-between items-baseline">
                   <div>
-                    <p className="font-serif text-lg tracking-[0.01em]">
-                      {work.title}
-                    </p>
-                    <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">
-                      {work.medium}
-                    </p>
+                    <p className="font-serif text-lg tracking-[0.01em]">{work.title}</p>
+                    <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{work.medium}</p>
                   </div>
-                  <p className="text-[11px] tracking-[0.05em] text-muted-foreground">
-                    {work.year}
-                  </p>
+                  <p className="text-[11px] tracking-[0.05em] text-muted-foreground">{work.year}</p>
                 </div>
               </Link>
             </motion.div>
@@ -91,7 +90,6 @@ const FeaturedWorks = () => {
         </div>
       </div>
 
-      {/* View all — refined link */}
       <motion.div
         className="mt-20 md:mt-24 text-center"
         initial={{ opacity: 0 }}
