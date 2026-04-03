@@ -58,7 +58,8 @@ const Footer = () => {
         {/* Copyright */}
         <div className="py-6 border-t border-gallery-border flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-[11px] text-muted-foreground">
-            © {new Date().getFullYear()} Abílio Marcos. All rights reserved.
+            © {new Date().getFullYear()} Abílio Marcos. All rights reserved. Website made by{" "}
+            <a href="https://ardo.media/" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors duration-300">Ardo Media</a>
           </p>
           <p className="text-[11px] text-muted-foreground">
             All artworks and images are copyright of the artist.

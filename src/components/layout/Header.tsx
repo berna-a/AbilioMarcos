@@ -7,7 +7,6 @@ import SignatureLogo from "./SignatureLogo";
 const navItems = [
   { label: "Selected Works", href: "/selected-works" },
   { label: "All Works", href: "/works" },
-  { label: "Collections", href: "/collections" },
   { label: "Studio", href: "/studio" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
