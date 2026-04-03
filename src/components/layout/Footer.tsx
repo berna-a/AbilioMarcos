@@ -26,7 +26,6 @@ const Footer = () => {
               {[
                 { label: "Selected Works", href: "/selected-works" },
                 { label: "All Works", href: "/works" },
-                { label: "Collections", href: "/collections" },
                 { label: "Studio", href: "/studio" },
                 { label: "About", href: "/about" },
               ].map((link: { label: string; href: string }) => (
