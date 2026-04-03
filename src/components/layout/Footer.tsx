@@ -26,7 +26,6 @@ const Footer = () => {
               {[
                 { label: "Selected Works", href: "/selected-works" },
                 { label: "All Works", href: "/works" },
-                { label: "Collections", href: "/collections" },
                 { label: "Studio", href: "/studio" },
                 { label: "About", href: "/about" },
               ].map((link: { label: string; href: string }) => (
@@ -52,12 +51,6 @@ const Footer = () => {
               >
                 Contact
               </Link>
-              <Link
-                to="/commission"
-                className="text-[13px] text-foreground/45 hover:text-foreground transition-colors duration-300"
-              >
-                Commission a Work
-              </Link>
             </div>
           </div>
         </div>
@@ -65,7 +58,8 @@ const Footer = () => {
         {/* Copyright */}
         <div className="py-6 border-t border-gallery-border flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-[11px] text-muted-foreground">
-            © {new Date().getFullYear()} Abílio Marcos. All rights reserved.
+            © {new Date().getFullYear()} Abílio Marcos. All rights reserved. Website made by{" "}
+            <a href="https://ardo.media/" target="_blank" rel="noopener noreferrer" className="text-foreground/50 hover:text-foreground transition-colors duration-300">Ardo Media</a>
           </p>
           <p className="text-[11px] text-muted-foreground">
             All artworks and images are copyright of the artist.
