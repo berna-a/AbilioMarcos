@@ -96,3 +96,17 @@
     text-wrap: balance;
   }
 }
+
+/* Admin-specific input style — isolated from public design system */
+.admin-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 13px;
+  border: 1px solid hsl(0 0% 85%);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.admin-input:focus {
+  border-color: hsl(0 0% 50%);
+}
