@@ -51,12 +51,6 @@ const Footer = () => {
               >
                 Contact
               </Link>
-              <Link
-                to="/commission"
-                className="text-[13px] text-foreground/45 hover:text-foreground transition-colors duration-300"
-              >
-                Commission a Work
-              </Link>
             </div>
           </div>
         </div>
