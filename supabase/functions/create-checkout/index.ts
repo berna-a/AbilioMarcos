@@ -67,7 +67,9 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
-    const origin = req.headers.get("origin") || "https://atelier-blueprint-pro.lovable.app";
+    const siteUrl = Deno.env.get("SITE_URL");
+    if (!siteUrl) throw new Error("SITE_URL not configured");
+    const origin = siteUrl.replace(/\/+$/, "");
 
     const lineItem: Stripe.Checkout.SessionCreateParams.LineItem = {
       quantity: 1,
