@@ -12,6 +12,8 @@ import SelectedWorks from "./pages/SelectedWorks";
 import AllWorks from "./pages/AllWorks";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import Collections from "./pages/Collections";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutCancel from "./pages/CheckoutCancel";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";

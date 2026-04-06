@@ -1,4 +1,6 @@
 import { Artwork, getSalesMode, formatPrice } from '@/lib/types';
+import { createCheckoutSession } from '@/lib/checkout';
+import { useState } from 'react';
 
 interface Props {
   artwork: Artwork;
@@ -6,9 +8,21 @@ interface Props {
 }
 
 const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
-  const { availability, purchase_url, price } = artwork;
+  const { availability, price } = artwork;
   const salesMode = getSalesMode(price);
   const displayPrice = formatPrice(price);
+  const [checkingOut, setCheckingOut] = useState(false);
+
+  const handleAcquire = async () => {
+    setCheckingOut(true);
+    const url = await createCheckoutSession(artwork.id);
+    if (url) {
+      window.location.href = url;
+    } else {
+      alert('Unable to start checkout. Please try again.');
+      setCheckingOut(false);
+    }
+  };
 
   if (availability === 'sold') {
     return (
@@ -37,11 +51,13 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
     return (
       <nav className="space-y-6 mt-auto mb-10" aria-label="Artwork actions">
         {displayPrice && <p className="text-sm tracking-wide text-foreground">{displayPrice}</p>}
-        {purchase_url && (
-          <a href={purchase_url} target="_blank" rel="noopener noreferrer" className="block text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500">
-            Acquire Online
-          </a>
-        )}
+        <button
+          onClick={handleAcquire}
+          disabled={checkingOut}
+          className="block text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500 disabled:opacity-50"
+        >
+          {checkingOut ? 'Preparing…' : 'Acquire Online'}
+        </button>
         <button onClick={onInquiryClick} className="block text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">
           Ask a Question
         </button>
@@ -53,11 +69,13 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
     return (
       <nav className="space-y-6 mt-auto mb-10" aria-label="Artwork actions">
         {displayPrice && <p className="text-sm tracking-wide text-foreground">{displayPrice}</p>}
-        {purchase_url && (
-          <a href={purchase_url} target="_blank" rel="noopener noreferrer" className="block text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500">
-            Acquire Online
-          </a>
-        )}
+        <button
+          onClick={handleAcquire}
+          disabled={checkingOut}
+          className="block text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500 disabled:opacity-50"
+        >
+          {checkingOut ? 'Preparing…' : 'Acquire Online'}
+        </button>
         <button onClick={onInquiryClick} className="block text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500">
           Inquire About This Work
         </button>
