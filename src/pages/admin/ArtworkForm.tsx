@@ -236,12 +236,6 @@ const ArtworkForm = () => {
               <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
                 Sales mode: <span className="font-medium text-[hsl(0_0%_30%)]">{modeLabels[derivedMode]}</span>
               </p>
-
-              {showPurchaseUrl && (
-                <Field label="Purchase URL" hint="External checkout link (Stripe, Gumroad, etc.)">
-                  <input type="url" value={form.purchase_url} onChange={(e) => updateField('purchase_url', e.target.value)} className="admin-input" placeholder="https://checkout.stripe.com/…" />
-                </Field>
-              )}
             </div>
           </div>
 
