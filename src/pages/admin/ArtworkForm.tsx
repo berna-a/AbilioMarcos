@@ -20,7 +20,7 @@ const initialForm = {
   price: '',
   price_amount: '' as string,
   price_display: '',
-  sales_mode: 'inquiry_only' as const,
+  sales_mode: 'inquiry_only' as 'direct_purchase' | 'hybrid' | 'inquiry_only',
   purchase_url: '',
   shipping_time: '',
   shipping_notes: '',
