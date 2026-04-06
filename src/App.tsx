@@ -12,6 +12,8 @@ import SelectedWorks from "./pages/SelectedWorks";
 import AllWorks from "./pages/AllWorks";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import Collections from "./pages/Collections";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutCancel from "./pages/CheckoutCancel";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
@@ -41,6 +43,8 @@ const App = () => (
             <Route path="/works" element={<AllWorks />} />
             <Route path="/artwork/:slug" element={<ArtworkDetail />} />
             <Route path="/collections" element={<Collections />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/checkout/cancel" element={<CheckoutCancel />} />
 
             {/* Admin routes */}
             <Route path="/admin/login" element={<AdminLogin />} />

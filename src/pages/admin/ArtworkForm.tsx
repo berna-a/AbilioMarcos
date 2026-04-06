@@ -24,7 +24,6 @@ const initialForm = {
   status: 'draft' as const,
   availability: 'available' as const,
   price: '' as string,
-  purchase_url: '',
   size_category: 'medium' as SizeCategory,
   custom_width_cm: '' as string,
   custom_height_cm: '' as string,
@@ -58,7 +57,6 @@ const ArtworkForm = () => {
         status: data.status || 'draft',
         availability: data.availability || 'available',
         price: data.price != null ? String(data.price) : '',
-        purchase_url: data.purchase_url || '',
         size_category: data.size_category || 'medium',
         custom_width_cm: data.custom_width_cm != null ? String(data.custom_width_cm) : '',
         custom_height_cm: data.custom_height_cm != null ? String(data.custom_height_cm) : '',
@@ -119,7 +117,7 @@ const ArtworkForm = () => {
       status: form.status,
       availability: form.availability,
       price: priceNum,
-      purchase_url: form.purchase_url.trim() || null,
+      purchase_url: null,
       size_category: form.size_category,
       custom_width_cm: form.size_category === 'other' && form.custom_width_cm ? parseFloat(form.custom_width_cm) : null,
       custom_height_cm: form.size_category === 'other' && form.custom_height_cm ? parseFloat(form.custom_height_cm) : null,
@@ -145,11 +143,10 @@ const ArtworkForm = () => {
 
   const priceNum = form.price ? parseFloat(form.price) : null;
   const derivedMode = getSalesMode(priceNum);
-  const showPurchaseUrl = derivedMode === 'direct_purchase' || derivedMode === 'hybrid';
 
   const modeLabels: Record<string, string> = {
-    direct_purchase: 'Direct Purchase — visitors can buy online',
-    hybrid: 'Hybrid — online purchase + inquiry option',
+    direct_purchase: 'Direct Purchase — Stripe checkout enabled',
+    hybrid: 'Hybrid — Stripe checkout + inquiry option',
     inquiry_only: 'Inquiry Only — collectors inquire privately',
   };
 
@@ -237,12 +234,6 @@ const ArtworkForm = () => {
               <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
                 Sales mode: <span className="font-medium text-[hsl(0_0%_30%)]">{modeLabels[derivedMode]}</span>
               </p>
-
-              {showPurchaseUrl && (
-                <Field label="Purchase URL" hint="External checkout link (Stripe, Gumroad, etc.)">
-                  <input type="url" value={form.purchase_url} onChange={(e) => updateField('purchase_url', e.target.value)} className="admin-input" placeholder="https://checkout.stripe.com/…" />
-                </Field>
-              )}
             </div>
           </div>
 
