@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
-import { Artwork } from "@/lib/types";
+import { Artwork, MEDIUM_DISPLAY } from "@/lib/types";
 
 const FilterSection = ({
   title, options, selected, onToggle,
@@ -45,7 +45,7 @@ const FilterSection = ({
 const AllWorks = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<Record<string, string[]>>({ medium: [], availability: [] });
+  const [filters, setFilters] = useState<Record<string, string[]>>({ availability: [] });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   useEffect(() => {
@@ -62,14 +62,11 @@ const AllWorks = () => {
     }));
   };
 
-  const clearAll = () => setFilters({ medium: [], availability: [] });
+  const clearAll = () => setFilters({ availability: [] });
   const activeCount = Object.values(filters).flat().length;
-
-  const mediums = useMemo(() => [...new Set(artworks.map((a) => a.medium).filter(Boolean))], [artworks]);
 
   const filtered = useMemo(() => {
     return artworks.filter((a) => {
-      if (filters.medium.length && !filters.medium.includes(a.medium)) return false;
       if (filters.availability.length && !filters.availability.includes(a.availability)) return false;
       return true;
     });
@@ -83,14 +80,6 @@ const AllWorks = () => {
           <button onClick={clearAll} className="text-[10px] tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors duration-300 underline underline-offset-2">Clear all</button>
         )}
       </div>
-      {mediums.length > 0 && (
-        <FilterSection
-          title="Medium"
-          options={mediums.map((m) => ({ label: m, value: m }))}
-          selected={filters.medium}
-          onToggle={(v) => toggleFilter("medium", v)}
-        />
-      )}
       <FilterSection
         title="Availability"
         options={[
@@ -112,7 +101,7 @@ const AllWorks = () => {
             <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">Complete Archive</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light">All Works</h1>
             <p className="mt-4 text-[11px] md:text-xs tracking-[0.04em] text-muted-foreground max-w-md">
-              A comprehensive view of the body of work — paintings, drawings and mixed media spanning two decades.
+              A comprehensive view of the body of work — oil paintings spanning two decades.
             </p>
           </motion.div>
 
@@ -176,7 +165,7 @@ const AllWorks = () => {
                         )}
                         <div className="mt-3.5">
                           <p className="font-serif text-sm md:text-base tracking-[0.01em] group-hover:text-foreground/70 transition-colors duration-300">{work.title}</p>
-                          <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{work.medium}, {work.year}</p>
+                          <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}, {work.year}</p>
                         </div>
                       </Link>
                     </motion.div>

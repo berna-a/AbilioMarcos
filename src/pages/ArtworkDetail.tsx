@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getArtworkBySlug, getRelatedArtworks } from "@/lib/artworks";
-import { Artwork } from "@/lib/types";
+import { Artwork, getDimensions, formatPrice, getSalesMode, MEDIUM_DISPLAY } from "@/lib/types";
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
@@ -51,7 +51,9 @@ const ArtworkDetail = () => {
 
   const status = statusDisplay[artwork.availability] || statusDisplay.available;
   const additionalImages = artwork.additional_images || [];
-  const displayPrice = artwork.price_display || artwork.price;
+  const dimensions = getDimensions(artwork);
+  const salesMode = getSalesMode(artwork.price);
+  const displayPrice = formatPrice(artwork.price);
 
   return (
     <Layout>
@@ -85,13 +87,10 @@ const ArtworkDetail = () => {
 
               {/* Metadata */}
               <div className="space-y-6 mb-14 lg:mb-16">
-                <MetadataLine label="Medium" value={artwork.medium} />
-                <MetadataLine label="Dimensions" value={artwork.dimensions} />
+                <MetadataLine label="Medium" value={MEDIUM_DISPLAY} />
+                {dimensions && <MetadataLine label="Dimensions" value={dimensions} />}
                 {status.label && <MetadataLine label="Status" value={status.label} valueClassName={status.className} />}
-                {displayPrice && artwork.sales_mode !== 'inquiry_only' && (
-                  <MetadataLine label="Price" value={displayPrice} />
-                )}
-                {displayPrice && artwork.sales_mode === 'inquiry_only' && displayPrice.toLowerCase() !== 'price on request' && (
+                {displayPrice && salesMode !== 'inquiry_only' && (
                   <MetadataLine label="Price" value={displayPrice} />
                 )}
               </div>
@@ -102,7 +101,7 @@ const ArtworkDetail = () => {
               <ArtworkCommerceCTA artwork={artwork} onInquiryClick={() => setInquiryOpen(true)} />
 
               {/* Trust info */}
-              <ArtworkTrustInfo artwork={artwork} />
+              <ArtworkTrustInfo />
             </motion.div>
           </div>
 
@@ -142,7 +141,7 @@ const ArtworkDetail = () => {
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
                     <p className="font-serif text-lg md:text-xl text-foreground group-hover:text-foreground/70 transition-colors duration-500 leading-tight">{rel.title}</p>
-                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-2">{rel.medium}</p>
+                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-2">{MEDIUM_DISPLAY}</p>
                     <p className="font-serif text-sm text-muted-foreground italic mt-1">{rel.year}</p>
                   </Link>
                 ))}

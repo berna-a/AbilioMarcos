@@ -128,7 +128,8 @@ const AdminArtworks = () => {
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Year</th>
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Status</th>
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Availability</th>
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Featured</th>
+                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Price</th>
+                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Selected</th>
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium w-20"></th>
               </tr>
             </thead>
@@ -138,18 +139,11 @@ const AdminArtworks = () => {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {artwork.primary_image_url ? (
-                        <img
-                          src={artwork.primary_image_url}
-                          alt=""
-                          className="w-10 h-10 object-cover flex-shrink-0"
-                        />
+                        <img src={artwork.primary_image_url} alt="" className="w-10 h-10 object-cover flex-shrink-0" />
                       ) : (
                         <div className="w-10 h-10 bg-[hsl(0_0%_93%)] flex-shrink-0" />
                       )}
-                      <div>
-                        <p className="text-[13px] font-medium text-[hsl(0_0%_15%)]">{artwork.title}</p>
-                        <p className="text-[11px] text-[hsl(0_0%_55%)]">{artwork.medium}</p>
-                      </div>
+                      <p className="text-[13px] font-medium text-[hsl(0_0%_15%)]">{artwork.title}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">{artwork.year}</td>
@@ -162,24 +156,17 @@ const AdminArtworks = () => {
                     {availabilityLabels[artwork.availability] || artwork.availability}
                   </td>
                   <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">
+                    {artwork.price != null ? `€${artwork.price.toLocaleString()}` : '—'}
+                  </td>
+                  <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">
                     {artwork.is_featured && <span className="text-[11px] text-amber-600">★</span>}
-                    {artwork.is_masterwork && <span className="text-[11px] text-[hsl(0_0%_35%)] ml-1">◆</span>}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2 justify-end">
-                      <Link
-                        to={`/admin/artworks/${artwork.id}`}
-                        className="p-1.5 text-[hsl(0_0%_55%)] hover:text-[hsl(0_0%_20%)] transition-colors"
-                        title="Edit"
-                      >
+                      <Link to={`/admin/artworks/${artwork.id}`} className="p-1.5 text-[hsl(0_0%_55%)] hover:text-[hsl(0_0%_20%)] transition-colors" title="Edit">
                         <Pencil className="w-3.5 h-3.5" />
                       </Link>
-                      <button
-                        onClick={() => handleDelete(artwork.id, artwork.title)}
-                        disabled={deleting === artwork.id}
-                        className="p-1.5 text-[hsl(0_0%_55%)] hover:text-red-600 transition-colors disabled:opacity-50"
-                        title="Delete"
-                      >
+                      <button onClick={() => handleDelete(artwork.id, artwork.title)} disabled={deleting === artwork.id} className="p-1.5 text-[hsl(0_0%_55%)] hover:text-red-600 transition-colors disabled:opacity-50" title="Delete">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
