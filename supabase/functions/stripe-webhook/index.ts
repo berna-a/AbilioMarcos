@@ -34,19 +34,43 @@ serve(async (req) => {
     const artworkId = session.metadata?.artwork_id;
     const artworkTitle = session.metadata?.artwork_title;
 
-    // Insert order record
-    const { error: orderError } = await supabase.from("orders").insert({
-      artwork_id: artworkId || null,
-      artwork_title: artworkTitle || null,
-      stripe_session_id: session.id,
-      customer_email: session.customer_details?.email || null,
-      amount: session.amount_total ? session.amount_total / 100 : 0,
-      currency: session.currency || "eur",
-      payment_status: session.payment_status || "paid",
-    });
+    // Guard against duplicate sales
+    if (artworkId) {
+      const { data: artwork } = await supabase
+        .from("artworks")
+        .select("availability")
+        .eq("id", artworkId)
+        .single();
 
-    if (orderError) {
-      console.error("Failed to insert order:", orderError);
+      if (artwork?.availability === "sold") {
+        console.warn(`Artwork ${artworkId} already sold — skipping duplicate webhook`);
+        return new Response(JSON.stringify({ received: true, skipped: true }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    }
+
+    // Check for duplicate order by stripe_session_id
+    const { data: existingOrder } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("stripe_session_id", session.id)
+      .maybeSingle();
+
+    if (!existingOrder) {
+      const { error: orderError } = await supabase.from("orders").insert({
+        artwork_id: artworkId || null,
+        artwork_title: artworkTitle || null,
+        stripe_session_id: session.id,
+        customer_email: session.customer_details?.email || null,
+        amount: session.amount_total ? session.amount_total / 100 : 0,
+        currency: session.currency || "eur",
+        payment_status: session.payment_status || "paid",
+      });
+
+      if (orderError) {
+        console.error("Failed to insert order:", orderError);
+      }
     }
 
     // Mark artwork as sold
@@ -54,7 +78,8 @@ serve(async (req) => {
       const { error: updateError } = await supabase
         .from("artworks")
         .update({ availability: "sold", updated_at: new Date().toISOString() })
-        .eq("id", artworkId);
+        .eq("id", artworkId)
+        .eq("availability", "available");
 
       if (updateError) {
         console.error("Failed to update artwork availability:", updateError);

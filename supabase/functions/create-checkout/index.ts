@@ -46,7 +46,7 @@ serve(async (req) => {
     if (artwork.status !== "published" || artwork.availability !== "available") {
       return new Response(
         JSON.stringify({ error: "This artwork is not available for purchase" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
