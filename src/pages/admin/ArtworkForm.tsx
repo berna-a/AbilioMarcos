@@ -145,7 +145,6 @@ const ArtworkForm = () => {
 
   const priceNum = form.price ? parseFloat(form.price) : null;
   const derivedMode = getSalesMode(priceNum);
-  const showPurchaseUrl = derivedMode === 'direct_purchase' || derivedMode === 'hybrid';
 
   const modeLabels: Record<string, string> = {
     direct_purchase: 'Direct Purchase — visitors can buy online',
