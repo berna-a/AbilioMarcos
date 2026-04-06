@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getPublishedArtworks } from "@/lib/artworks";
-import { Artwork } from "@/lib/types";
+import { Artwork, MEDIUM_DISPLAY } from "@/lib/types";
 
 const SelectedWorks = () => {
   const [works, setWorks] = useState<Artwork[]>([]);
@@ -26,7 +26,7 @@ const SelectedWorks = () => {
       <div className="mt-4 md:mt-5 flex justify-between items-baseline gap-4">
         <div>
           <p className="font-serif text-base md:text-lg tracking-[0.01em] group-hover:text-foreground/70 transition-colors duration-300">{work.title}</p>
-          <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground mt-1.5">{work.medium}</p>
+          <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}</p>
         </div>
         <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground whitespace-nowrap">{work.year}</p>
       </div>
@@ -49,7 +49,6 @@ const SelectedWorks = () => {
             <p className="text-[13px] text-muted-foreground text-center py-20">No published works yet.</p>
           ) : (
             <>
-              {/* Cluster layout — adapts to however many works exist */}
               {works[0] && (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
                   <motion.div className="md:col-span-8" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6 }}>

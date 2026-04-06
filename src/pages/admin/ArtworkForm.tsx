@@ -4,30 +4,31 @@ import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { ArrowLeft, Upload, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SizeCategory, getSalesMode } from '@/lib/types';
 
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+
+const sizeLabels: Record<SizeCategory, string> = {
+  small: 'Small — 80 × 80 cm',
+  medium: 'Medium — 90 × 90 cm',
+  large: 'Large — 91 × 121 cm',
+  other: 'Other — custom dimensions',
+};
 
 const initialForm = {
   title: '',
   slug: '',
   year: new Date().getFullYear(),
-  medium: '',
-  dimensions: '',
   description: '',
   status: 'draft' as const,
   availability: 'available' as const,
-  price: '',
-  price_amount: '' as string,
-  price_display: '',
-  sales_mode: 'inquiry_only' as 'direct_purchase' | 'hybrid' | 'inquiry_only',
+  price: '' as string,
   purchase_url: '',
-  shipping_time: '',
-  shipping_notes: '',
-  certificate_included: true,
-  returns_policy_short: '',
+  size_category: 'medium' as SizeCategory,
+  custom_width_cm: '' as string,
+  custom_height_cm: '' as string,
   is_featured: false,
-  is_masterwork: false,
   primary_image_url: '',
   additional_images: [] as string[],
 };
@@ -53,22 +54,15 @@ const ArtworkForm = () => {
         title: data.title || '',
         slug: data.slug || '',
         year: data.year || new Date().getFullYear(),
-        medium: data.medium || '',
-        dimensions: data.dimensions || '',
         description: data.description || '',
         status: data.status || 'draft',
         availability: data.availability || 'available',
-        price: data.price || '',
-        price_amount: data.price_amount != null ? String(data.price_amount) : '',
-        price_display: data.price_display || '',
-        sales_mode: data.sales_mode || 'inquiry_only',
+        price: data.price != null ? String(data.price) : '',
         purchase_url: data.purchase_url || '',
-        shipping_time: data.shipping_time || '',
-        shipping_notes: data.shipping_notes || '',
-        certificate_included: data.certificate_included ?? true,
-        returns_policy_short: data.returns_policy_short || '',
+        size_category: data.size_category || 'medium',
+        custom_width_cm: data.custom_width_cm != null ? String(data.custom_width_cm) : '',
+        custom_height_cm: data.custom_height_cm != null ? String(data.custom_height_cm) : '',
         is_featured: data.is_featured || false,
-        is_masterwork: data.is_masterwork || false,
         primary_image_url: data.primary_image_url || '',
         additional_images: data.additional_images || [],
       });
@@ -116,26 +110,20 @@ const ArtworkForm = () => {
     if (!form.slug.trim()) { setError('Slug is required.'); return; }
 
     setSaving(true);
-    const payload = {
+    const priceNum = form.price ? parseFloat(form.price) : null;
+    const payload: Record<string, any> = {
       title: form.title.trim(),
       slug: form.slug.trim(),
       year: form.year,
-      medium: form.medium.trim(),
-      dimensions: form.dimensions.trim(),
       description: form.description.trim() || null,
       status: form.status,
       availability: form.availability,
-      price: form.price.trim() || null,
-      price_amount: form.price_amount ? parseFloat(form.price_amount) : null,
-      price_display: form.price_display.trim() || null,
-      sales_mode: form.sales_mode,
+      price: priceNum,
       purchase_url: form.purchase_url.trim() || null,
-      shipping_time: form.shipping_time.trim() || null,
-      shipping_notes: form.shipping_notes.trim() || null,
-      certificate_included: form.certificate_included,
-      returns_policy_short: form.returns_policy_short.trim() || null,
+      size_category: form.size_category,
+      custom_width_cm: form.size_category === 'other' && form.custom_width_cm ? parseFloat(form.custom_width_cm) : null,
+      custom_height_cm: form.size_category === 'other' && form.custom_height_cm ? parseFloat(form.custom_height_cm) : null,
       is_featured: form.is_featured,
-      is_masterwork: form.is_masterwork,
       primary_image_url: form.primary_image_url || null,
       additional_images: form.additional_images.length > 0 ? form.additional_images : null,
       updated_at: new Date().toISOString(),
@@ -155,7 +143,15 @@ const ArtworkForm = () => {
     return <AdminLayout><p className="text-[13px] text-[hsl(0_0%_50%)]">Loading…</p></AdminLayout>;
   }
 
-  const showPurchaseUrl = form.sales_mode === 'direct_purchase' || form.sales_mode === 'hybrid';
+  const priceNum = form.price ? parseFloat(form.price) : null;
+  const derivedMode = getSalesMode(priceNum);
+  const showPurchaseUrl = derivedMode === 'direct_purchase' || derivedMode === 'hybrid';
+
+  const modeLabels: Record<string, string> = {
+    direct_purchase: 'Direct Purchase — visitors can buy online',
+    hybrid: 'Hybrid — online purchase + inquiry option',
+    inquiry_only: 'Inquiry Only — collectors inquire privately',
+  };
 
   return (
     <AdminLayout>
@@ -180,18 +176,31 @@ const ArtworkForm = () => {
             </Field>
           </div>
 
-          {/* Year, Medium, Dimensions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Year & Size */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field label="Year">
               <input type="number" value={form.year} onChange={(e) => updateField('year', parseInt(e.target.value) || 0)} className="admin-input" />
             </Field>
-            <Field label="Medium">
-              <input type="text" value={form.medium} onChange={(e) => updateField('medium', e.target.value)} className="admin-input" placeholder="Oil on canvas" />
-            </Field>
-            <Field label="Dimensions">
-              <input type="text" value={form.dimensions} onChange={(e) => updateField('dimensions', e.target.value)} className="admin-input" placeholder="120 × 150 cm" />
+            <Field label="Size">
+              <select value={form.size_category} onChange={(e) => updateField('size_category', e.target.value)} className="admin-input">
+                {(Object.keys(sizeLabels) as SizeCategory[]).map((k) => (
+                  <option key={k} value={k}>{sizeLabels[k]}</option>
+                ))}
+              </select>
             </Field>
           </div>
+
+          {/* Custom dimensions */}
+          {form.size_category === 'other' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field label="Width (cm)">
+                <input type="number" value={form.custom_width_cm} onChange={(e) => updateField('custom_width_cm', e.target.value)} className="admin-input" placeholder="120" />
+              </Field>
+              <Field label="Height (cm)">
+                <input type="number" value={form.custom_height_cm} onChange={(e) => updateField('custom_height_cm', e.target.value)} className="admin-input" placeholder="150" />
+              </Field>
+            </div>
+          )}
 
           {/* Description */}
           <Field label="Description">
@@ -216,72 +225,32 @@ const ArtworkForm = () => {
             </Field>
           </div>
 
-          {/* Commerce section */}
+          {/* Pricing */}
           <div className="pt-4 border-t border-[hsl(0_0%_90%)]">
-            <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-4">Commerce</h3>
+            <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-4">Pricing</h3>
 
             <div className="space-y-4">
-              <Field label="Sales Mode" hint="Controls how this artwork is sold on the public site.">
-                <select value={form.sales_mode} onChange={(e) => updateField('sales_mode', e.target.value)} className="admin-input">
-                  <option value="inquiry_only">Inquiry Only — collectors inquire privately</option>
-                  <option value="hybrid">Hybrid — both online purchase and inquiry</option>
-                  <option value="direct_purchase">Direct Purchase — online checkout link</option>
-                </select>
+              <Field label="Price (€)" hint="Leave empty for 'Price on Request'. Sales mode is set automatically based on price.">
+                <input type="number" value={form.price} onChange={(e) => updateField('price', e.target.value)} className="admin-input" placeholder="2500" min="0" step="1" />
               </Field>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Field label="Price Amount" hint="Numeric value (e.g. 2500). Used for sorting and filtering.">
-                  <input type="text" value={form.price_amount} onChange={(e) => updateField('price_amount', e.target.value)} className="admin-input" placeholder="2500" />
-                </Field>
-                <Field label="Price Display" hint="What the visitor sees (e.g. '€2,500' or 'Price on Request').">
-                  <input type="text" value={form.price_display} onChange={(e) => updateField('price_display', e.target.value)} className="admin-input" placeholder="€2,500" />
-                </Field>
-              </div>
-
-              <Field label="Legacy Price" hint="Original price field — kept for backwards compatibility.">
-                <input type="text" value={form.price} onChange={(e) => updateField('price', e.target.value)} className="admin-input" placeholder="Price on Request" />
-              </Field>
+              <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
+                Sales mode: <span className="font-medium text-[hsl(0_0%_30%)]">{modeLabels[derivedMode]}</span>
+              </p>
 
               {showPurchaseUrl && (
-                <Field label="Purchase URL" hint="External checkout or payment link (Stripe, Gumroad, etc.)">
+                <Field label="Purchase URL" hint="External checkout link (Stripe, Gumroad, etc.)">
                   <input type="url" value={form.purchase_url} onChange={(e) => updateField('purchase_url', e.target.value)} className="admin-input" placeholder="https://checkout.stripe.com/…" />
                 </Field>
               )}
             </div>
           </div>
 
-          {/* Shipping & Trust */}
+          {/* Flag */}
           <div className="pt-4 border-t border-[hsl(0_0%_90%)]">
-            <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-4">Shipping & Trust</h3>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Field label="Shipping Time" hint="e.g. '5–10 business days'">
-                  <input type="text" value={form.shipping_time} onChange={(e) => updateField('shipping_time', e.target.value)} className="admin-input" placeholder="5–10 business days" />
-                </Field>
-                <Field label="Shipping Notes" hint="e.g. 'Ships worldwide, insured'">
-                  <input type="text" value={form.shipping_notes} onChange={(e) => updateField('shipping_notes', e.target.value)} className="admin-input" placeholder="Ships worldwide, insured" />
-                </Field>
-              </div>
-
-              <Field label="Returns Policy" hint="Short policy text shown on artwork page.">
-                <input type="text" value={form.returns_policy_short} onChange={(e) => updateField('returns_policy_short', e.target.value)} className="admin-input" placeholder="14-day return policy" />
-              </Field>
-
-              <label className="flex items-center gap-2 text-[13px] text-[hsl(0_0%_35%)] cursor-pointer">
-                <input type="checkbox" checked={form.certificate_included} onChange={(e) => updateField('certificate_included', e.target.checked)} className="accent-[hsl(0_0%_20%)]" />
-                Certificate of Authenticity included
-              </label>
-            </div>
-          </div>
-
-          {/* Flags */}
-          <div className="flex gap-6">
             <label className="flex items-center gap-2 text-[13px] text-[hsl(0_0%_35%)] cursor-pointer">
-              <input type="checkbox" checked={form.is_featured} onChange={(e) => updateField('is_featured', e.target.checked)} className="accent-[hsl(0_0%_20%)]" /> Featured
-            </label>
-            <label className="flex items-center gap-2 text-[13px] text-[hsl(0_0%_35%)] cursor-pointer">
-              <input type="checkbox" checked={form.is_masterwork} onChange={(e) => updateField('is_masterwork', e.target.checked)} className="accent-[hsl(0_0%_20%)]" /> Masterwork
+              <input type="checkbox" checked={form.is_featured} onChange={(e) => updateField('is_featured', e.target.checked)} className="accent-[hsl(0_0%_20%)]" />
+              Selected Work — show in Selected Works page
             </label>
           </div>
 

@@ -2,12 +2,12 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getFeaturedArtworks } from "@/lib/artworks";
-import { Artwork } from "@/lib/types";
+import { MEDIUM_DISPLAY } from "@/lib/types";
 
 const placeholderWorks = [
-  { id: "1", title: "Erosion of Light", year: 2024, medium: "Oil on canvas", slug: "erosion-of-light", gradient: "linear-gradient(145deg, hsl(15 35% 35%), hsl(30 45% 55%))", primary_image_url: null },
-  { id: "2", title: "Meridian", year: 2023, medium: "Acrylic & mixed media", slug: "meridian", gradient: "linear-gradient(145deg, hsl(200 25% 30%), hsl(180 20% 50%))", primary_image_url: null },
-  { id: "3", title: "Residual Warmth", year: 2024, medium: "Oil on linen", slug: "residual-warmth", gradient: "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))", primary_image_url: null },
+  { id: "1", title: "Erosion of Light", year: 2024, slug: "erosion-of-light", gradient: "linear-gradient(145deg, hsl(15 35% 35%), hsl(30 45% 55%))", primary_image_url: null },
+  { id: "2", title: "Meridian", year: 2023, slug: "meridian", gradient: "linear-gradient(145deg, hsl(200 25% 30%), hsl(180 20% 50%))", primary_image_url: null },
+  { id: "3", title: "Residual Warmth", year: 2024, slug: "residual-warmth", gradient: "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))", primary_image_url: null },
 ];
 
 const FeaturedWorks = () => {
@@ -54,7 +54,7 @@ const FeaturedWorks = () => {
               <div className="mt-5 flex justify-between items-baseline">
                 <div>
                   <p className="font-serif text-lg md:text-xl tracking-[0.01em]">{works[0].title}</p>
-                  <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{works[0].medium}</p>
+                  <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}</p>
                 </div>
                 <p className="text-[11px] tracking-[0.05em] text-muted-foreground">{works[0].year}</p>
               </div>
@@ -80,7 +80,7 @@ const FeaturedWorks = () => {
                 <div className="mt-5 flex justify-between items-baseline">
                   <div>
                     <p className="font-serif text-lg tracking-[0.01em]">{work.title}</p>
-                    <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{work.medium}</p>
+                    <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}</p>
                   </div>
                   <p className="text-[11px] tracking-[0.05em] text-muted-foreground">{work.year}</p>
                 </div>
