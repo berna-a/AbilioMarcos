@@ -58,7 +58,7 @@ const ArtworkForm = () => {
         status: data.status || 'draft',
         availability: data.availability || 'available',
         price: data.price != null ? String(data.price) : '',
-        purchase_url: data.purchase_url || '',
+        price: data.price != null ? String(data.price) : '',
         size_category: data.size_category || 'medium',
         custom_width_cm: data.custom_width_cm != null ? String(data.custom_width_cm) : '',
         custom_height_cm: data.custom_height_cm != null ? String(data.custom_height_cm) : '',
