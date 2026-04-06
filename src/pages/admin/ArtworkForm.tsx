@@ -119,7 +119,7 @@ const ArtworkForm = () => {
       status: form.status,
       availability: form.availability,
       price: priceNum,
-      purchase_url: form.purchase_url.trim() || null,
+      purchase_url: null,
       size_category: form.size_category,
       custom_width_cm: form.size_category === 'other' && form.custom_width_cm ? parseFloat(form.custom_width_cm) : null,
       custom_height_cm: form.size_category === 'other' && form.custom_height_cm ? parseFloat(form.custom_height_cm) : null,
