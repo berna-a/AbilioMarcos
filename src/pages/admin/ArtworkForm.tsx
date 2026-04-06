@@ -24,7 +24,7 @@ const initialForm = {
   status: 'draft' as const,
   availability: 'available' as const,
   price: '' as string,
-  purchase_url: '',
+  price: '' as string,
   size_category: 'medium' as SizeCategory,
   custom_width_cm: '' as string,
   custom_height_cm: '' as string,
