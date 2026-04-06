@@ -147,8 +147,8 @@ const ArtworkForm = () => {
   const derivedMode = getSalesMode(priceNum);
 
   const modeLabels: Record<string, string> = {
-    direct_purchase: 'Direct Purchase — visitors can buy online',
-    hybrid: 'Hybrid — online purchase + inquiry option',
+    direct_purchase: 'Direct Purchase — Stripe checkout enabled',
+    hybrid: 'Hybrid — Stripe checkout + inquiry option',
     inquiry_only: 'Inquiry Only — collectors inquire privately',
   };
 
