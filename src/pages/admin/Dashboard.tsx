@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { Link } from 'react-router-dom';
 
 interface Stats {
   total: number;
@@ -9,21 +10,22 @@ interface Stats {
   archived: number;
   available: number;
   sold: number;
+  inquiriesNew: number;
+  inquiriesTotal: number;
 }
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<Stats>({ total: 0, published: 0, draft: 0, archived: 0, available: 0, sold: 0 });
+  const [stats, setStats] = useState<Stats>({ total: 0, published: 0, draft: 0, archived: 0, available: 0, sold: 0, inquiriesNew: 0, inquiriesTotal: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const { data, error } = await supabase.from('artworks').select('status, availability');
-      if (error) {
-        console.error('Error fetching stats:', error);
-        setLoading(false);
-        return;
-      }
-      const rows = data || [];
+      const [artRes, inqRes] = await Promise.all([
+        supabase.from('artworks').select('status, availability'),
+        supabase.from('inquiries').select('status'),
+      ]);
+      const rows = artRes.data || [];
+      const inqs = inqRes.data || [];
       setStats({
         total: rows.length,
         published: rows.filter(r => r.status === 'published').length,
@@ -31,6 +33,8 @@ const Dashboard = () => {
         archived: rows.filter(r => r.status === 'archived').length,
         available: rows.filter(r => r.availability === 'available').length,
         sold: rows.filter(r => r.availability === 'sold').length,
+        inquiriesTotal: inqs.length,
+        inquiriesNew: inqs.filter(i => i.status === 'new').length,
       });
       setLoading(false);
     };
@@ -41,9 +45,9 @@ const Dashboard = () => {
     { label: 'Total Artworks', value: stats.total },
     { label: 'Published', value: stats.published },
     { label: 'Drafts', value: stats.draft },
-    { label: 'Archived', value: stats.archived },
     { label: 'Available', value: stats.available },
     { label: 'Sold', value: stats.sold },
+    { label: 'New Inquiries', value: stats.inquiriesNew },
   ];
 
   return (
@@ -66,15 +70,18 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Placeholder sections */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border border-[hsl(0_0%_90%)] p-6">
+        <Link to="/admin/inquiries" className="bg-white border border-[hsl(0_0%_90%)] p-6 hover:border-[hsl(0_0%_70%)] transition-colors">
           <h2 className="text-[13px] font-medium text-[hsl(0_0%_25%)] mb-3">Recent Inquiries</h2>
-          <p className="text-[12px] text-[hsl(0_0%_55%)]">No inquiries yet. This section will show recent inquiry submissions.</p>
-        </div>
+          <p className="text-[12px] text-[hsl(0_0%_55%)]">
+            {stats.inquiriesTotal > 0
+              ? `${stats.inquiriesTotal} total · ${stats.inquiriesNew} new`
+              : 'No inquiries yet.'}
+          </p>
+        </Link>
         <div className="bg-white border border-[hsl(0_0%_90%)] p-6">
           <h2 className="text-[13px] font-medium text-[hsl(0_0%_25%)] mb-3">Commission Requests</h2>
-          <p className="text-[12px] text-[hsl(0_0%_55%)]">No commission requests yet. This section will show recent commission submissions.</p>
+          <p className="text-[12px] text-[hsl(0_0%_55%)]">No commission requests yet.</p>
         </div>
       </div>
     </AdminLayout>
