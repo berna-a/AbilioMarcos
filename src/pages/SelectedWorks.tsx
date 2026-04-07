@@ -2,7 +2,7 @@ import Layout from "@/components/layout/Layout";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getPublishedArtworks } from "@/lib/artworks";
+import { getSelectedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY } from "@/lib/types";
 
 const SelectedWorks = () => {
@@ -10,7 +10,7 @@ const SelectedWorks = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPublishedArtworks().then((data) => {
+    getSelectedArtworks().then((data) => {
       setWorks(data);
       setLoading(false);
     });

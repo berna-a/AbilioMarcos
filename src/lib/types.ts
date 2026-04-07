@@ -13,6 +13,7 @@ export interface Artwork {
   size_category: SizeCategory;
   custom_width_cm: number | null;
   custom_height_cm: number | null;
+  reference: string | null;
   is_featured: boolean;
   primary_image_url: string | null;
   additional_images: string[] | null;

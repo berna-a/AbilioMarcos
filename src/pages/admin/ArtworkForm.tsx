@@ -21,12 +21,13 @@ const initialForm = {
   slug: '',
   year: new Date().getFullYear(),
   description: '',
-  status: 'draft' as const,
+  status: 'published' as const,
   availability: 'available' as const,
   price: '' as string,
   size_category: 'medium' as SizeCategory,
   custom_width_cm: '' as string,
   custom_height_cm: '' as string,
+  reference: '',
   is_featured: false,
   primary_image_url: '',
   additional_images: [] as string[],
@@ -60,6 +61,7 @@ const ArtworkForm = () => {
         size_category: data.size_category || 'medium',
         custom_width_cm: data.custom_width_cm != null ? String(data.custom_width_cm) : '',
         custom_height_cm: data.custom_height_cm != null ? String(data.custom_height_cm) : '',
+        reference: data.reference || '',
         is_featured: data.is_featured || false,
         primary_image_url: data.primary_image_url || '',
         additional_images: data.additional_images || [],
@@ -121,6 +123,7 @@ const ArtworkForm = () => {
       size_category: form.size_category,
       custom_width_cm: form.size_category === 'other' && form.custom_width_cm ? parseFloat(form.custom_width_cm) : null,
       custom_height_cm: form.size_category === 'other' && form.custom_height_cm ? parseFloat(form.custom_height_cm) : null,
+      reference: form.reference.trim() || null,
       is_featured: form.is_featured,
       primary_image_url: form.primary_image_url || null,
       additional_images: form.additional_images.length > 0 ? form.additional_images : null,
@@ -173,10 +176,13 @@ const ArtworkForm = () => {
             </Field>
           </div>
 
-          {/* Year & Size */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Year, Ref & Size */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Field label="Year">
               <input type="number" value={form.year} onChange={(e) => updateField('year', parseInt(e.target.value) || 0)} className="admin-input" />
+            </Field>
+            <Field label="Ref." hint="Internal reference code">
+              <input type="text" value={form.reference} onChange={(e) => updateField('reference', e.target.value)} className="admin-input" placeholder="AM-2024-001" />
             </Field>
             <Field label="Size">
               <select value={form.size_category} onChange={(e) => updateField('size_category', e.target.value)} className="admin-input">

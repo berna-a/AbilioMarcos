@@ -31,6 +31,21 @@ export const getFeaturedArtworks = async (): Promise<Artwork[]> => {
   return data || [];
 };
 
+export const getSelectedArtworks = async (): Promise<Artwork[]> => {
+  const { data, error } = await supabase
+    .from('artworks')
+    .select('*')
+    .eq('status', 'published')
+    .eq('is_featured', true)
+    .order('year', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching selected artworks:', error);
+    return [];
+  }
+  return data || [];
+};
+
 export const getArtworkBySlug = async (slug: string): Promise<Artwork | null> => {
   const { data, error } = await supabase
     .from('artworks')
