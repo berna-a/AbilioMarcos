@@ -16,6 +16,7 @@ import Collections from "./pages/Collections";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import NotFound from "./pages/NotFound";
+import LegalPage from "./pages/legal/LegalPage";
 import AdminLogin from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminArtworks from "./pages/admin/Artworks";
