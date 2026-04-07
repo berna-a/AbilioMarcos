@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useT } from "@/i18n";
+import { supabase } from "@/lib/supabase";
 
 interface CollectorSignupProps {
   variant?: "inline" | "footer";
@@ -8,12 +9,20 @@ interface CollectorSignupProps {
 const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const t = useT();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || submitting) return;
+    setSubmitting(true);
+    try {
+      await supabase.from('newsletter_subscribers').insert([{ email: email.trim().toLowerCase() }]);
+    } catch {
+      // still show success — don't expose internals
+    }
     setSubmitted(true);
+    setSubmitting(false);
   };
 
   if (submitted) {
@@ -36,7 +45,7 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
         </p>
         <form onSubmit={handleSubmit} className="flex gap-0 border border-foreground/20">
           <input type="email" placeholder={t.collector.emailPlaceholder} value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 px-4 py-3.5 bg-transparent text-sm placeholder:text-muted-foreground/60 focus:outline-none" required />
-          <button type="submit" className="px-6 py-3.5 bg-foreground text-primary-foreground text-[10px] tracking-[0.2em] uppercase hover:bg-gallery-charcoal transition-colors">
+          <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-foreground text-primary-foreground text-[10px] tracking-[0.2em] uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50">
             {t.collector.subscribe}
           </button>
         </form>
@@ -51,7 +60,7 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
       <p className="text-[13px] text-muted-foreground mb-8 leading-[1.8] max-w-sm">{t.collector.description}</p>
       <form onSubmit={handleSubmit} className="flex gap-0 border border-foreground/20 max-w-md">
         <input type="email" placeholder={t.collector.emailPlaceholder} value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 px-4 py-3.5 bg-transparent text-sm placeholder:text-muted-foreground/60 focus:outline-none" required />
-        <button type="submit" className="px-6 py-3.5 bg-foreground text-primary-foreground text-[10px] tracking-[0.2em] uppercase hover:bg-gallery-charcoal transition-colors">
+        <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-foreground text-primary-foreground text-[10px] tracking-[0.2em] uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50">
           {t.collector.join}
         </button>
       </form>
