@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
-import { Artwork, MEDIUM_DISPLAY } from "@/lib/types";
+import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
 
 const FilterSection = ({
   title, options, selected, onToggle,
@@ -164,7 +164,12 @@ const AllWorks = () => {
                           <div className="w-full aspect-[4/5] bg-muted transition-opacity duration-500 group-hover:opacity-90" />
                         )}
                         <div className="mt-3.5">
-                          <p className="font-serif text-sm md:text-base tracking-[0.01em] group-hover:text-foreground/70 transition-colors duration-300">{work.title}</p>
+                          <div className="flex justify-between items-baseline gap-3">
+                            <p className="font-serif text-sm md:text-base tracking-[0.01em] group-hover:text-foreground/70 transition-colors duration-300">{work.title}</p>
+                            {formatPrice(work.price) && (
+                              <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground whitespace-nowrap">{formatPrice(work.price)}</p>
+                            )}
+                          </div>
                           <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}, {work.year}</p>
                         </div>
                       </Link>

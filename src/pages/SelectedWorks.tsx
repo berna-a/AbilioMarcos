@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getSelectedArtworks } from "@/lib/artworks";
-import { Artwork, MEDIUM_DISPLAY } from "@/lib/types";
+import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
 
 const SelectedWorks = () => {
   const [works, setWorks] = useState<Artwork[]>([]);
@@ -26,9 +26,11 @@ const SelectedWorks = () => {
       <div className="mt-4 md:mt-5 flex justify-between items-baseline gap-4">
         <div>
           <p className="font-serif text-base md:text-lg tracking-[0.01em] group-hover:text-foreground/70 transition-colors duration-300">{work.title}</p>
-          <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}</p>
+          <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}, {work.year}</p>
         </div>
-        <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground whitespace-nowrap">{work.year}</p>
+        {formatPrice(work.price) && (
+          <p className="text-[10px] md:text-[11px] tracking-[0.08em] text-muted-foreground/70 whitespace-nowrap font-light">{formatPrice(work.price)}</p>
+        )}
       </div>
     </Link>
   );
