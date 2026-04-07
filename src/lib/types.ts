@@ -32,10 +32,10 @@ export const getSalesMode = (price: number | null): 'direct_purchase' | 'hybrid'
   return 'inquiry_only';
 };
 
-/** Format price for display */
+/** Format price for display — European style: 1.500 € */
 export const formatPrice = (price: number | null): string | null => {
   if (price == null) return null;
-  return `€${price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  return `${price.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} €`;
 };
 
 /** Get display dimensions from size category */
