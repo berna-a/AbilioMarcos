@@ -68,6 +68,19 @@ export interface Translations {
     available: string;
     sold: string;
     notForSale: string;
+    size: string;
+    small: string;
+    medium: string;
+    large: string;
+    priceRange: string;
+    under1000: string;
+    from1000to3000: string;
+    above3000: string;
+    priceOnRequest: string;
+    sort: string;
+    sortNewest: string;
+    sortPriceLow: string;
+    sortPriceHigh: string;
   };
   // Artwork detail
   artwork: {
@@ -221,5 +234,24 @@ export interface Translations {
     copyright: string;
     artworksCopyright: string;
     madeBy: string;
+    legal: string;
+    followUs: string;
+    privacyPolicy: string;
+    cookiePolicy: string;
+    termsConditions: string;
+    disputeResolution: string;
+    complaintsBook: string;
+  };
+  // Legal pages
+  legal: {
+    backToHome: string;
+    lastUpdated: string;
+    placeholderIntro: string;
+    placeholderContent: string;
+    privacyTitle: string;
+    cookiesTitle: string;
+    termsTitle: string;
+    disputesTitle: string;
+    complaintsTitle: string;
   };
 }

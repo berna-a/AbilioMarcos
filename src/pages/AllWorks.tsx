@@ -7,6 +7,8 @@ import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
 import { useT } from "@/i18n";
 
+type SortOption = 'newest' | 'price_asc' | 'price_desc';
+
 const FilterSection = ({
   title, options, selected, onToggle,
 }: {
@@ -42,7 +44,8 @@ const FilterSection = ({
 const AllWorks = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<Record<string, string[]>>({ availability: [] });
+  const [filters, setFilters] = useState<Record<string, string[]>>({ availability: [], size: [], price: [] });
+  const [sort, setSort] = useState<SortOption>('newest');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const t = useT();
 
@@ -60,15 +63,36 @@ const AllWorks = () => {
     }));
   };
 
-  const clearAll = () => setFilters({ availability: [] });
+  const clearAll = () => setFilters({ availability: [], size: [], price: [] });
   const activeCount = Object.values(filters).flat().length;
 
   const filtered = useMemo(() => {
-    return artworks.filter((a) => {
+    let result = artworks.filter((a) => {
       if (filters.availability.length && !filters.availability.includes(a.availability)) return false;
+      if (filters.size.length && !filters.size.includes(a.size_category)) return false;
+      if (filters.price.length) {
+        const match = filters.price.some((p) => {
+          if (p === 'under1000') return a.price != null && a.price < 1000;
+          if (p === '1000to3000') return a.price != null && a.price >= 1000 && a.price <= 3000;
+          if (p === 'above3000') return a.price != null && a.price > 3000;
+          if (p === 'on_request') return a.price == null;
+          return true;
+        });
+        if (!match) return false;
+      }
       return true;
     });
-  }, [artworks, filters]);
+
+    // Sort
+    result = [...result].sort((a, b) => {
+      if (sort === 'newest') return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      if (sort === 'price_asc') return (a.price ?? Infinity) - (b.price ?? Infinity);
+      if (sort === 'price_desc') return (b.price ?? -1) - (a.price ?? -1);
+      return 0;
+    });
+
+    return result;
+  }, [artworks, filters, sort]);
 
   const filterContent = (
     <div>
@@ -88,8 +112,35 @@ const AllWorks = () => {
         selected={filters.availability}
         onToggle={(v) => toggleFilter("availability", v)}
       />
+      <FilterSection
+        title={t.allWorks.size}
+        options={[
+          { label: t.allWorks.small, value: "small" },
+          { label: t.allWorks.medium, value: "medium" },
+          { label: t.allWorks.large, value: "large" },
+        ]}
+        selected={filters.size}
+        onToggle={(v) => toggleFilter("size", v)}
+      />
+      <FilterSection
+        title={t.allWorks.priceRange}
+        options={[
+          { label: t.allWorks.under1000, value: "under1000" },
+          { label: t.allWorks.from1000to3000, value: "1000to3000" },
+          { label: t.allWorks.above3000, value: "above3000" },
+          { label: t.allWorks.priceOnRequest, value: "on_request" },
+        ]}
+        selected={filters.price}
+        onToggle={(v) => toggleFilter("price", v)}
+      />
     </div>
   );
+
+  const sortOptions: { label: string; value: SortOption }[] = [
+    { label: t.allWorks.sortNewest, value: 'newest' },
+    { label: t.allWorks.sortPriceLow, value: 'price_asc' },
+    { label: t.allWorks.sortPriceHigh, value: 'price_desc' },
+  ];
 
   return (
     <Layout>
@@ -134,10 +185,22 @@ const AllWorks = () => {
             </aside>
 
             <div className="flex-1 min-w-0">
-              <div className="mb-8 flex items-baseline justify-between">
+              <div className="mb-8 flex items-center justify-between">
                 <p className="text-[10px] tracking-[0.15em] text-muted-foreground">
                   {loading ? t.allWorks.loading : `${filtered.length} ${filtered.length === 1 ? t.allWorks.work : t.allWorks.works}`}
                 </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] tracking-[0.15em] text-muted-foreground hidden sm:inline">{t.allWorks.sort}</span>
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value as SortOption)}
+                    className="text-[10px] tracking-[0.05em] text-muted-foreground bg-transparent border border-border px-3 py-1.5 focus:outline-none cursor-pointer hover:text-foreground transition-colors"
+                  >
+                    {sortOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {!loading && filtered.length === 0 ? (
