@@ -8,6 +8,7 @@ import { Artwork, getDimensions, formatPrice, getSalesMode, MEDIUM_DISPLAY } fro
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
+import { useT } from "@/i18n";
 
 const ArtworkDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -16,6 +17,7 @@ const ArtworkDetail = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [inquiryOpen, setInquiryOpen] = useState(false);
+  const t = useT();
 
   useEffect(() => {
     if (!slug) return;
@@ -29,23 +31,23 @@ const ArtworkDetail = () => {
   }, [slug]);
 
   if (loading) {
-    return <Layout><div className="pt-40 pb-40 text-center"><p className="text-[13px] text-muted-foreground">Loading…</p></div></Layout>;
+    return <Layout><div className="pt-40 pb-40 text-center"><p className="text-[13px] text-muted-foreground">{t.artwork.loading}</p></div></Layout>;
   }
 
   if (notFound || !artwork) {
     return (
       <Layout>
         <div className="pt-40 pb-40 text-center">
-          <p className="text-muted-foreground mb-4">Artwork not found.</p>
-          <Link to="/works" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors">← Back to All Works</Link>
+          <p className="text-muted-foreground mb-4">{t.artwork.notFound}</p>
+          <Link to="/works" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors">{t.artwork.backToWorks}</Link>
         </div>
       </Layout>
     );
   }
 
   const statusDisplay: Record<string, { label: string; className: string }> = {
-    available: { label: "Available", className: "text-foreground" },
-    sold: { label: "Sold", className: "text-muted-foreground" },
+    available: { label: t.artwork.available, className: "text-foreground" },
+    sold: { label: t.artwork.soldStatus, className: "text-muted-foreground" },
     not_for_sale: { label: "", className: "" },
   };
 
@@ -60,14 +62,12 @@ const ArtworkDetail = () => {
       <div className="pt-28 md:pt-40 pb-24 md:pb-40">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
-          {/* Back link */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-14 md:mb-24">
             <Link to="/works" className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">
-              <ArrowLeft className="w-3 h-3" /> Back to Archive
+              <ArrowLeft className="w-3 h-3" /> {t.artwork.backToArchive}
             </Link>
           </motion.div>
 
-          {/* Primary image + Information */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 mb-32 md:mb-48">
             <motion.div className="lg:col-span-7" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
               {artwork.primary_image_url ? (
@@ -78,37 +78,28 @@ const ArtworkDetail = () => {
             </motion.div>
 
             <motion.div className="lg:col-span-5 flex flex-col lg:py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
-              <h1 className="font-serif text-[3rem] md:text-[3.5rem] lg:text-[3.75rem] font-light text-foreground leading-[1.02] mb-2">
-                {artwork.title}
-              </h1>
-              <p className="font-serif text-xl md:text-2xl text-muted-foreground italic mb-14 lg:mb-16">
-                {artwork.year}
-              </p>
+              <h1 className="font-serif text-[3rem] md:text-[3.5rem] lg:text-[3.75rem] font-light text-foreground leading-[1.02] mb-2">{artwork.title}</h1>
+              <p className="font-serif text-xl md:text-2xl text-muted-foreground italic mb-14 lg:mb-16">{artwork.year}</p>
 
-              {/* Metadata */}
               <div className="space-y-6 mb-14 lg:mb-16">
-                <MetadataLine label="Medium" value={MEDIUM_DISPLAY} />
-                {dimensions && <MetadataLine label="Dimensions" value={dimensions} />}
-                {status.label && <MetadataLine label="Status" value={status.label} valueClassName={status.className} />}
+                <MetadataLine label={t.artwork.medium} value={MEDIUM_DISPLAY} />
+                {dimensions && <MetadataLine label={t.artwork.dimensions} value={dimensions} />}
+                {status.label && <MetadataLine label={t.artwork.status} value={status.label} valueClassName={status.className} />}
                 {displayPrice && salesMode !== 'inquiry_only' && (
-                  <MetadataLine label="Price" value={displayPrice} />
+                  <MetadataLine label={t.artwork.price} value={displayPrice} />
                 )}
               </div>
 
               <div className="h-px bg-border mb-14 lg:mb-16" />
 
-              {/* Commerce CTAs */}
               <ArtworkCommerceCTA artwork={artwork} onInquiryClick={() => setInquiryOpen(true)} />
-
-              {/* Trust info */}
               <ArtworkTrustInfo />
             </motion.div>
           </div>
 
-          {/* Additional images */}
           {additionalImages.length > 0 && (
             <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
-              <SectionLabel>Detail Views</SectionLabel>
+              <SectionLabel>{t.artwork.detailViews}</SectionLabel>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {additionalImages.map((url, i) => (
                   <img key={i} src={url} alt={`${artwork.title} detail ${i + 1}`} className="w-full aspect-[5/4] object-cover" />
@@ -117,21 +108,19 @@ const ArtworkDetail = () => {
             </motion.section>
           )}
 
-          {/* Description */}
           {artwork.description && (
             <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.7 }}>
               <div className="max-w-2xl">
-                <SectionLabel className="mb-10 md:mb-12">Artist's Note</SectionLabel>
+                <SectionLabel className="mb-10 md:mb-12">{t.artwork.artistNote}</SectionLabel>
                 <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground/80 tracking-[-0.005em]">{artwork.description}</p>
               </div>
             </motion.section>
           )}
 
-          {/* Related works */}
           {related.length > 0 && (
             <motion.section initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
               <div className="h-px bg-border mb-20 md:mb-24" />
-              <SectionLabel className="mb-14 md:mb-16">Further Viewing</SectionLabel>
+              <SectionLabel className="mb-14 md:mb-16">{t.artwork.furtherViewing}</SectionLabel>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
                 {related.slice(0, 3).map((rel) => (
                   <Link key={rel.id} to={`/artwork/${rel.slug}`} className="group">
@@ -151,12 +140,7 @@ const ArtworkDetail = () => {
         </div>
       </div>
 
-      <InquiryModal
-        open={inquiryOpen}
-        onClose={() => setInquiryOpen(false)}
-        artworkId={artwork.id}
-        artworkTitle={artwork.title}
-      />
+      <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} artworkId={artwork.id} artworkTitle={artwork.title} />
     </Layout>
   );
 };

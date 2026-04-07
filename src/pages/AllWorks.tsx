@@ -5,6 +5,7 @@ import { useState, useMemo, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
+import { useT } from "@/i18n";
 
 const FilterSection = ({
   title, options, selected, onToggle,
@@ -26,11 +27,7 @@ const FilterSection = ({
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
             <div className="mt-3 space-y-1">
               {options.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => onToggle(opt.value)}
-                  className={`block w-full text-left py-1 text-[11px] tracking-[0.03em] transition-colors duration-300 ${selected.includes(opt.value) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"}`}
-                >
+                <button key={opt.value} onClick={() => onToggle(opt.value)} className={`block w-full text-left py-1 text-[11px] tracking-[0.03em] transition-colors duration-300 ${selected.includes(opt.value) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"}`}>
                   {opt.label}
                 </button>
               ))}
@@ -47,6 +44,7 @@ const AllWorks = () => {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<Record<string, string[]>>({ availability: [] });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const t = useT();
 
   useEffect(() => {
     getPublishedArtworks().then((data) => {
@@ -75,17 +73,17 @@ const AllWorks = () => {
   const filterContent = (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Filter</span>
+        <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">{t.allWorks.filter}</span>
         {activeCount > 0 && (
-          <button onClick={clearAll} className="text-[10px] tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors duration-300 underline underline-offset-2">Clear all</button>
+          <button onClick={clearAll} className="text-[10px] tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors duration-300 underline underline-offset-2">{t.allWorks.clearAll}</button>
         )}
       </div>
       <FilterSection
-        title="Availability"
+        title={t.allWorks.availability}
         options={[
-          { label: "Available", value: "available" },
-          { label: "Sold", value: "sold" },
-          { label: "Not for Sale", value: "not_for_sale" },
+          { label: t.allWorks.available, value: "available" },
+          { label: t.allWorks.sold, value: "sold" },
+          { label: t.allWorks.notForSale, value: "not_for_sale" },
         ]}
         selected={filters.availability}
         onToggle={(v) => toggleFilter("availability", v)}
@@ -98,35 +96,31 @@ const AllWorks = () => {
       <div className="pt-28 md:pt-36 pb-24 md:pb-36 px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-12 md:mb-16">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">Complete Archive</p>
-            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light">All Works</h1>
-            <p className="mt-4 text-[11px] md:text-xs tracking-[0.04em] text-muted-foreground max-w-md">
-              A comprehensive view of the body of work — oil paintings spanning two decades.
-            </p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">{t.allWorks.label}</p>
+            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light">{t.allWorks.title}</h1>
+            <p className="mt-4 text-[11px] md:text-xs tracking-[0.04em] text-muted-foreground max-w-md">{t.allWorks.description}</p>
           </motion.div>
 
-          {/* Mobile filter toggle */}
           <div className="md:hidden mb-8">
             <button onClick={() => setMobileFiltersOpen(true)} className="flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 border border-border px-4 py-2.5">
               <SlidersHorizontal className="w-3 h-3" />
-              Filter{activeCount > 0 && ` (${activeCount})`}
+              {t.allWorks.filter}{activeCount > 0 && ` (${activeCount})`}
             </button>
           </div>
 
-          {/* Mobile filter drawer */}
           <AnimatePresence>
             {mobileFiltersOpen && (
               <>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-foreground/20 z-40 md:hidden" onClick={() => setMobileFiltersOpen(false)} />
                 <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "tween", duration: 0.35 }} className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border max-h-[80vh] overflow-y-auto px-6 py-6 md:hidden">
                   <div className="flex items-center justify-between mb-6">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Filter</span>
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">{t.allWorks.filter}</span>
                     <button onClick={() => setMobileFiltersOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors"><X className="w-4 h-4" /></button>
                   </div>
                   {filterContent}
                   <div className="mt-6 pt-4 border-t border-border">
                     <button onClick={() => setMobileFiltersOpen(false)} className="w-full text-center text-[10px] tracking-[0.2em] uppercase bg-foreground text-background py-3 hover:bg-foreground/90 transition-colors duration-300">
-                      Show {filtered.length} {filtered.length === 1 ? "work" : "works"}
+                      {t.allWorks.show} {filtered.length} {filtered.length === 1 ? t.allWorks.work : t.allWorks.works}
                     </button>
                   </div>
                 </motion.div>
@@ -142,15 +136,15 @@ const AllWorks = () => {
             <div className="flex-1 min-w-0">
               <div className="mb-8 flex items-baseline justify-between">
                 <p className="text-[10px] tracking-[0.15em] text-muted-foreground">
-                  {loading ? "Loading…" : `${filtered.length} ${filtered.length === 1 ? "work" : "works"}`}
+                  {loading ? t.allWorks.loading : `${filtered.length} ${filtered.length === 1 ? t.allWorks.work : t.allWorks.works}`}
                 </p>
               </div>
 
               {!loading && filtered.length === 0 ? (
                 <div className="py-20 text-center">
-                  <p className="text-sm text-muted-foreground">No works match the current filters.</p>
+                  <p className="text-sm text-muted-foreground">{t.allWorks.noMatch}</p>
                   {activeCount > 0 && (
-                    <button onClick={clearAll} className="mt-4 text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors">Clear filters</button>
+                    <button onClick={clearAll} className="mt-4 text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors">{t.allWorks.clearFilters}</button>
                   )}
                 </div>
               ) : (

@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getSelectedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
+import { useT } from "@/i18n";
 
 const SelectedWorks = () => {
   const [works, setWorks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useT();
 
   useEffect(() => {
     getSelectedArtworks().then((data) => {
@@ -40,15 +42,15 @@ const SelectedWorks = () => {
       <div className="pt-28 md:pt-36 pb-24 md:pb-36 px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-20 md:mb-28 max-w-2xl">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">Curated Selection</p>
-            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light leading-[1.15]">Selected Works</h1>
-            <p className="mt-6 text-sm md:text-[15px] text-muted-foreground leading-relaxed max-w-lg font-light">A curated body of recent and significant works, tracing the evolving concerns of the practice.</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">{t.selectedWorks.label}</p>
+            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light leading-[1.15]">{t.selectedWorks.title}</h1>
+            <p className="mt-6 text-sm md:text-[15px] text-muted-foreground leading-relaxed max-w-lg font-light">{t.selectedWorks.description}</p>
           </motion.div>
 
           {loading ? (
-            <p className="text-[13px] text-muted-foreground text-center py-20">Loading works…</p>
+            <p className="text-[13px] text-muted-foreground text-center py-20">{t.selectedWorks.loading}</p>
           ) : works.length === 0 ? (
-            <p className="text-[13px] text-muted-foreground text-center py-20">No published works yet.</p>
+            <p className="text-[13px] text-muted-foreground text-center py-20">{t.selectedWorks.empty}</p>
           ) : (
             <>
               {works[0] && (
@@ -107,7 +109,7 @@ const SelectedWorks = () => {
 
           <motion.div className="mt-24 md:mt-36 text-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
             <Link to="/works" className="inline-block text-[10px] tracking-[0.25em] uppercase text-foreground/50 hover:text-foreground border-b border-foreground/15 hover:border-foreground/40 pb-1 transition-all duration-300">
-              View All Works
+              {t.selectedWorks.viewAll}
             </Link>
           </motion.div>
         </div>
