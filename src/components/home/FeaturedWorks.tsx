@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getFeaturedArtworks } from "@/lib/artworks";
 import { MEDIUM_DISPLAY } from "@/lib/types";
+import { useT } from "@/i18n";
 
 const placeholderWorks = [
   { id: "1", title: "Erosion of Light", year: 2024, slug: "erosion-of-light", gradient: "linear-gradient(145deg, hsl(15 35% 35%), hsl(30 45% 55%))", primary_image_url: null },
@@ -12,6 +13,7 @@ const placeholderWorks = [
 
 const FeaturedWorks = () => {
   const [works, setWorks] = useState<any[]>(placeholderWorks);
+  const t = useT();
 
   useEffect(() => {
     getFeaturedArtworks().then((data) => {
@@ -32,19 +34,13 @@ const FeaturedWorks = () => {
         transition={{ duration: 0.7 }}
         className="mb-14 md:mb-18"
       >
-        <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">Featured</p>
-        <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-light leading-tight">Selected Works</h2>
+        <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">{t.featured.label}</p>
+        <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-light leading-tight">{t.featured.title}</h2>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10">
         {works[0] && (
-          <motion.div
-            className="md:col-span-7"
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.7 }}
-          >
+          <motion.div className="md:col-span-7" initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7 }}>
             <Link to={getLink(works[0])} className="group block">
               {getImage(works[0]) ? (
                 <img src={getImage(works[0])} alt={works[0].title} className="aspect-[4/5] w-full object-cover" />
@@ -64,13 +60,7 @@ const FeaturedWorks = () => {
 
         <div className="md:col-span-5 flex flex-col gap-8 md:gap-10">
           {works.slice(1).map((work, i) => (
-            <motion.div
-              key={work.id}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}
-            >
+            <motion.div key={work.id} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}>
               <Link to={getLink(work)} className="group block">
                 {getImage(work) ? (
                   <img src={getImage(work)} alt={work.title} className="aspect-[3/2] w-full object-cover" />
@@ -90,18 +80,9 @@ const FeaturedWorks = () => {
         </div>
       </div>
 
-      <motion.div
-        className="mt-20 md:mt-24 text-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, delay: 0.2 }}
-      >
-        <Link
-          to="/selected-works"
-          className="inline-block text-[11px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300"
-        >
-          View Selected Works
+      <motion.div className="mt-20 md:mt-24 text-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.2 }}>
+        <Link to="/selected-works" className="inline-block text-[11px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300">
+          {t.featured.viewSelected}
         </Link>
       </motion.div>
     </section>
