@@ -1,5 +1,6 @@
 import Layout from "@/components/layout/Layout";
 import { motion } from "framer-motion";
+import { useT } from "@/i18n";
 
 const exhibitions = [
   { year: "2024", entries: [
@@ -22,6 +23,8 @@ const education = [
 ];
 
 const CV = () => {
+  const t = useT();
+
   return (
     <Layout>
       <div className="pt-24 md:pt-32 pb-20 md:pb-30 px-6 md:px-10">
@@ -31,7 +34,7 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">Curriculum Vitae</p>
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">{t.cv.label}</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light mb-16">Abílio Marcos</h1>
           </motion.div>
 
@@ -42,8 +45,8 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-gallery-border">
-              Selected Exhibitions
+            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-border">
+              {t.cv.selectedExhibitions}
             </h2>
 
             <div className="space-y-10">
@@ -69,8 +72,8 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-gallery-border">
-              Education
+            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-border">
+              {t.cv.education}
             </h2>
 
             <div className="space-y-4">
@@ -93,11 +96,11 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-gallery-border">
-              Selected Collections
+            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-border">
+              {t.cv.selectedCollections}
             </h2>
             <p className="text-sm text-muted-foreground">
-              Private collections in Portugal, United Kingdom, Germany, and the United States.
+              {t.cv.collectionsText}
             </p>
           </motion.section>
         </div>

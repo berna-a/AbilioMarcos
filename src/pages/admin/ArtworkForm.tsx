@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { ArrowLeft, Upload, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SizeCategory, getSalesMode } from '@/lib/types';
+import { useAdmin } from '@/i18n';
 
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
@@ -37,6 +38,8 @@ const ArtworkForm = () => {
   const { id } = useParams<{ id: string }>();
   const isNew = !id || id === 'new';
   const navigate = useNavigate();
+  const admin = useAdmin();
+  const t = admin.artworkForm;
 
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(!isNew);
@@ -86,7 +89,7 @@ const ArtworkForm = () => {
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error: uploadError } = await supabase.storage.from('artworks').upload(path, file, { cacheControl: '3600', upsert: false });
     if (uploadError) {
-      setError('Failed to upload image.');
+      setError(t.uploadFailed);
       setUploading(false);
       return;
     }
@@ -106,8 +109,8 @@ const ArtworkForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!form.title.trim()) { setError('Title is required.'); return; }
-    if (!form.slug.trim()) { setError('Slug is required.'); return; }
+    if (!form.title.trim()) { setError(t.titleRequired); return; }
+    if (!form.slug.trim()) { setError(t.slugRequired); return; }
 
     setSaving(true);
     const priceNum = form.price ? parseFloat(form.price) : null;
@@ -141,26 +144,20 @@ const ArtworkForm = () => {
   };
 
   if (loading) {
-    return <AdminLayout><p className="text-[13px] text-[hsl(0_0%_50%)]">Loading…</p></AdminLayout>;
+    return <AdminLayout><p className="text-[13px] text-[hsl(0_0%_50%)]">{t.loading}</p></AdminLayout>;
   }
 
   const priceNum = form.price ? parseFloat(form.price) : null;
   const derivedMode = getSalesMode(priceNum);
-
-  const modeLabels: Record<string, string> = {
-    direct_purchase: 'Direct Purchase — Stripe checkout enabled',
-    hybrid: 'Hybrid — Stripe checkout + inquiry option',
-    inquiry_only: 'Inquiry Only — collectors inquire privately',
-  };
 
   return (
     <AdminLayout>
       <div className="max-w-3xl">
         <div className="mb-8">
           <Link to="/admin/artworks" className="inline-flex items-center gap-2 text-[12px] text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)] mb-4 transition-colors">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Artworks
+            <ArrowLeft className="w-3.5 h-3.5" /> {t.backToArtworks}
           </Link>
-          <h1 className="text-xl font-medium text-[hsl(0_0%_12%)]">{isNew ? 'New Artwork' : 'Edit Artwork'}</h1>
+          <h1 className="text-xl font-medium text-[hsl(0_0%_12%)]">{isNew ? t.newArtwork : t.editArtwork}</h1>
         </div>
 
         {error && <div className="mb-6 text-[12px] text-red-600 py-2 px-3 bg-red-50 border border-red-100">{error}</div>}
@@ -168,23 +165,23 @@ const ArtworkForm = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title & Slug */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Title *">
-              <input type="text" value={form.title} onChange={(e) => updateField('title', e.target.value)} className="admin-input" placeholder="Artwork title" />
+            <Field label={`${t.title} *`}>
+              <input type="text" value={form.title} onChange={(e) => updateField('title', e.target.value)} className="admin-input" placeholder={t.artworkTitle} />
             </Field>
-            <Field label="Slug *">
-              <input type="text" value={form.slug} onChange={(e) => { setSlugManual(true); updateField('slug', e.target.value); }} className="admin-input" placeholder="artwork-slug" />
+            <Field label={`${t.slug} *`}>
+              <input type="text" value={form.slug} onChange={(e) => { setSlugManual(true); updateField('slug', e.target.value); }} className="admin-input" placeholder={t.artworkSlug} />
             </Field>
           </div>
 
           {/* Year, Ref & Size */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Field label="Year">
+            <Field label={t.year}>
               <input type="number" value={form.year} onChange={(e) => updateField('year', parseInt(e.target.value) || 0)} className="admin-input" />
             </Field>
-            <Field label="Ref." hint="Internal reference code">
-              <input type="text" value={form.reference} onChange={(e) => updateField('reference', e.target.value)} className="admin-input" placeholder="AM-2024-001" />
+            <Field label={t.ref} hint={t.refHint}>
+              <input type="text" value={form.reference} onChange={(e) => updateField('reference', e.target.value)} className="admin-input" placeholder={t.refPlaceholder} />
             </Field>
-            <Field label="Size">
+            <Field label={t.size}>
               <select value={form.size_category} onChange={(e) => updateField('size_category', e.target.value)} className="admin-input">
                 {(Object.keys(sizeLabels) as SizeCategory[]).map((k) => (
                   <option key={k} value={k}>{sizeLabels[k]}</option>
@@ -196,49 +193,49 @@ const ArtworkForm = () => {
           {/* Custom dimensions */}
           {form.size_category === 'other' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Width (cm)">
+              <Field label={t.widthCm}>
                 <input type="number" value={form.custom_width_cm} onChange={(e) => updateField('custom_width_cm', e.target.value)} className="admin-input" placeholder="120" />
               </Field>
-              <Field label="Height (cm)">
+              <Field label={t.heightCm}>
                 <input type="number" value={form.custom_height_cm} onChange={(e) => updateField('custom_height_cm', e.target.value)} className="admin-input" placeholder="150" />
               </Field>
             </div>
           )}
 
           {/* Description */}
-          <Field label="Description">
-            <textarea value={form.description} onChange={(e) => updateField('description', e.target.value)} className="admin-input min-h-[120px] resize-y" placeholder="Artist's note or description…" />
+          <Field label={t.description}>
+            <textarea value={form.description} onChange={(e) => updateField('description', e.target.value)} className="admin-input min-h-[120px] resize-y" placeholder={t.descriptionPlaceholder} />
           </Field>
 
           {/* Status, Availability */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Status">
+            <Field label={t.status}>
               <select value={form.status} onChange={(e) => updateField('status', e.target.value)} className="admin-input">
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
+                <option value="draft">{t.draft}</option>
+                <option value="published">{t.published}</option>
+                <option value="archived">{t.archived}</option>
               </select>
             </Field>
-            <Field label="Availability">
+            <Field label={t.availability}>
               <select value={form.availability} onChange={(e) => updateField('availability', e.target.value)} className="admin-input">
-                <option value="available">Available</option>
-                <option value="sold">Sold</option>
-                <option value="not_for_sale">Not for Sale</option>
+                <option value="available">{t.available}</option>
+                <option value="sold">{t.sold}</option>
+                <option value="not_for_sale">{t.notForSale}</option>
               </select>
             </Field>
           </div>
 
           {/* Pricing */}
           <div className="pt-4 border-t border-[hsl(0_0%_90%)]">
-            <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-4">Pricing</h3>
+            <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-4">{t.pricing}</h3>
 
             <div className="space-y-4">
-              <Field label="Price (€)" hint="Leave empty for 'Price on Request'. Sales mode is set automatically based on price.">
+              <Field label={t.priceLabel} hint={t.priceHint}>
                 <input type="number" value={form.price} onChange={(e) => updateField('price', e.target.value)} className="admin-input" placeholder="2500" min="0" step="1" />
               </Field>
 
               <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
-                Sales mode: <span className="font-medium text-[hsl(0_0%_30%)]">{modeLabels[derivedMode]}</span>
+                {t.salesMode}: <span className="font-medium text-[hsl(0_0%_30%)]">{t.salesModes[derivedMode as keyof typeof t.salesModes]}</span>
               </p>
             </div>
           </div>
@@ -247,12 +244,12 @@ const ArtworkForm = () => {
           <div className="pt-4 border-t border-[hsl(0_0%_90%)]">
             <label className="flex items-center gap-2 text-[13px] text-[hsl(0_0%_35%)] cursor-pointer">
               <input type="checkbox" checked={form.is_featured} onChange={(e) => updateField('is_featured', e.target.checked)} className="accent-[hsl(0_0%_20%)]" />
-              Selected Work — show in Selected Works page
+              {t.selectedWork}
             </label>
           </div>
 
           {/* Primary Image */}
-          <Field label="Primary Image">
+          <Field label={t.primaryImage}>
             {form.primary_image_url ? (
               <div className="relative inline-block">
                 <img src={form.primary_image_url} alt="" className="w-48 h-48 object-cover" />
@@ -263,14 +260,14 @@ const ArtworkForm = () => {
             ) : (
               <label className="flex items-center gap-2 px-4 py-3 border border-dashed border-[hsl(0_0%_80%)] cursor-pointer hover:border-[hsl(0_0%_60%)] transition-colors text-[13px] text-[hsl(0_0%_50%)]">
                 {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                {uploading ? 'Uploading…' : 'Upload primary image'}
+                {uploading ? t.uploading : t.uploadPrimary}
                 <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, 'primary'); }} />
               </label>
             )}
           </Field>
 
           {/* Additional Images */}
-          <Field label="Additional Images">
+          <Field label={t.additionalImages}>
             <div className="flex flex-wrap gap-3 mb-3">
               {form.additional_images.map((url, i) => (
                 <div key={i} className="relative">
@@ -283,7 +280,7 @@ const ArtworkForm = () => {
             </div>
             <label className="inline-flex items-center gap-2 px-4 py-2 border border-dashed border-[hsl(0_0%_80%)] cursor-pointer hover:border-[hsl(0_0%_60%)] transition-colors text-[12px] text-[hsl(0_0%_50%)]">
               {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
-              {uploading ? 'Uploading…' : 'Add image'}
+              {uploading ? t.uploading : t.addImage}
               <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, 'additional'); }} />
             </label>
           </Field>
@@ -291,10 +288,10 @@ const ArtworkForm = () => {
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t border-[hsl(0_0%_90%)]">
             <button type="submit" disabled={saving} className="px-6 py-2.5 text-[12px] tracking-wider uppercase bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_20%)] transition-colors disabled:opacity-50">
-              {saving ? 'Saving…' : isNew ? 'Create Artwork' : 'Save Changes'}
+              {saving ? t.saving : isNew ? t.createArtwork : t.saveChanges}
             </button>
             <Link to="/admin/artworks" className="px-6 py-2.5 text-[12px] tracking-wider uppercase border border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] hover:border-[hsl(0_0%_60%)] transition-colors">
-              Cancel
+              {t.cancel}
             </Link>
           </div>
         </form>
