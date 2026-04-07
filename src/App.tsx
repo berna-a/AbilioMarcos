@@ -49,6 +49,13 @@ const App = () => (
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
 
+              {/* Legal pages */}
+              <Route path="/legal/privacy" element={<LegalPage titleKey="privacyTitle" />} />
+              <Route path="/legal/cookies" element={<LegalPage titleKey="cookiesTitle" />} />
+              <Route path="/legal/terms" element={<LegalPage titleKey="termsTitle" />} />
+              <Route path="/legal/disputes" element={<LegalPage titleKey="disputesTitle" />} />
+              <Route path="/legal/complaints" element={<LegalPage titleKey="complaintsTitle" />} />
+
               {/* Admin routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
