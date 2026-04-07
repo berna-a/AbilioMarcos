@@ -125,6 +125,7 @@ const AdminArtworks = () => {
             <thead>
               <tr className="border-b border-[hsl(0_0%_92%)]">
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Artwork</th>
+                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Ref.</th>
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Year</th>
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Status</th>
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">Availability</th>
@@ -146,6 +147,7 @@ const AdminArtworks = () => {
                       <p className="text-[13px] font-medium text-[hsl(0_0%_15%)]">{artwork.title}</p>
                     </div>
                   </td>
+                  <td className="px-4 py-3 text-[12px] text-[hsl(0_0%_50%)] font-mono">{artwork.reference || '—'}</td>
                   <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">{artwork.year}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-block px-2 py-0.5 text-[11px] font-medium capitalize ${statusColors[artwork.status] || ''}`}>
