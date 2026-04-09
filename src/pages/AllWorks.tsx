@@ -7,6 +7,7 @@ import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
 import { useT } from "@/i18n";
 import ArtworkHoverZoom from "@/components/ArtworkHoverZoom";
+import { track, trackArtwork } from "@/lib/analytics";
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
 
@@ -51,6 +52,7 @@ const AllWorks = () => {
   const t = useT();
 
   useEffect(() => {
+    track('all_works_view');
     getPublishedArtworks().then((data) => {
       setArtworks(data);
       setLoading(false);
@@ -58,6 +60,7 @@ const AllWorks = () => {
   }, []);
 
   const toggleFilter = (group: string, value: string) => {
+    track('filter_used', { filter_group: group, filter_value: value });
     setFilters((prev) => ({
       ...prev,
       [group]: prev[group].includes(value) ? prev[group].filter((v) => v !== value) : [...prev[group], value],
