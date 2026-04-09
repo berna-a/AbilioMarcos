@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { LayoutDashboard, Image, MessageSquare, Paintbrush, Settings, LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useAdmin } from '@/i18n';
+import SignatureLogo from '@/components/layout/SignatureLogo';
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
   const { user, signOut } = useAuth();
