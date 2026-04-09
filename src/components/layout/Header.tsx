@@ -1,13 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SignatureLogo from "./SignatureLogo";
-import { useI18n, localeLabels } from "@/i18n";
+import { useI18n, localeLabels, localeNames } from "@/i18n";
 import { Locale } from "@/i18n/types";
 
-const navKeys = ["selectedWorks", "allWorks", "studio", "about", "contact"] as const;
-const navHrefs = ["/selected-works", "/works", "/studio", "/about", "/contact"];
+const localeFlags: Record<Locale, string> = {
+  pt: "🇵🇹",
+  en: "🇬🇧",
+  fr: "🇫🇷",
+  de: "🇩🇪",
+};
+
+const navKeys = ["selectedWorks", "allWorks", "about", "contact"] as const;
+const navHrefs = ["/selected-works", "/works", "/about", "/contact"];
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -33,7 +40,59 @@ const Header = () => {
     setLangOpen(false);
   }, [location.pathname]);
 
+  // Close lang dropdown on outside click
+  useEffect(() => {
+    if (!langOpen) return;
+    const handleClick = () => setLangOpen(false);
+    const timer = setTimeout(() => document.addEventListener("click", handleClick), 0);
+    return () => { clearTimeout(timer); document.removeEventListener("click", handleClick); };
+  }, [langOpen]);
+
   const heroState = isHome && !isScrolled;
+
+  const LanguageDropdown = ({ mobile = false }: { mobile?: boolean }) => (
+    <div className="relative">
+      <button
+        onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
+        className={`flex items-center gap-1.5 text-[11px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
+          heroState && !mobile
+            ? "text-white/60 hover:text-white/90"
+            : "text-foreground/40 hover:text-foreground/70"
+        }`}
+      >
+        <span className="text-sm leading-none">{localeFlags[locale]}</span>
+        <span>{localeLabels[locale]}</span>
+        <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {langOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18 }}
+            className={`absolute top-full ${mobile ? "right-0" : "right-0"} mt-2 bg-background border border-border shadow-lg py-2 min-w-[140px] z-[60]`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {(Object.keys(localeLabels) as Locale[]).map((l) => (
+              <button
+                key={l}
+                onClick={() => { setLocale(l); setLangOpen(false); }}
+                className={`flex items-center gap-3 w-full text-left px-4 py-2 text-[11px] tracking-[0.08em] transition-colors duration-200 ${
+                  locale === l
+                    ? "text-foreground font-medium"
+                    : "text-foreground/40 hover:text-foreground/70 hover:bg-muted/40"
+                }`}
+              >
+                <span className="text-base leading-none">{localeFlags[l]}</span>
+                <span>{localeNames[l]}</span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 
   return (
     <>
@@ -78,56 +137,13 @@ const Header = () => {
                 );
               })}
 
-              {/* Language selector */}
-              <div className="relative">
-                <button
-                  onClick={() => setLangOpen(!langOpen)}
-                  className={`text-[10px] tracking-[0.15em] uppercase transition-colors duration-500 px-1.5 py-0.5 ${
-                    heroState
-                      ? "text-white/50 hover:text-white/80"
-                      : "text-foreground/30 hover:text-foreground/60"
-                  }`}
-                >
-                  {localeLabels[locale]}
-                </button>
-                <AnimatePresence>
-                  {langOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute top-full right-0 mt-2 bg-background border border-border shadow-sm py-1 min-w-[80px]"
-                    >
-                      {(Object.keys(localeLabels) as Locale[]).map((l) => (
-                        <button
-                          key={l}
-                          onClick={() => { setLocale(l); setLangOpen(false); }}
-                          className={`block w-full text-left px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase transition-colors ${
-                            locale === l
-                              ? "text-foreground font-medium"
-                              : "text-foreground/40 hover:text-foreground/70"
-                          }`}
-                        >
-                          {localeLabels[l]}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              <div className="w-px h-4 bg-current opacity-15 mx-1" />
+              <LanguageDropdown />
             </nav>
 
             {/* Mobile: lang + toggle */}
-            <div className="flex items-center gap-3 lg:hidden">
-              <button
-                onClick={() => setLangOpen(!langOpen)}
-                className={`text-[10px] tracking-[0.15em] uppercase transition-colors duration-500 ${
-                  heroState ? "text-white/50" : "text-foreground/30"
-                }`}
-              >
-                {localeLabels[locale]}
-              </button>
+            <div className="flex items-center gap-2 lg:hidden">
+              <LanguageDropdown mobile />
               <button
                 className={`p-2 -mr-2 transition-colors duration-700 ${heroState ? "text-white/80" : "text-foreground"}`}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -136,31 +152,6 @@ const Header = () => {
                 {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
             </div>
-
-            {/* Mobile lang dropdown */}
-            <AnimatePresence>
-              {langOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.15 }}
-                  className="lg:hidden absolute top-full right-6 mt-1 bg-background border border-border shadow-sm py-1 min-w-[80px] z-[60]"
-                >
-                  {(Object.keys(localeLabels) as Locale[]).map((l) => (
-                    <button
-                      key={l}
-                      onClick={() => { setLocale(l); setLangOpen(false); }}
-                      className={`block w-full text-left px-4 py-1.5 text-[10px] tracking-[0.15em] uppercase transition-colors ${
-                        locale === l ? "text-foreground font-medium" : "text-foreground/40 hover:text-foreground/70"
-                      }`}
-                    >
-                      {localeLabels[l]}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </div>
       </header>
