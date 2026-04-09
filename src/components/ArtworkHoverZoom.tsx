@@ -24,7 +24,7 @@ const ArtworkHoverZoom = ({ src, alt, className = "", style }: ArtworkHoverZoomP
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden cursor-zoom-in"
+      className="overflow-hidden cursor-pointer"
       onMouseEnter={() => setZooming(true)}
       onMouseLeave={() => setZooming(false)}
       onMouseMove={handleMouseMove}
