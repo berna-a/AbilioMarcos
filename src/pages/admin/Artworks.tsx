@@ -1,12 +1,15 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { Artwork } from '@/lib/types';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import { useAdmin } from '@/i18n';
 
 const statusColors: Record<string, string> = { published: 'bg-emerald-100 text-emerald-700', draft: 'bg-amber-100 text-amber-700', archived: 'bg-gray-100 text-gray-500' };
+
+type SortKey = 'title' | 'reference' | 'year' | 'status' | 'availability' | 'price' | 'is_featured';
+type SortDir = 'asc' | 'desc';
 
 const AdminArtworks = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -14,6 +17,8 @@ const AdminArtworks = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey>('year');
+  const [sortDir, setSortDir] = useState<SortDir>('desc');
   const admin = useAdmin();
 
   const fetchArtworks = async () => {
@@ -25,11 +30,30 @@ const AdminArtworks = () => {
 
   useEffect(() => { fetchArtworks(); }, []);
 
-  const filtered = useMemo(() => artworks.filter((a) => {
-    if (statusFilter !== 'all' && a.status !== statusFilter) return false;
-    if (search && !a.title.toLowerCase().includes(search.toLowerCase())) return false;
-    return true;
-  }), [artworks, search, statusFilter]);
+  const toggleSort = useCallback((key: SortKey) => {
+    if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortKey(key); setSortDir('asc'); }
+  }, [sortKey]);
+
+  const filtered = useMemo(() => {
+    const list = artworks.filter((a) => {
+      if (statusFilter !== 'all' && a.status !== statusFilter) return false;
+      if (search && !a.title.toLowerCase().includes(search.toLowerCase())) return false;
+      return true;
+    });
+
+    return [...list].sort((a, b) => {
+      const dir = sortDir === 'asc' ? 1 : -1;
+      const valA = (a as any)[sortKey];
+      const valB = (b as any)[sortKey];
+      if (valA == null && valB == null) return 0;
+      if (valA == null) return 1;
+      if (valB == null) return -1;
+      if (typeof valA === 'boolean') return (valA === valB ? 0 : valA ? -1 : 1) * dir;
+      if (typeof valA === 'number') return (valA - valB) * dir;
+      return String(valA).localeCompare(String(valB)) * dir;
+    });
+  }, [artworks, search, statusFilter, sortKey, sortDir]);
 
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(admin.artworks.confirmDelete.replace('{title}', title))) return;
@@ -41,6 +65,22 @@ const AdminArtworks = () => {
   };
 
   const statusLabels: Record<string, string> = { draft: admin.artworks.draft, published: admin.artworks.published, archived: admin.artworks.archived };
+
+  const SortIcon = ({ col }: { col: SortKey }) => {
+    if (sortKey !== col) return <ChevronUp className="w-3 h-3 opacity-0 group-hover:opacity-30 transition-opacity" />;
+    return sortDir === 'asc'
+      ? <ChevronUp className="w-3 h-3 text-[hsl(0_0%_25%)]" />
+      : <ChevronDown className="w-3 h-3 text-[hsl(0_0%_25%)]" />;
+  };
+
+  const Th = ({ col, children }: { col: SortKey; children: React.ReactNode }) => (
+    <th
+      onClick={() => toggleSort(col)}
+      className="group px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium cursor-pointer select-none hover:text-[hsl(0_0%_30%)] transition-colors"
+    >
+      <span className="inline-flex items-center gap-1">{children}<SortIcon col={col} /></span>
+    </th>
+  );
 
   return (
     <AdminLayout>
@@ -81,13 +121,13 @@ const AdminArtworks = () => {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-[hsl(0_0%_92%)]">
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">{admin.artworks.artwork}</th>
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">{admin.artworks.ref}</th>
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">{admin.artworks.year}</th>
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">{admin.artworks.status}</th>
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">{admin.artworks.availability}</th>
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">{admin.artworks.price}</th>
-                <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium">{admin.artworks.selected}</th>
+                <Th col="title">{admin.artworks.artwork}</Th>
+                <Th col="reference">{admin.artworks.ref}</Th>
+                <Th col="year">{admin.artworks.year}</Th>
+                <Th col="status">{admin.artworks.status}</Th>
+                <Th col="availability">{admin.artworks.availability}</Th>
+                <Th col="price">{admin.artworks.price}</Th>
+                <Th col="is_featured">{admin.artworks.selected}</Th>
                 <th className="px-4 py-3 text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] font-medium w-20"></th>
               </tr>
             </thead>
@@ -100,7 +140,7 @@ const AdminArtworks = () => {
                       <p className="text-[13px] font-medium text-[hsl(0_0%_15%)]">{artwork.title}</p>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-[12px] text-[hsl(0_0%_50%)] font-mono">{(artwork as any).reference || '—'}</td>
+                  <td className="px-4 py-3 text-[12px] text-[hsl(0_0%_50%)] font-mono">{artwork.reference || '—'}</td>
                   <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">{artwork.year}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-block px-2 py-0.5 text-[11px] font-medium ${statusColors[artwork.status] || ''}`}>{statusLabels[artwork.status] || artwork.status}</span>
