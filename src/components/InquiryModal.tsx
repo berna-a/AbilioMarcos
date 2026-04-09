@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { createInquiry } from '@/lib/inquiries';
 import { useT } from '@/i18n';
+import { track, trackMetaLead } from '@/lib/analytics';
 
 interface Props {
   open: boolean;
@@ -18,6 +19,13 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle }: Props) => {
   const t = useT();
 
   if (!open) return null;
+
+  // Track inquiry opened
+  useEffect(() => {
+    if (open) {
+      track('inquiry_opened', { artwork_id: artworkId, title: artworkTitle || undefined });
+    }
+  }, [open, artworkId, artworkTitle]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
