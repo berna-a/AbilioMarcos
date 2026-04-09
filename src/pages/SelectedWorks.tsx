@@ -6,6 +6,7 @@ import { getSelectedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
 import { useT } from "@/i18n";
 import ArtworkHoverZoom from "@/components/ArtworkHoverZoom";
+import { track, trackArtwork } from "@/lib/analytics";
 
 const SelectedWorks = () => {
   const [works, setWorks] = useState<Artwork[]>([]);
@@ -13,6 +14,7 @@ const SelectedWorks = () => {
   const t = useT();
 
   useEffect(() => {
+    track('selected_works_view');
     getSelectedArtworks().then((data) => {
       setWorks(data);
       setLoading(false);
@@ -20,7 +22,7 @@ const SelectedWorks = () => {
   }, []);
 
   const WorkCard = ({ work, aspect }: { work: Artwork; aspect: string }) => (
-    <Link to={`/artwork/${work.slug}`} className="group block">
+    <Link to={`/artwork/${work.slug}`} className="group block" onClick={() => trackArtwork('artwork_card_click', work)}>
       {work.primary_image_url ? (
         <ArtworkHoverZoom src={work.primary_image_url} alt={work.title} className="w-full object-cover" style={{ aspectRatio: aspect }} />
       ) : (

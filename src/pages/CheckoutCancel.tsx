@@ -2,11 +2,16 @@ import Layout from "@/components/layout/Layout";
 import { motion } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
 import { useT } from "@/i18n";
+import { useEffect } from "react";
+import { track } from "@/lib/analytics";
 
 const CheckoutCancel = () => {
   const [params] = useSearchParams();
   const artworkSlug = params.get("artwork");
   const t = useT();
+  useEffect(() => {
+    track('checkout_cancelled', { artwork_slug: artworkSlug || undefined });
+  }, [artworkSlug]);
 
   return (
     <Layout>

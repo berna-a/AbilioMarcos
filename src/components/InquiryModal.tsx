@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { createInquiry } from '@/lib/inquiries';
 import { useT } from '@/i18n';
+import { track, trackMetaLead } from '@/lib/analytics';
 
 interface Props {
   open: boolean;
@@ -16,6 +17,13 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle }: Props) => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const t = useT();
+
+  // Track inquiry opened
+  useEffect(() => {
+    if (open) {
+      track('inquiry_opened', { artwork_id: artworkId, title: artworkTitle || undefined });
+    }
+  }, [open, artworkId, artworkTitle]);
 
   if (!open) return null;
 
@@ -36,7 +44,11 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle }: Props) => {
       message: form.message.trim(),
       budget_range: form.budget_range.trim() || null,
     });
-    if (success) { setSubmitted(true); } else { setError(t.inquiry.error); }
+    if (success) {
+      setSubmitted(true);
+      track('inquiry_submitted', { artwork_id: artworkId, title: artworkTitle || undefined, email: form.email.trim() });
+      trackMetaLead(form.email.trim());
+    } else { setError(t.inquiry.error); }
     setSubmitting(false);
   };
 

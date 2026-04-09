@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SignatureLogo from "./SignatureLogo";
 import { useI18n, localeLabels, localeNames } from "@/i18n";
 import { Locale } from "@/i18n/types";
+import { track } from "@/lib/analytics";
 
 const localeFlags: Record<Locale, string> = {
   pt: "🇵🇹",
@@ -77,7 +78,7 @@ const Header = () => {
             {(Object.keys(localeLabels) as Locale[]).map((l) => (
               <button
                 key={l}
-                onClick={() => { setLocale(l); setLangOpen(false); }}
+                onClick={() => { track('language_changed', { language: l }); setLocale(l); setLangOpen(false); }}
                 className={`flex items-center gap-3 w-full text-left px-4 py-2 text-[11px] tracking-[0.08em] transition-colors duration-200 ${
                   locale === l
                     ? "text-foreground font-medium"

@@ -2,9 +2,15 @@ import Layout from "@/components/layout/Layout";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useT } from "@/i18n";
+import { useEffect } from "react";
+import { track, trackMetaPurchase } from "@/lib/analytics";
 
 const CheckoutSuccess = () => {
   const t = useT();
+  useEffect(() => {
+    track('checkout_completed');
+    trackMetaPurchase(0); // actual value from Stripe webhook
+  }, []);
   return (
     <Layout>
       <div className="pt-40 pb-40">
