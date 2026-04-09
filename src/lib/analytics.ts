@@ -117,7 +117,7 @@ export function track(eventName: string, properties: EventProperties = {}) {
     event_name: eventName,
     properties: enriched,
     session_id: getSessionId(),
-  }]).then(() => {}).catch(() => {});
+  }]).then(() => {});
 }
 
 // ── Session ID ─────────────────────────────────────────────
