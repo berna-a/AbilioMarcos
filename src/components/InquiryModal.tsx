@@ -18,14 +18,14 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle }: Props) => {
   const [error, setError] = useState('');
   const t = useT();
 
-  if (!open) return null;
-
   // Track inquiry opened
   useEffect(() => {
     if (open) {
       track('inquiry_opened', { artwork_id: artworkId, title: artworkTitle || undefined });
     }
   }, [open, artworkId, artworkTitle]);
+
+  if (!open) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
