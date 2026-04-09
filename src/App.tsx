@@ -25,6 +25,7 @@ import ArtworkForm from "./pages/admin/ArtworkForm";
 import Inquiries from "./pages/admin/Inquiries";
 import Commissions from "./pages/admin/Commissions";
 import SiteSettings from "./pages/admin/SiteSettings";
+import AdminAnalytics from "./pages/admin/Analytics";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/admin/artworks/:id" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
               <Route path="/admin/inquiries" element={<ProtectedRoute><Inquiries /></ProtectedRoute>} />
               <Route path="/admin/commissions" element={<ProtectedRoute><Commissions /></ProtectedRoute>} />
+              <Route path="/admin/analytics" element={<ProtectedRoute><AdminAnalytics /></ProtectedRoute>} />
               <Route path="/admin/settings" element={<ProtectedRoute><SiteSettings /></ProtectedRoute>} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

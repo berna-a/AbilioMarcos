@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, Image, MessageSquare, Paintbrush, Settings, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Image, MessageSquare, Paintbrush, BarChart3, Settings, LogOut, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useAdmin } from '@/i18n';
 import SignatureLogo from '@/components/layout/SignatureLogo';
@@ -18,6 +18,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     { label: admin.sidebar.artworks, to: '/admin/artworks', icon: Image },
     { label: admin.sidebar.inquiries, to: '/admin/inquiries', icon: MessageSquare },
     { label: admin.sidebar.commissions, to: '/admin/commissions', icon: Paintbrush },
+    { label: admin.sidebar.analytics, to: '/admin/analytics', icon: BarChart3 },
     { label: admin.sidebar.settings, to: '/admin/settings', icon: Settings },
   ];
 

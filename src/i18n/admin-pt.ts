@@ -5,6 +5,7 @@ export const adminPt = {
     artworks: 'Obras',
     inquiries: 'Pedidos',
     commissions: 'Encomendas',
+    analytics: 'Métricas',
     settings: 'Definições',
     signOut: 'Terminar Sessão',
     viewSite: 'Ver Site →',
