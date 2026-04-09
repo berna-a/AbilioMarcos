@@ -23,7 +23,7 @@ const AdminLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-[hsl(0_0%_97%)] px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <img src={abmaGif} alt="Abílio Marcos" className="h-10 mx-auto" />
+          <img src={abmaGif} alt="Abílio Marcos" className="h-40 mx-auto" />
           <p className="text-[12px] text-[hsl(0_0%_50%)] mt-3">{admin.login.title}</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
