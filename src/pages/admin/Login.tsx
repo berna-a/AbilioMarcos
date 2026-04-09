@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import abmaGif from '@/assets/AbMa_GIF.gif';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdmin } from '@/i18n';
@@ -22,8 +23,8 @@ const AdminLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-[hsl(0_0%_97%)] px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <h1 className="text-lg font-medium tracking-wide text-[hsl(0_0%_15%)]">Abílio Marcos</h1>
-          <p className="text-[12px] text-[hsl(0_0%_50%)] mt-1">{admin.login.title}</p>
+          <img src={abmaGif} alt="Abílio Marcos" className="h-10 mx-auto" />
+          <p className="text-[12px] text-[hsl(0_0%_50%)] mt-3">{admin.login.title}</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && <div className="text-[12px] text-red-600 text-center py-2 bg-red-50 border border-red-100">{error}</div>}
