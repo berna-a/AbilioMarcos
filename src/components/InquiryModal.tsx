@@ -44,7 +44,11 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle }: Props) => {
       message: form.message.trim(),
       budget_range: form.budget_range.trim() || null,
     });
-    if (success) { setSubmitted(true); } else { setError(t.inquiry.error); }
+    if (success) {
+      setSubmitted(true);
+      track('inquiry_submitted', { artwork_id: artworkId, title: artworkTitle || undefined, email: form.email.trim() });
+      trackMetaLead(form.email.trim());
+    } else { setError(t.inquiry.error); }
     setSubmitting(false);
   };
 

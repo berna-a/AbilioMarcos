@@ -2,6 +2,7 @@ import { Artwork, getSalesMode, formatPrice } from '@/lib/types';
 import { createCheckoutSession } from '@/lib/checkout';
 import { useState } from 'react';
 import { useT } from '@/i18n';
+import { trackArtwork, trackMetaInitiateCheckout } from '@/lib/analytics';
 
 interface Props {
   artwork: Artwork;
@@ -17,8 +18,11 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
 
   const handleAcquire = async () => {
     setCheckingOut(true);
+    trackArtwork('acquire_online_clicked', artwork);
+    trackMetaInitiateCheckout(artwork.price ?? undefined);
     const url = await createCheckoutSession(artwork.id);
     if (url) {
+      trackArtwork('checkout_started', artwork);
       window.location.href = url;
     } else {
       alert('Unable to start checkout. Please try again.');

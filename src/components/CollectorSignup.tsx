@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useT } from "@/i18n";
 import { supabase } from "@/lib/supabase";
+import { track } from "@/lib/analytics";
 
 interface CollectorSignupProps {
   variant?: "inline" | "footer";
@@ -21,6 +22,7 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
     } catch {
       // still show success — don't expose internals
     }
+    track('newsletter_signup', { email: email.trim().toLowerCase() });
     setSubmitted(true);
     setSubmitting(false);
   };
