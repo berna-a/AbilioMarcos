@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { I18nProvider } from "@/i18n";
+import AnalyticsProvider from "@/components/AnalyticsProvider";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Studio from "./pages/Studio";
@@ -36,6 +37,7 @@ const App = () => (
       <I18nProvider>
         <AuthProvider>
           <BrowserRouter>
+            <AnalyticsProvider />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
