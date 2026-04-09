@@ -29,11 +29,11 @@ const AdminLogin = () => {
           {error && <div className="text-[12px] text-red-600 text-center py-2 bg-red-50 border border-red-100">{error}</div>}
           <div>
             <label className="block text-[11px] tracking-wide text-[hsl(0_0%_45%)] mb-1.5 uppercase">{admin.login.email}</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2.5 text-[13px] border border-[hsl(0_0%_85%)] bg-white focus:outline-none focus:border-[hsl(0_0%_50%)] transition-colors" placeholder="admin@example.com" />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-3 py-2.5 text-[13px] border border-[hsl(0_0%_85%)] bg-[hsl(0_0%_97%)] focus:outline-none focus:border-[hsl(0_0%_50%)] transition-colors" placeholder="admin@example.com" />
           </div>
           <div>
             <label className="block text-[11px] tracking-wide text-[hsl(0_0%_45%)] mb-1.5 uppercase">{admin.login.password}</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full px-3 py-2.5 text-[13px] border border-[hsl(0_0%_85%)] bg-white focus:outline-none focus:border-[hsl(0_0%_50%)] transition-colors" />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full px-3 py-2.5 text-[13px] border border-[hsl(0_0%_85%)] bg-[hsl(0_0%_97%)] focus:outline-none focus:border-[hsl(0_0%_50%)] transition-colors" />
           </div>
           <button type="submit" disabled={loading} className="w-full py-2.5 text-[12px] tracking-wider uppercase bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_20%)] transition-colors disabled:opacity-50">
             {loading ? admin.login.signingIn : admin.login.signIn}
