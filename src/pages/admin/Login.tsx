@@ -20,7 +20,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[hsl(0_0%_97%)] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
           <img src={abmaGif} alt="Abílio Marcos" className="h-[13.75rem] mx-auto" />
