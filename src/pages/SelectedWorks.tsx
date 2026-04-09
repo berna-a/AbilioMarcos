@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getSelectedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
 import { useT } from "@/i18n";
+import ArtworkHoverZoom from "@/components/ArtworkHoverZoom";
 
 const SelectedWorks = () => {
   const [works, setWorks] = useState<Artwork[]>([]);
@@ -21,9 +22,9 @@ const SelectedWorks = () => {
   const WorkCard = ({ work, aspect }: { work: Artwork; aspect: string }) => (
     <Link to={`/artwork/${work.slug}`} className="group block">
       {work.primary_image_url ? (
-        <img src={work.primary_image_url} alt={work.title} className="w-full object-cover transition-opacity duration-500 group-hover:opacity-90" style={{ aspectRatio: aspect }} />
+        <ArtworkHoverZoom src={work.primary_image_url} alt={work.title} className="w-full object-cover" style={{ aspectRatio: aspect }} />
       ) : (
-        <div className="w-full bg-muted transition-opacity duration-500 group-hover:opacity-90" style={{ aspectRatio: aspect }} />
+        <div className="w-full bg-muted" style={{ aspectRatio: aspect }} />
       )}
       <div className="mt-4 md:mt-5 flex justify-between items-baseline gap-4">
         <div>

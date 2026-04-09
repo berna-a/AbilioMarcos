@@ -6,6 +6,7 @@ import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
 import { useT } from "@/i18n";
+import ArtworkHoverZoom from "@/components/ArtworkHoverZoom";
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
 
@@ -216,9 +217,9 @@ const AllWorks = () => {
                     <motion.div key={work.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ duration: 0.45, delay: 0.04 * (i % 3) }}>
                       <Link to={`/artwork/${work.slug}`} className="group block">
                         {work.primary_image_url ? (
-                          <img src={work.primary_image_url} alt={work.title} className="w-full aspect-[4/5] object-cover transition-opacity duration-500 group-hover:opacity-90" />
+                          <ArtworkHoverZoom src={work.primary_image_url} alt={work.title} className="w-full aspect-[4/5] object-cover" />
                         ) : (
-                          <div className="w-full aspect-[4/5] bg-muted transition-opacity duration-500 group-hover:opacity-90" />
+                          <div className="w-full aspect-[4/5] bg-muted" />
                         )}
                         <div className="mt-3.5">
                           <div className="flex justify-between items-baseline gap-3">

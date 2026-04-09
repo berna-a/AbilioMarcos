@@ -8,6 +8,7 @@ import { Artwork, getDimensions, formatPrice, getSalesMode, MEDIUM_DISPLAY } fro
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
+import ArtworkLightbox from "@/components/ArtworkLightbox";
 import { useT } from "@/i18n";
 
 const ArtworkDetail = () => {
@@ -71,7 +72,9 @@ const ArtworkDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 mb-32 md:mb-48">
             <motion.div className="lg:col-span-7" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
               {artwork.primary_image_url ? (
-                <img src={artwork.primary_image_url} alt={artwork.title} className="w-full" />
+                <ArtworkLightbox src={artwork.primary_image_url} alt={artwork.title}>
+                  <img src={artwork.primary_image_url} alt={artwork.title} className="w-full" />
+                </ArtworkLightbox>
               ) : (
                 <div className="w-full aspect-[4/5] md:aspect-[3/4] bg-muted" />
               )}
