@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import abmaGif from '@/assets/AbMa_GIF.gif';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdmin } from '@/i18n';
