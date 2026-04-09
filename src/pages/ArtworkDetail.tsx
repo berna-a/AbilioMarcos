@@ -10,6 +10,7 @@ import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
 import ArtworkLightbox from "@/components/ArtworkLightbox";
 import { useT } from "@/i18n";
+import { trackArtwork } from "@/lib/analytics";
 
 const ArtworkDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -27,6 +28,7 @@ const ArtworkDetail = () => {
       if (!data) { setNotFound(true); setLoading(false); return; }
       setArtwork(data);
       setLoading(false);
+      trackArtwork('artwork_view', data);
       getRelatedArtworks(data.id).then(setRelated);
     });
   }, [slug]);
