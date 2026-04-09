@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SignatureLogo from "./SignatureLogo";
 import { useI18n, localeLabels, localeNames } from "@/i18n";
 import { Locale } from "@/i18n/types";
+import { track } from "@/lib/analytics";
 
 const localeFlags: Record<Locale, string> = {
   pt: "🇵🇹",
