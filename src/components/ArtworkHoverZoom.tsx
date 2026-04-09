@@ -7,7 +7,7 @@ interface ArtworkHoverZoomProps {
   style?: React.CSSProperties;
 }
 
-const ZOOM_LEVEL = 2.2;
+const ZOOM_LEVEL = 1.5;
 
 const ArtworkHoverZoom = ({ src, alt, className = "", style }: ArtworkHoverZoomProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
