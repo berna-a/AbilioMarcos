@@ -197,7 +197,7 @@ const AllWorks = () => {
                   <span className="text-[10px] tracking-[0.15em] text-muted-foreground hidden sm:inline">{t.allWorks.sort}</span>
                   <select
                     value={sort}
-                    onChange={(e) => setSort(e.target.value as SortOption)}
+                    onChange={(e) => { const v = e.target.value as SortOption; track('sort_used', { sort_value: v }); setSort(v); }}
                     className="text-[10px] tracking-[0.05em] text-muted-foreground bg-transparent border border-border px-3 py-1.5 focus:outline-none cursor-pointer hover:text-foreground transition-colors"
                   >
                     {sortOptions.map((opt) => (
@@ -218,7 +218,7 @@ const AllWorks = () => {
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-12">
                   {filtered.map((work, i) => (
                     <motion.div key={work.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ duration: 0.45, delay: 0.04 * (i % 3) }}>
-                      <Link to={`/artwork/${work.slug}`} className="group block">
+                      <Link to={`/artwork/${work.slug}`} className="group block" onClick={() => trackArtwork('artwork_card_click', work)}>
                         {work.primary_image_url ? (
                           <ArtworkHoverZoom src={work.primary_image_url} alt={work.title} className="w-full aspect-[4/5] object-cover" />
                         ) : (
