@@ -31,6 +31,25 @@ export const getFeaturedArtworks = async (): Promise<Artwork[]> => {
   return data || [];
 };
 
+/**
+ * Most recent published artworks for the public homepage "Recent Works" section.
+ * Ordered by created_at (newest first), independent of `is_featured`.
+ */
+export const getRecentArtworks = async (limit = 3): Promise<Artwork[]> => {
+  const { data, error } = await supabase
+    .from('artworks')
+    .select('*')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching recent artworks:', error);
+    return [];
+  }
+  return data || [];
+};
+
 export const getSelectedArtworks = async (): Promise<Artwork[]> => {
   const { data, error } = await supabase
     .from('artworks')
