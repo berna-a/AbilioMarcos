@@ -14,7 +14,7 @@ const ComplaintsBookBadge = () => {
       rel="noopener noreferrer"
       aria-label={t.footer.complaintsBook}
       title={t.footer.complaintsBook}
-      className="inline-flex items-center bg-white/95 hover:bg-white border border-white/10 px-3 py-2 rounded-sm transition-colors duration-300"
+      className="inline-flex items-center opacity-90 hover:opacity-100 transition-opacity duration-300"
     >
       <img
         src={lrLogo}
