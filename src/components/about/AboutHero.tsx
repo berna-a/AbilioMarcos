@@ -6,9 +6,9 @@ const AboutHero = () => {
   const t = useT();
   return (
     <section className="mb-28 md:mb-36">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-stretch">
         <motion.div
-          className="md:col-span-7 order-2 md:order-1"
+          className="md:col-span-7 order-2 md:order-1 flex flex-col justify-end"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
@@ -39,9 +39,6 @@ const AboutHero = () => {
               className="w-full h-full object-cover object-top"
             />
           </div>
-          <p className="mt-3 text-[11px] text-muted-foreground/70 italic">
-            {t.aboutPage.portraitCaption}
-          </p>
         </motion.div>
       </div>
     </section>
