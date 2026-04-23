@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/i18n";
+import AnimatedSignature from "@/components/AnimatedSignature";
 
 const HeroSection = () => {
   const t = useT();
@@ -87,7 +88,7 @@ const HeroSection = () => {
 
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
         <motion.p
-          className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-primary-foreground/70 mb-8 md:mb-10"
+          className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-primary-foreground/70 mb-10 md:mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 1.2 }}
@@ -95,21 +96,18 @@ const HeroSection = () => {
           {t.hero.subtitle}
         </motion.p>
 
-        <motion.h1
-          className="font-serif text-5xl md:text-7xl lg:text-8xl xl:text-9xl text-primary-foreground font-light tracking-[0.02em] leading-[0.9] drop-shadow-[0_2px_24px_rgba(0,0,0,0.35)]"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 1 }}
-        >
-          Abílio Marcos
-        </motion.h1>
-
         <motion.div
-          className="w-12 md:w-16 h-px bg-primary-foreground/40 mt-8 md:mt-10"
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ delay: 1, duration: 0.8 }}
-        />
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
+        >
+          <AnimatedSignature
+            className="w-[320px] h-[80px] md:w-[520px] md:h-[130px] lg:w-[640px] lg:h-[160px]"
+            duration={2.6}
+            delay={0.8}
+          />
+        </motion.div>
       </div>
 
       <motion.div
