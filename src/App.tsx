@@ -18,6 +18,7 @@ import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import NotFound from "./pages/NotFound";
 import LegalPage from "./pages/legal/LegalPage";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import AdminLogin from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminArtworks from "./pages/admin/Artworks";
@@ -53,7 +54,7 @@ const App = () => (
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
 
               {/* Legal pages */}
-              <Route path="/legal/privacy" element={<LegalPage titleKey="privacyTitle" />} />
+              <Route path="/legal/privacy" element={<PrivacyPolicy />} />
               <Route path="/legal/cookies" element={<LegalPage titleKey="cookiesTitle" />} />
               <Route path="/legal/terms" element={<LegalPage titleKey="termsTitle" />} />
               <Route path="/legal/disputes" element={<LegalPage titleKey="disputesTitle" />} />
