@@ -8,7 +8,6 @@ const Footer = () => {
   const navLinks = [
     { label: t.nav.selectedWorks, href: "/selected-works" },
     { label: t.nav.allWorks, href: "/works" },
-    { label: t.nav.studio, href: "/studio" },
     { label: t.nav.about, href: "/about" },
   ];
 
