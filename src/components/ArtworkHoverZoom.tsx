@@ -5,13 +5,23 @@ interface ArtworkHoverZoomProps {
   alt: string;
   className?: string;
   style?: React.CSSProperties;
-  /** Override aspect ratio explicitly, e.g. "4 / 5" — used to honor real artwork proportions */
+  /**
+   * Optional aspect ratio (e.g. "4 / 5"). When omitted, the container adapts
+   * to the image's intrinsic dimensions — true artwork proportions, no crop.
+   */
   ratio?: string;
+  /** Notified once the underlying image has loaded with its natural pixel size. */
+  onNaturalSize?: (width: number, height: number) => void;
 }
 
 const ZOOM_LEVEL = 1.5;
 
-const ArtworkHoverZoom = ({ src, alt, className = "", style, ratio }: ArtworkHoverZoomProps) => {
+/**
+ * Cursor-following hover zoom that NEVER crops the work to a forced ratio.
+ * The image is rendered with `object-contain` and the container takes the
+ * artwork's true proportions (either via the `ratio` prop or its intrinsic size).
+ */
+const ArtworkHoverZoom = ({ src, alt, className = "", style, ratio, onNaturalSize }: ArtworkHoverZoomProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [zooming, setZooming] = useState(false);
   const [origin, setOrigin] = useState("50% 50%");
@@ -23,9 +33,7 @@ const ArtworkHoverZoom = ({ src, alt, className = "", style, ratio }: ArtworkHov
     setOrigin(`${x}% ${y}%`);
   }, []);
 
-  const containerStyle: React.CSSProperties = ratio
-    ? { aspectRatio: ratio }
-    : {};
+  const containerStyle: React.CSSProperties = ratio ? { aspectRatio: ratio } : {};
 
   return (
     <div
@@ -39,7 +47,16 @@ const ArtworkHoverZoom = ({ src, alt, className = "", style, ratio }: ArtworkHov
       <img
         src={src}
         alt={alt}
-        className={`${className} transition-transform duration-300 ease-out will-change-transform ${ratio ? "w-full h-full object-cover" : ""}`}
+        loading="lazy"
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          if (onNaturalSize && img.naturalWidth && img.naturalHeight) {
+            onNaturalSize(img.naturalWidth, img.naturalHeight);
+          }
+        }}
+        className={`${className} block transition-transform duration-300 ease-out will-change-transform ${
+          ratio ? "w-full h-full object-contain" : "w-full h-auto"
+        }`}
         style={{
           ...style,
           transform: zooming ? `scale(${ZOOM_LEVEL})` : "scale(1)",
