@@ -54,6 +54,20 @@ export default {
           gold: "hsl(var(--gallery-gold))",
           border: "hsl(var(--gallery-border))",
         },
+        brand: {
+          red: "hsl(var(--brand-red))",
+          "red-soft": "hsl(var(--brand-red-soft))",
+          brown: "hsl(var(--brand-brown))",
+          "brown-soft": "hsl(var(--brand-brown-soft))",
+        },
+        status: {
+          available: "hsl(var(--status-available))",
+          sold: "hsl(var(--status-sold))",
+        },
+        footer: {
+          DEFAULT: "hsl(var(--footer-bg))",
+          border: "hsl(var(--footer-border))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

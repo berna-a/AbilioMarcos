@@ -50,8 +50,8 @@ const ArtworkDetail = () => {
   }
 
   const statusDisplay: Record<string, { label: string; className: string }> = {
-    available: { label: t.artwork.available, className: "text-foreground" },
-    sold: { label: t.artwork.soldStatus, className: "text-muted-foreground" },
+    available: { label: t.artwork.available, className: "text-status-available font-medium" },
+    sold: { label: t.artwork.soldStatus, className: "text-status-sold font-medium" },
     not_for_sale: { label: "", className: "" },
   };
 
@@ -62,12 +62,20 @@ const ArtworkDetail = () => {
   const displayPrice = formatPrice(artwork.price);
   const techniqueText = techniqueLabel(t, getTechnique(artwork));
 
+  // Natural aspect ratio from real dimensions, when available
+  const { width, height } = (() => {
+    const w = artwork.width_cm ?? artwork.custom_width_cm ?? null;
+    const h = artwork.height_cm ?? artwork.custom_height_cm ?? null;
+    return { width: w ? Number(w) : null, height: h ? Number(h) : null };
+  })();
+  const naturalRatio = width && height ? `${width} / ${height}` : undefined;
+
   return (
     <Layout>
-      <div className="pt-28 md:pt-40 pb-24 md:pb-40">
+      <div className="pt-20 md:pt-24 pb-24 md:pb-40">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-14 md:mb-24">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-6 md:mb-10">
             <Link to="/works" className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">
               <ArrowLeft className="w-3 h-3" /> {t.artwork.backToArchive}
             </Link>
@@ -77,10 +85,15 @@ const ArtworkDetail = () => {
             <motion.div className="lg:col-span-7" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
               {artwork.primary_image_url ? (
                 <ArtworkLightbox src={artwork.primary_image_url} alt={artwork.title}>
-                  <img src={artwork.primary_image_url} alt={artwork.title} className="w-full" />
+                  <img
+                    src={artwork.primary_image_url}
+                    alt={artwork.title}
+                    className="w-full h-auto"
+                    style={naturalRatio ? { aspectRatio: naturalRatio, objectFit: 'cover' } : undefined}
+                  />
                 </ArtworkLightbox>
               ) : (
-                <div className="w-full aspect-[4/5] md:aspect-[3/4] bg-muted" />
+                <div className="w-full bg-muted" style={{ aspectRatio: naturalRatio || '4/5' }} />
               )}
             </motion.div>
 
@@ -135,7 +148,7 @@ const ArtworkDetail = () => {
                     ) : (
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
-                    <p className="font-serif text-lg md:text-xl text-foreground group-hover:text-foreground/70 transition-colors duration-500 leading-tight">{rel.title}</p>
+                    <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{rel.title}</p>
                     <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
                   </Link>
                 ))}

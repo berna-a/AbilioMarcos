@@ -28,7 +28,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="border-t border-footer-border bg-footer">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10">
         <div className="py-14 md:py-18 grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-10">
           {/* Brand */}
@@ -40,15 +40,15 @@ const Footer = () => {
               {t.footer.description}
             </p>
             {/* Social */}
-            <div className="flex items-center gap-4 mt-5">
-              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
-                <Instagram className="w-4 h-4" />
+            <div className="flex items-center gap-2 mt-5">
+              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 inline-flex items-center justify-center border border-foreground/15 text-foreground/55 hover:text-brand-red hover:border-brand-red/40 hover:bg-brand-red/5 transition-all duration-300">
+                <Instagram className="w-3.5 h-3.5" />
               </a>
-              <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
-                <Facebook className="w-4 h-4" />
+              <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 inline-flex items-center justify-center border border-foreground/15 text-foreground/55 hover:text-brand-red hover:border-brand-red/40 hover:bg-brand-red/5 transition-all duration-300">
+                <Facebook className="w-3.5 h-3.5" />
               </a>
-              <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
-                <MessageCircle className="w-4 h-4" />
+              <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-8 h-8 inline-flex items-center justify-center border border-foreground/15 text-foreground/55 hover:text-brand-red hover:border-brand-red/40 hover:bg-brand-red/5 transition-all duration-300">
+                <MessageCircle className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
@@ -119,7 +119,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="py-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-3">
+        <div className="py-6 border-t border-footer-border flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-[11px] text-muted-foreground">
             {t.footer.copyright} {t.footer.madeBy}{" "}
             <a href="https://ardo.media/" target="_blank" rel="noopener noreferrer" className="font-medium text-foreground/60 hover:text-foreground transition-colors duration-300">Ardo Media</a>
