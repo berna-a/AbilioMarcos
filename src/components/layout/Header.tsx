@@ -15,6 +15,8 @@ const localeFlags: Record<Locale, string> = {
   es: "🇪🇸",
 };
 
+const localeOrder: Locale[] = ["pt", "en", "fr", "de", "es"];
+
 const navKeys = ["selectedWorks", "allWorks", "about", "contact"] as const;
 const navHrefs = ["/selected-works", "/works", "/about", "/contact"];
 
