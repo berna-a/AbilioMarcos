@@ -78,7 +78,7 @@ const Header = () => {
             className={`absolute top-full ${mobile ? "right-0" : "right-0"} mt-2 bg-background border border-border shadow-lg py-2 min-w-[140px] z-[60]`}
             onClick={(e) => e.stopPropagation()}
           >
-            {(Object.keys(localeLabels) as Locale[]).map((l) => (
+            {localeOrder.map((l) => (
               <button
                 key={l}
                 onClick={() => { track('language_changed', { language: l }); setLocale(l); setLangOpen(false); }}
