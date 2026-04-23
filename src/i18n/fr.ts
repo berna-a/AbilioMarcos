@@ -13,9 +13,10 @@ export const fr: Translations = {
     statement: 'Chaque geste porte le poids de l\'intention — la couleur comme émotion, la texture comme mémoire, la toile comme espace où pensée et instinct convergent.',
   },
   featured: {
-    label: 'En Vedette',
-    title: 'Œuvres Choisies',
-    viewSelected: 'Voir les Œuvres Choisies',
+    label: 'Récentes',
+    title: 'Œuvres Récentes',
+    viewSelected: 'Voir Toutes les Œuvres',
+    viewAll: 'Voir Toutes les Œuvres',
   },
   statement: {
     quote: '« Je peins pour rendre visible ce qui vit sous la surface — la tension entre contrôle et abandon, entre ce dont nous nous souvenons et ce que nous ressentons. »',

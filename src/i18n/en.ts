@@ -13,9 +13,10 @@ export const en: Translations = {
     statement: 'Each gesture carries the weight of intention — color as emotion, texture as memory, the canvas as a space where thought and instinct converge.',
   },
   featured: {
-    label: 'Featured',
-    title: 'Selected Works',
-    viewSelected: 'View Selected Works',
+    label: 'Recent',
+    title: 'Recent Works',
+    viewSelected: 'View All Works',
+    viewAll: 'View All Works',
   },
   statement: {
     quote: '"I paint to make visible what lives beneath the surface — the tension between control and surrender, between what we remember and what we feel."',

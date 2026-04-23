@@ -13,9 +13,10 @@ export const de: Translations = {
     statement: 'Jede Geste trägt das Gewicht der Absicht — Farbe als Emotion, Textur als Erinnerung, die Leinwand als Raum, in dem Gedanke und Instinkt zusammentreffen.',
   },
   featured: {
-    label: 'Ausgewählt',
-    title: 'Ausgewählte Werke',
-    viewSelected: 'Ausgewählte Werke ansehen',
+    label: 'Aktuell',
+    title: 'Aktuelle Werke',
+    viewSelected: 'Alle Werke ansehen',
+    viewAll: 'Alle Werke ansehen',
   },
   statement: {
     quote: '„Ich male, um sichtbar zu machen, was unter der Oberfläche lebt — die Spannung zwischen Kontrolle und Hingabe, zwischen dem, woran wir uns erinnern, und dem, was wir fühlen."',

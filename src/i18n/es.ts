@@ -15,9 +15,10 @@ export const es: Translations = {
     statement: 'Cada gesto sostiene el peso de la intención — el color como emoción, la textura como memoria, el lienzo como espacio donde pensamiento e instinto convergen.',
   },
   featured: {
-    label: 'Destacado',
-    title: 'Obras Seleccionadas',
-    viewSelected: 'Ver Obras Seleccionadas',
+    label: 'Recientes',
+    title: 'Obras Recientes',
+    viewSelected: 'Ver Todas las Obras',
+    viewAll: 'Ver Todas las Obras',
   },
   statement: {
     quote: '«Pinto para hacer visible lo que vive bajo la superficie — la tensión entre el control y la entrega, entre lo que recordamos y lo que sentimos.»',

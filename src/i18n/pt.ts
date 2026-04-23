@@ -13,9 +13,10 @@ export const pt: Translations = {
     statement: 'Cada gesto carrega o peso da intenção — a cor como emoção, a textura como memória, a tela como espaço onde pensamento e instinto convergem.',
   },
   featured: {
-    label: 'Destaque',
-    title: 'Obras Selecionadas',
-    viewSelected: 'Ver Obras Selecionadas',
+    label: 'Recentes',
+    title: 'Obras Recentes',
+    viewSelected: 'Ver Todas as Obras',
+    viewAll: 'Ver Todas as Obras',
   },
   statement: {
     quote: '"Pinto para tornar visível o que vive sob a superfície — a tensão entre controlo e entrega, entre o que recordamos e o que sentimos."',
