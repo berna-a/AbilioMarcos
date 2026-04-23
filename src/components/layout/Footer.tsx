@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import SignatureLogo from "./SignatureLogo";
 import { useT } from "@/i18n";
 import { Instagram, Facebook, MessageCircle } from "lucide-react";
+import ComplaintsBookBadge from "@/components/ComplaintsBookBadge";
 
 const SOCIALS = {
   instagram: "https://www.instagram.com/abilio.marcos.arte/",
