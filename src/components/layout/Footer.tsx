@@ -13,7 +13,6 @@ const Footer = () => {
   const t = useT();
 
   const navLinks = [
-    { label: t.nav.selectedWorks, href: "/selected-works" },
     { label: t.nav.allWorks, href: "/works" },
     { label: t.nav.about, href: "/about" },
     { label: t.nav.contact, href: "/contact" },

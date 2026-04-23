@@ -17,8 +17,8 @@ const localeFlags: Record<Locale, string> = {
 
 const localeOrder: Locale[] = ["pt", "en", "fr", "de", "es"];
 
-const navKeys = ["selectedWorks", "allWorks", "about", "contact"] as const;
-const navHrefs = ["/selected-works", "/works", "/about", "/contact"];
+const navKeys = ["allWorks", "about", "contact"] as const;
+const navHrefs = ["/works", "/about", "/contact"];
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
