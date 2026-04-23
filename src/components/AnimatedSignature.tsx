@@ -1,30 +1,22 @@
-import { motion } from "framer-motion";
-import signatureUrl from "@/assets/signature.svg";
+import abmaGif from "@/assets/AbMa_GIF.gif";
 
 type AnimatedSignatureProps = {
   className?: string;
-  /** Duration (s) of the writing animation. */
-  duration?: number;
-  /** Delay (s) before the writing begins. */
-  delay?: number;
 };
 
 /**
- * Renders the artist's signature SVG as a white mask and reveals it
- * left-to-right to evoke the gesture of being written.
+ * Renders the artist's signature using the same animated GIF asset
+ * shown on the admin login page (`AbMa_GIF.gif`), recolored to white
+ * via a CSS mask so it remains legible over the dark hero video.
  *
- * The animation runs once and rests on the final frame (the full
- * signature visible) — Framer Motion does not loop by default and we
- * do not pass `repeat`, so the end state is preserved.
+ * The animation is baked into the GIF itself: it plays automatically
+ * on load and rests on the final frame (the GIF is authored without
+ * looping, so the signature stays visible once written).
  */
-const AnimatedSignature = ({
-  className = "",
-  duration = 2.4,
-  delay = 0.3,
-}: AnimatedSignatureProps) => {
+const AnimatedSignature = ({ className = "" }: AnimatedSignatureProps) => {
   const maskStyle: React.CSSProperties = {
-    WebkitMaskImage: `url(${signatureUrl})`,
-    maskImage: `url(${signatureUrl})`,
+    WebkitMaskImage: `url(${abmaGif})`,
+    maskImage: `url(${abmaGif})`,
     WebkitMaskRepeat: "no-repeat",
     maskRepeat: "no-repeat",
     WebkitMaskPosition: "center",
@@ -38,16 +30,9 @@ const AnimatedSignature = ({
     <div
       aria-label="Abílio Marcos"
       role="img"
-      className={`relative overflow-hidden ${className}`.trim()}
-    >
-      <motion.div
-        className="absolute inset-0"
-        style={maskStyle}
-        initial={{ clipPath: "inset(0 100% 0 0)" }}
-        animate={{ clipPath: "inset(0 0% 0 0)" }}
-        transition={{ duration, delay, ease: [0.65, 0, 0.35, 1] }}
-      />
-    </div>
+      className={className}
+      style={maskStyle}
+    />
   );
 };
 
