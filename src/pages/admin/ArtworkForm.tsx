@@ -4,18 +4,11 @@ import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { ArrowLeft, Upload, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { SizeCategory, getSalesMode } from '@/lib/types';
+import { getSalesMode, getSizeBucket, getFormat, TECHNIQUE_VALUES, DEFAULT_TECHNIQUE } from '@/lib/types';
 import { useAdmin } from '@/i18n';
 
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
-
-const sizeLabels: Record<SizeCategory, string> = {
-  small: 'Small — 80 × 80 cm',
-  medium: 'Medium — 90 × 90 cm',
-  large: 'Large — 91 × 121 cm',
-  other: 'Other — custom dimensions',
-};
 
 const initialForm = {
   title: '',
@@ -25,9 +18,9 @@ const initialForm = {
   status: 'published' as const,
   availability: 'available' as const,
   price: '' as string,
-  size_category: 'medium' as SizeCategory,
-  custom_width_cm: '' as string,
-  custom_height_cm: '' as string,
+  technique: DEFAULT_TECHNIQUE as string,
+  width_cm: '' as string,
+  height_cm: '' as string,
   reference: '',
   is_featured: false,
   primary_image_url: '',
@@ -53,6 +46,16 @@ const ArtworkForm = () => {
     const fetch = async () => {
       const { data, error } = await supabase.from('artworks').select('*').eq('id', id).single();
       if (error || !data) { navigate('/admin/artworks'); return; }
+      // Backfill width/height from legacy size_category if absent
+      let width = data.width_cm ?? data.custom_width_cm;
+      let height = data.height_cm ?? data.custom_height_cm;
+      if (!width || !height) {
+        switch (data.size_category) {
+          case 'small': width = width || 80; height = height || 80; break;
+          case 'medium': width = width || 90; height = height || 90; break;
+          case 'large': width = width || 91; height = height || 121; break;
+        }
+      }
       setForm({
         title: data.title || '',
         slug: data.slug || '',
@@ -61,9 +64,9 @@ const ArtworkForm = () => {
         status: data.status || 'draft',
         availability: data.availability || 'available',
         price: data.price != null ? String(data.price) : '',
-        size_category: data.size_category || 'medium',
-        custom_width_cm: data.custom_width_cm != null ? String(data.custom_width_cm) : '',
-        custom_height_cm: data.custom_height_cm != null ? String(data.custom_height_cm) : '',
+        technique: data.technique || DEFAULT_TECHNIQUE,
+        width_cm: width != null ? String(width) : '',
+        height_cm: height != null ? String(height) : '',
         reference: data.reference || '',
         is_featured: data.is_featured || false,
         primary_image_url: data.primary_image_url || '',
@@ -114,6 +117,8 @@ const ArtworkForm = () => {
 
     setSaving(true);
     const priceNum = form.price ? parseFloat(form.price) : null;
+    const widthNum = form.width_cm ? parseFloat(form.width_cm) : null;
+    const heightNum = form.height_cm ? parseFloat(form.height_cm) : null;
     const payload: Record<string, any> = {
       title: form.title.trim(),
       slug: form.slug.trim(),
@@ -122,9 +127,9 @@ const ArtworkForm = () => {
       status: form.status,
       availability: form.availability,
       price: priceNum,
-      size_category: form.size_category,
-      custom_width_cm: form.size_category === 'other' && form.custom_width_cm ? parseFloat(form.custom_width_cm) : null,
-      custom_height_cm: form.size_category === 'other' && form.custom_height_cm ? parseFloat(form.custom_height_cm) : null,
+      technique: form.technique || DEFAULT_TECHNIQUE,
+      width_cm: widthNum,
+      height_cm: heightNum,
       reference: form.reference.trim() || null,
       is_featured: form.is_featured,
       primary_image_url: form.primary_image_url || null,
@@ -149,6 +154,19 @@ const ArtworkForm = () => {
   const priceNum = form.price ? parseFloat(form.price) : null;
   const derivedMode = getSalesMode(priceNum);
 
+  // Derived bucket / format previews
+  const previewArtwork = {
+    width_cm: form.width_cm ? parseFloat(form.width_cm) : null,
+    height_cm: form.height_cm ? parseFloat(form.height_cm) : null,
+    size_category: null,
+    custom_width_cm: null,
+    custom_height_cm: null,
+  } as any;
+  const bucket = getSizeBucket(previewArtwork);
+  const format = getFormat(previewArtwork);
+  const bucketLabel = bucket === 'small' ? t.sizeBucketSmall : bucket === 'medium' ? t.sizeBucketMedium : bucket === 'large' ? t.sizeBucketLarge : '—';
+  const formatLabel = format === 'vertical' ? t.formatVertical : format === 'square' ? t.formatSquare : format === 'horizontal' ? t.formatHorizontal : '—';
+
   return (
     <AdminLayout>
       <div className="max-w-3xl">
@@ -172,34 +190,43 @@ const ArtworkForm = () => {
             </Field>
           </div>
 
-          {/* Year, Ref & Size */}
+          {/* Year, Ref, Technique */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Field label={t.year}>
+            <Field label={t.year} hint={t.yearHint}>
               <input type="number" value={form.year} onChange={(e) => updateField('year', parseInt(e.target.value) || 0)} className="admin-input" />
             </Field>
             <Field label={t.ref} hint={t.refHint}>
               <input type="text" value={form.reference} onChange={(e) => updateField('reference', e.target.value)} className="admin-input" placeholder={t.refPlaceholder} />
             </Field>
-            <Field label={t.size}>
-              <select value={form.size_category} onChange={(e) => updateField('size_category', e.target.value)} className="admin-input">
-                {(Object.keys(sizeLabels) as SizeCategory[]).map((k) => (
-                  <option key={k} value={k}>{sizeLabels[k]}</option>
+            <Field label={t.technique}>
+              <select value={form.technique} onChange={(e) => updateField('technique', e.target.value)} className="admin-input">
+                {TECHNIQUE_VALUES.map((tv) => (
+                  <option key={tv} value={tv}>{tv}</option>
                 ))}
               </select>
             </Field>
           </div>
 
-          {/* Custom dimensions */}
-          {form.size_category === 'other' && (
+          {/* Real Dimensions */}
+          <div>
+            <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-4">{t.dimensions}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label={t.widthCm}>
-                <input type="number" value={form.custom_width_cm} onChange={(e) => updateField('custom_width_cm', e.target.value)} className="admin-input" placeholder="120" />
+                <input type="number" value={form.width_cm} onChange={(e) => updateField('width_cm', e.target.value)} className="admin-input" placeholder="120" min="0" step="0.1" />
               </Field>
               <Field label={t.heightCm}>
-                <input type="number" value={form.custom_height_cm} onChange={(e) => updateField('custom_height_cm', e.target.value)} className="admin-input" placeholder="150" />
+                <input type="number" value={form.height_cm} onChange={(e) => updateField('height_cm', e.target.value)} className="admin-input" placeholder="150" min="0" step="0.1" />
               </Field>
             </div>
-          )}
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+              <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
+                {t.sizeBucket}: <span className="font-medium text-[hsl(0_0%_30%)]">{bucketLabel}</span>
+              </p>
+              <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
+                {t.formatAuto}: <span className="font-medium text-[hsl(0_0%_30%)]">{formatLabel}</span>
+              </p>
+            </div>
+          </div>
 
           {/* Description */}
           <Field label={t.description}>
@@ -227,12 +254,10 @@ const ArtworkForm = () => {
           {/* Pricing */}
           <div className="pt-4 border-t border-[hsl(0_0%_90%)]">
             <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-4">{t.pricing}</h3>
-
             <div className="space-y-4">
               <Field label={t.priceLabel} hint={t.priceHint}>
                 <input type="number" value={form.price} onChange={(e) => updateField('price', e.target.value)} className="admin-input" placeholder="2500" min="0" step="1" />
               </Field>
-
               <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
                 {t.salesMode}: <span className="font-medium text-[hsl(0_0%_30%)]">{t.salesModes[derivedMode as keyof typeof t.salesModes]}</span>
               </p>
