@@ -5,11 +5,13 @@ interface ArtworkHoverZoomProps {
   alt: string;
   className?: string;
   style?: React.CSSProperties;
+  /** Override aspect ratio explicitly, e.g. "4 / 5" — used to honor real artwork proportions */
+  ratio?: string;
 }
 
 const ZOOM_LEVEL = 1.5;
 
-const ArtworkHoverZoom = ({ src, alt, className = "", style }: ArtworkHoverZoomProps) => {
+const ArtworkHoverZoom = ({ src, alt, className = "", style, ratio }: ArtworkHoverZoomProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [zooming, setZooming] = useState(false);
   const [origin, setOrigin] = useState("50% 50%");
@@ -21,10 +23,15 @@ const ArtworkHoverZoom = ({ src, alt, className = "", style }: ArtworkHoverZoomP
     setOrigin(`${x}% ${y}%`);
   }, []);
 
+  const containerStyle: React.CSSProperties = ratio
+    ? { aspectRatio: ratio }
+    : {};
+
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden cursor-pointer"
+      className="overflow-hidden cursor-pointer w-full"
+      style={containerStyle}
       onMouseEnter={() => setZooming(true)}
       onMouseLeave={() => setZooming(false)}
       onMouseMove={handleMouseMove}
@@ -32,7 +39,7 @@ const ArtworkHoverZoom = ({ src, alt, className = "", style }: ArtworkHoverZoomP
       <img
         src={src}
         alt={alt}
-        className={`${className} transition-transform duration-300 ease-out will-change-transform`}
+        className={`${className} transition-transform duration-300 ease-out will-change-transform ${ratio ? "w-full h-full object-cover" : ""}`}
         style={{
           ...style,
           transform: zooming ? `scale(${ZOOM_LEVEL})` : "scale(1)",
