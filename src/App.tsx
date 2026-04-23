@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +8,7 @@ import { I18nProvider } from "@/i18n";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import Index from "./pages/Index";
 import About from "./pages/About";
-import Studio from "./pages/Studio";
+// Studio page intentionally not imported in V1 — preserved at src/pages/Studio.tsx for V2
 import Contact from "./pages/Contact";
 import SelectedWorks from "./pages/SelectedWorks";
 import AllWorks from "./pages/AllWorks";
@@ -43,7 +43,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/cv" element={<About />} />
-              <Route path="/studio" element={<NotFound />} />
+              <Route path="/studio" element={<Navigate to="/" replace />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/selected-works" element={<SelectedWorks />} />
               <Route path="/works" element={<AllWorks />} />
