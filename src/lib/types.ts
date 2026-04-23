@@ -1,5 +1,14 @@
 export type SizeCategory = 'small' | 'medium' | 'large' | 'other';
 
+/** Allowed techniques (canonical Portuguese values stored in DB). */
+export const TECHNIQUE_VALUES = ['Óleo sobre tela', 'Acrílico sobre tela', 'Técnica mista'] as const;
+export type Technique = typeof TECHNIQUE_VALUES[number];
+
+export const DEFAULT_TECHNIQUE: Technique = 'Óleo sobre tela';
+
+export type SizeBucket = 'small' | 'medium' | 'large';
+export type Format = 'vertical' | 'square' | 'horizontal';
+
 export interface Artwork {
   id: string;
   title: string;
@@ -9,7 +18,13 @@ export interface Artwork {
   status: 'draft' | 'published' | 'archived';
   availability: 'available' | 'sold' | 'not_for_sale';
   price: number | null;
-  size_category: SizeCategory;
+  /** Real artwork dimensions in cm (preferred). */
+  width_cm: number | null;
+  height_cm: number | null;
+  /** Per-artwork technique (e.g. "Óleo sobre tela"). */
+  technique: Technique | string | null;
+  /** Legacy fields — kept for backward compatibility, not used in V1 public UI. */
+  size_category: SizeCategory | null;
   custom_width_cm: number | null;
   custom_height_cm: number | null;
   reference: string | null;
@@ -37,22 +52,65 @@ export const formatPrice = (price: number | null): string | null => {
   return `${price.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} €`;
 };
 
-/** Get display dimensions from size category */
-export const getDimensions = (artwork: Pick<Artwork, 'size_category' | 'custom_width_cm' | 'custom_height_cm'>): string => {
+/** Resolve actual width/height in cm, falling back to legacy fields when present. */
+export const getArtworkSize = (
+  artwork: Pick<Artwork, 'width_cm' | 'height_cm' | 'size_category' | 'custom_width_cm' | 'custom_height_cm'>
+): { width: number | null; height: number | null } => {
+  if (artwork.width_cm && artwork.height_cm) {
+    return { width: Number(artwork.width_cm), height: Number(artwork.height_cm) };
+  }
+  if (artwork.custom_width_cm && artwork.custom_height_cm) {
+    return { width: Number(artwork.custom_width_cm), height: Number(artwork.custom_height_cm) };
+  }
   switch (artwork.size_category) {
-    case 'small': return '80 × 80 cm';
-    case 'medium': return '90 × 90 cm';
-    case 'large': return '91 × 121 cm';
-    case 'other':
-      if (artwork.custom_width_cm && artwork.custom_height_cm) {
-        return `${artwork.custom_width_cm} × ${artwork.custom_height_cm} cm`;
-      }
-      return '';
-    default: return '';
+    case 'small': return { width: 80, height: 80 };
+    case 'medium': return { width: 90, height: 90 };
+    case 'large': return { width: 91, height: 121 };
+    default: return { width: null, height: null };
   }
 };
 
-export const MEDIUM_DISPLAY = 'Oil on canvas';
+/** Display real dimensions: "120 × 150 cm". */
+export const getRealDimensions = (
+  artwork: Pick<Artwork, 'width_cm' | 'height_cm' | 'size_category' | 'custom_width_cm' | 'custom_height_cm'>
+): string => {
+  const { width, height } = getArtworkSize(artwork);
+  if (!width || !height) return '';
+  return `${width} × ${height} cm`;
+};
+
+/** Automatic size bucket from largest dimension.
+ *  Pequeno ≤ 80 cm · Médio ≤ 100 cm · Grande > 100 cm */
+export const getSizeBucket = (
+  artwork: Pick<Artwork, 'width_cm' | 'height_cm' | 'size_category' | 'custom_width_cm' | 'custom_height_cm'>
+): SizeBucket | null => {
+  const { width, height } = getArtworkSize(artwork);
+  if (!width || !height) return null;
+  const max = Math.max(width, height);
+  if (max <= 80) return 'small';
+  if (max <= 100) return 'medium';
+  return 'large';
+};
+
+/** Automatic format from width/height. Square tolerance ±5%. */
+export const getFormat = (
+  artwork: Pick<Artwork, 'width_cm' | 'height_cm' | 'size_category' | 'custom_width_cm' | 'custom_height_cm'>
+): Format | null => {
+  const { width, height } = getArtworkSize(artwork);
+  if (!width || !height) return null;
+  const ratio = width / height;
+  if (Math.abs(ratio - 1) <= 0.05) return 'square';
+  return ratio < 1 ? 'vertical' : 'horizontal';
+};
+
+/** Resolve a displayable technique label. */
+export const getTechnique = (artwork: Pick<Artwork, 'technique'>): string => {
+  const t = (artwork.technique || '').toString().trim();
+  return t || DEFAULT_TECHNIQUE;
+};
+
+/** @deprecated Use getTechnique(artwork) instead. Kept only for legacy fallbacks. */
+export const MEDIUM_DISPLAY = DEFAULT_TECHNIQUE;
 
 export interface Inquiry {
   id: string;

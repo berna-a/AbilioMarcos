@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'pt' | 'fr' | 'de';
+export type Locale = 'en' | 'pt' | 'fr' | 'de' | 'es';
 
 export interface Translations {
   // Navigation
@@ -64,10 +64,14 @@ export interface Translations {
     work: string;
     works: string;
     show: string;
-    availability: string;
-    available: string;
-    sold: string;
-    notForSale: string;
+    technique: string;
+    techniqueOil: string;
+    techniqueAcrylic: string;
+    techniqueMixed: string;
+    format: string;
+    vertical: string;
+    square: string;
+    horizontal: string;
     size: string;
     small: string;
     medium: string;

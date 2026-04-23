@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
-import { Artwork, MEDIUM_DISPLAY, formatPrice } from "@/lib/types";
-import { useT } from "@/i18n";
+import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
+import { useT, techniqueLabel } from "@/i18n";
 import ArtworkHoverZoom from "@/components/ArtworkHoverZoom";
 import { track, trackArtwork } from "@/lib/analytics";
 
@@ -46,7 +46,7 @@ const FilterSection = ({
 const AllWorks = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<Record<string, string[]>>({ availability: [], size: [], price: [] });
+  const [filters, setFilters] = useState<Record<string, string[]>>({ technique: [], format: [], size: [], price: [] });
   const [sort, setSort] = useState<SortOption>('newest');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const t = useT();
@@ -67,13 +67,23 @@ const AllWorks = () => {
     }));
   };
 
-  const clearAll = () => setFilters({ availability: [], size: [], price: [] });
+  const clearAll = () => setFilters({ technique: [], format: [], size: [], price: [] });
   const activeCount = Object.values(filters).flat().length;
 
   const filtered = useMemo(() => {
     let result = artworks.filter((a) => {
-      if (filters.availability.length && !filters.availability.includes(a.availability)) return false;
-      if (filters.size.length && !filters.size.includes(a.size_category)) return false;
+      if (filters.technique.length) {
+        const tech = (a.technique || 'Óleo sobre tela').toString();
+        if (!filters.technique.includes(tech)) return false;
+      }
+      if (filters.format.length) {
+        const fmt = getFormat(a);
+        if (!fmt || !filters.format.includes(fmt)) return false;
+      }
+      if (filters.size.length) {
+        const bucket = getSizeBucket(a);
+        if (!bucket || !filters.size.includes(bucket)) return false;
+      }
       if (filters.price.length) {
         const match = filters.price.some((p) => {
           if (p === 'under1000') return a.price != null && a.price < 1000;
@@ -107,14 +117,24 @@ const AllWorks = () => {
         )}
       </div>
       <FilterSection
-        title={t.allWorks.availability}
+        title={t.allWorks.technique}
         options={[
-          { label: t.allWorks.available, value: "available" },
-          { label: t.allWorks.sold, value: "sold" },
-          { label: t.allWorks.notForSale, value: "not_for_sale" },
+          { label: t.allWorks.techniqueOil, value: "Óleo sobre tela" },
+          { label: t.allWorks.techniqueAcrylic, value: "Acrílico sobre tela" },
+          { label: t.allWorks.techniqueMixed, value: "Técnica mista" },
         ]}
-        selected={filters.availability}
-        onToggle={(v) => toggleFilter("availability", v)}
+        selected={filters.technique}
+        onToggle={(v) => toggleFilter("technique", v)}
+      />
+      <FilterSection
+        title={t.allWorks.format}
+        options={[
+          { label: t.allWorks.vertical, value: "vertical" },
+          { label: t.allWorks.square, value: "square" },
+          { label: t.allWorks.horizontal, value: "horizontal" },
+        ]}
+        selected={filters.format}
+        onToggle={(v) => toggleFilter("format", v)}
       />
       <FilterSection
         title={t.allWorks.size}
@@ -231,7 +251,7 @@ const AllWorks = () => {
                               <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground whitespace-nowrap">{formatPrice(work.price)}</p>
                             )}
                           </div>
-                          <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{MEDIUM_DISPLAY}, {work.year}</p>
+                          <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
                         </div>
                       </Link>
                     </motion.div>

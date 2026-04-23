@@ -33,7 +33,7 @@ serve(async (req) => {
     // Fetch artwork
     const { data: artwork, error: artworkError } = await supabase
       .from("artworks")
-      .select("id, title, slug, price, availability, status, primary_image_url")
+      .select("id, title, slug, price, availability, status, primary_image_url, technique")
       .eq("id", artwork_id)
       .single();
 
@@ -82,7 +82,7 @@ serve(async (req) => {
         unit_amount: Math.round(artwork.price * 100),
         product_data: {
           name: artwork.title,
-          description: "Original oil on canvas",
+          description: artwork.technique || "Original painting",
           ...(artwork.primary_image_url ? { images: [artwork.primary_image_url] } : {}),
         },
       },

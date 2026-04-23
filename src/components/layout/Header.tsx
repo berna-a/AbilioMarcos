@@ -12,6 +12,7 @@ const localeFlags: Record<Locale, string> = {
   en: "🇬🇧",
   fr: "🇫🇷",
   de: "🇩🇪",
+  es: "🇪🇸",
 };
 
 const navKeys = ["selectedWorks", "allWorks", "about", "contact"] as const;
