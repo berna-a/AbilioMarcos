@@ -19,6 +19,7 @@ import CheckoutCancel from "./pages/CheckoutCancel";
 import NotFound from "./pages/NotFound";
 import LegalPage from "./pages/legal/LegalPage";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import CookiePolicy from "./pages/legal/CookiePolicy";
 import AdminLogin from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminArtworks from "./pages/admin/Artworks";
@@ -55,7 +56,7 @@ const App = () => (
 
               {/* Legal pages */}
               <Route path="/legal/privacy" element={<PrivacyPolicy />} />
-              <Route path="/legal/cookies" element={<LegalPage titleKey="cookiesTitle" />} />
+              <Route path="/legal/cookies" element={<CookiePolicy />} />
               <Route path="/legal/terms" element={<LegalPage titleKey="termsTitle" />} />
               <Route path="/legal/disputes" element={<LegalPage titleKey="disputesTitle" />} />
               <Route path="/legal/complaints" element={<LegalPage titleKey="complaintsTitle" />} />
