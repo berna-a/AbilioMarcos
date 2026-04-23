@@ -85,6 +85,8 @@ export const adminPt = {
     dimensions: 'Dimensões',
     widthCm: 'Largura (cm)',
     heightCm: 'Altura (cm)',
+    dimensionsRequired: 'Indique largura e altura em cm (entre 1 e 1000).',
+    dimensionsInvalid: 'As dimensões devem ser números positivos até 1000 cm.',
     sizeBucket: 'Tamanho automático',
     sizeBucketSmall: 'Pequeno (até 80 cm)',
     sizeBucketMedium: 'Médio (até 100 cm)',

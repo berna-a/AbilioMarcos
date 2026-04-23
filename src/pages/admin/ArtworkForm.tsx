@@ -115,10 +115,21 @@ const ArtworkForm = () => {
     if (!form.title.trim()) { setError(t.titleRequired); return; }
     if (!form.slug.trim()) { setError(t.slugRequired); return; }
 
-    setSaving(true);
-    const priceNum = form.price ? parseFloat(form.price) : null;
     const widthNum = form.width_cm ? parseFloat(form.width_cm) : null;
     const heightNum = form.height_cm ? parseFloat(form.height_cm) : null;
+    // Dimensions: both must be present together, finite, > 0, <= 1000
+    const hasAny = form.width_cm !== '' || form.height_cm !== '';
+    if (hasAny) {
+      if (widthNum == null || heightNum == null || !Number.isFinite(widthNum) || !Number.isFinite(heightNum)) {
+        setError(t.dimensionsRequired); return;
+      }
+      if (widthNum <= 0 || heightNum <= 0 || widthNum > 1000 || heightNum > 1000) {
+        setError(t.dimensionsInvalid); return;
+      }
+    }
+
+    setSaving(true);
+    const priceNum = form.price ? parseFloat(form.price) : null;
     const payload: Record<string, any> = {
       title: form.title.trim(),
       slug: form.slug.trim(),
