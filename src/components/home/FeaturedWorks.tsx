@@ -75,6 +75,7 @@ const FeaturedWorks = () => {
               </Link>
             </motion.div>
           ))}
+        </div>
       </div>
 
       <motion.div className="mt-20 md:mt-24 text-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.2 }}>
