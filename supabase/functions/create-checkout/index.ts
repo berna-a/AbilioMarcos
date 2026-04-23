@@ -5,7 +5,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
@@ -65,10 +66,13 @@ serve(async (req) => {
       );
     }
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    const stripe = new Stripe(stripeKey, {
+      apiVersion: "2023-10-16",
+      httpClient: Stripe.createFetchHttpClient(),
+    });
 
-    const siteUrl = Deno.env.get("SITE_URL");
-    if (!siteUrl) throw new Error("SITE_URL not configured");
+    // Final domain readiness: prefer SITE_URL, fall back to abiliomarcos.com
+    const siteUrl = Deno.env.get("SITE_URL") || "https://abiliomarcos.com";
     const origin = siteUrl.replace(/\/+$/, "");
 
     const lineItem: Stripe.Checkout.SessionCreateParams.LineItem = {
