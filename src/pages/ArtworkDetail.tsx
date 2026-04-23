@@ -148,7 +148,7 @@ const ArtworkDetail = () => {
                     ) : (
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
-                    <p className="font-serif text-lg md:text-xl text-foreground group-hover:text-foreground/70 transition-colors duration-500 leading-tight">{rel.title}</p>
+                    <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{rel.title}</p>
                     <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
                   </Link>
                 ))}
