@@ -180,30 +180,57 @@ export interface Translations {
   // About page
   aboutPage: {
     aboutArtist: string;
-    quote: string;
-    biography: string;
-    bio: string[];
+    discipline: string;
+    heroLead: string;
     portraitCaption: string;
-    trajectory: string;
-    presence: string;
-    practice: string;
-    recognition: string;
-    presenceText: string;
-    practiceText: string;
-    recognitionText: string;
-    presenceDetails: string[];
-    practiceDetails: string[];
-    recognitionDetails: string[];
-    pressTitle: string;
-    exhibitionsTitle: string;
-    all: string;
-    solo: string;
-    group: string;
-    fairs: string;
+
+    biography: string;
+    bioOpener: string;
+    bio: string[];
+
+    practiceTitle: string;
+    practiceHeadline: string;
+    practiceParagraphs: string[];
+    materials: string;
+    techOil: string;
+    techOilHint: string;
+    techAcrylic: string;
+    techAcrylicHint: string;
+    techMixed: string;
+    techMixedHint: string;
+
+    trajectoryTitle: string;
+    trajectoryNote: string;
+    trajectoryProse: string;
+    statSolo: string;
+    statGroup: string;
+    statSince: string;
+    statCountries: string;
+
     collectionsTitle: string;
-    collections: string[];
-    forGalleries: string;
-    requestCV: string;
+    collectionsHeadline: string;
+    collMuseums: string;
+    collMuseumsBody: string;
+    collMunicipal: string;
+    collMunicipalBody: string;
+    collParish: string;
+    collParishBody: string;
+    collPrivate: string;
+    collPrivateBody: string;
+    privateCollectionsIn: string;
+
+    bibliographyTitle: string;
+    bibliographyHeadline: string;
+    bibliographyNote: string;
+
+    archiveTitle: string;
+    archiveNote: string;
+    archiveHeadline: string;
+    archiveSolo: string;
+    archiveGroup: string;
+    archiveCollections: string;
+    archiveBibliography: string;
+    archiveSelectedFrom: string;
   };
   // CV page
   cv: {
