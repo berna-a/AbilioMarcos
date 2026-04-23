@@ -10,7 +10,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 // Studio page intentionally not imported in V1 — preserved at src/pages/Studio.tsx for V2
 import Contact from "./pages/Contact";
-import SelectedWorks from "./pages/SelectedWorks";
+// SelectedWorks page intentionally not imported in V1 — `/selected-works` redirects to `/works`
 import AllWorks from "./pages/AllWorks";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import Collections from "./pages/Collections";
@@ -45,7 +45,7 @@ const App = () => (
               <Route path="/cv" element={<About />} />
               <Route path="/studio" element={<Navigate to="/" replace />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/selected-works" element={<SelectedWorks />} />
+              <Route path="/selected-works" element={<Navigate to="/works" replace />} />
               <Route path="/works" element={<AllWorks />} />
               <Route path="/artwork/:slug" element={<ArtworkDetail />} />
               <Route path="/collections" element={<Collections />} />

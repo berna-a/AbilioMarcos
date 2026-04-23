@@ -13,9 +13,10 @@ export const pt: Translations = {
     statement: 'Cada gesto carrega o peso da intenção — a cor como emoção, a textura como memória, a tela como espaço onde pensamento e instinto convergem.',
   },
   featured: {
-    label: 'Destaque',
-    title: 'Obras Selecionadas',
-    viewSelected: 'Ver Obras Selecionadas',
+    label: 'Recentes',
+    title: 'Obras Recentes',
+    viewSelected: 'Ver Todas as Obras',
+    viewAll: 'Ver Todas as Obras',
   },
   statement: {
     quote: '"Pinto para tornar visível o que vive sob a superfície — a tensão entre controlo e entrega, entre o que recordamos e o que sentimos."',
@@ -259,6 +260,24 @@ export const pt: Translations = {
     termsConditions: 'Termos e Condições',
     disputeResolution: 'Resolução de Conflitos',
     complaintsBook: 'Livro de Reclamações',
+  },
+  cookies: {
+    title: 'Privacidade & Cookies',
+    description: 'Utilizamos cookies para melhorar a sua experiência, analisar a utilização do site e — com o seu consentimento — apoiar comunicação personalizada. Pode aceitar tudo, rejeitar opcionais ou definir as suas preferências.',
+    accept: 'Aceitar tudo',
+    reject: 'Rejeitar opcionais',
+    manage: 'Preferências',
+    save: 'Guardar preferências',
+    essential: 'Essenciais',
+    essentialDesc: 'Necessários para o funcionamento do site. Sempre activos.',
+    analytics: 'Análise',
+    analyticsDesc: 'Ajudam-nos a perceber como o site é utilizado.',
+    marketing: 'Marketing',
+    marketingDesc: 'Permitem comunicação relevante e medição de campanhas.',
+    learnMore: 'Saber mais',
+  },
+  whatsappFloat: {
+    label: 'Falar por WhatsApp',
   },
   legal: {
     backToHome: 'Voltar ao Início',

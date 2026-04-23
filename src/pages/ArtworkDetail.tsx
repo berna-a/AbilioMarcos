@@ -85,15 +85,24 @@ const ArtworkDetail = () => {
             <motion.div className="lg:col-span-7" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
               {artwork.primary_image_url ? (
                 <ArtworkLightbox src={artwork.primary_image_url} alt={artwork.title}>
-                  <img
-                    src={artwork.primary_image_url}
-                    alt={artwork.title}
-                    className="w-full h-auto"
-                    style={naturalRatio ? { aspectRatio: naturalRatio, objectFit: 'cover' } : undefined}
-                  />
+                  {/* Cap height so the full work fits comfortably in the viewport on large screens. */}
+                  <div className="w-full flex justify-center">
+                    <img
+                      src={artwork.primary_image_url}
+                      alt={artwork.title}
+                      className="w-auto h-auto max-w-full object-contain"
+                      style={{
+                        ...(naturalRatio ? { aspectRatio: naturalRatio } : {}),
+                        maxHeight: "min(82vh, 880px)",
+                      }}
+                    />
+                  </div>
                 </ArtworkLightbox>
               ) : (
-                <div className="w-full bg-muted" style={{ aspectRatio: naturalRatio || '4/5' }} />
+                <div
+                  className="w-full bg-muted mx-auto"
+                  style={{ aspectRatio: naturalRatio || '4/5', maxHeight: 'min(82vh, 880px)' }}
+                />
               )}
             </motion.div>
 

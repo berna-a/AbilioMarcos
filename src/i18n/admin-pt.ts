@@ -17,6 +17,7 @@ export const adminPt = {
     signIn: 'Entrar',
     signingIn: 'A entrar…',
     invalidCredentials: 'Credenciais inválidas',
+    rememberMe: 'Manter sessão iniciada',
   },
   dashboard: {
     title: 'Painel',

@@ -13,9 +13,10 @@ export const de: Translations = {
     statement: 'Jede Geste trägt das Gewicht der Absicht — Farbe als Emotion, Textur als Erinnerung, die Leinwand als Raum, in dem Gedanke und Instinkt zusammentreffen.',
   },
   featured: {
-    label: 'Ausgewählt',
-    title: 'Ausgewählte Werke',
-    viewSelected: 'Ausgewählte Werke ansehen',
+    label: 'Aktuell',
+    title: 'Aktuelle Werke',
+    viewSelected: 'Alle Werke ansehen',
+    viewAll: 'Alle Werke ansehen',
   },
   statement: {
     quote: '„Ich male, um sichtbar zu machen, was unter der Oberfläche lebt — die Spannung zwischen Kontrolle und Hingabe, zwischen dem, woran wir uns erinnern, und dem, was wir fühlen."',
@@ -259,6 +260,24 @@ export const de: Translations = {
     termsConditions: 'Allgemeine Geschäftsbedingungen',
     disputeResolution: 'Streitbeilegung',
     complaintsBook: 'Beschwerdebuch',
+  },
+  cookies: {
+    title: 'Datenschutz & Cookies',
+    description: 'Wir verwenden Cookies, um Ihre Erfahrung zu verbessern, die Nutzung der Website zu verstehen und — mit Ihrer Einwilligung — eine persönlichere Kommunikation zu ermöglichen. Sie können alle akzeptieren, optionale ablehnen oder Ihre Präferenzen festlegen.',
+    accept: 'Alle akzeptieren',
+    reject: 'Optionale ablehnen',
+    manage: 'Einstellungen',
+    save: 'Einstellungen speichern',
+    essential: 'Notwendig',
+    essentialDesc: 'Erforderlich für den Betrieb der Website. Immer aktiv.',
+    analytics: 'Analyse',
+    analyticsDesc: 'Helfen uns zu verstehen, wie die Website genutzt wird.',
+    marketing: 'Marketing',
+    marketingDesc: 'Ermöglichen relevante Kommunikation und Kampagnenmessung.',
+    learnMore: 'Mehr erfahren',
+  },
+  whatsappFloat: {
+    label: 'Per WhatsApp schreiben',
   },
   legal: {
     backToHome: 'Zur Startseite',

@@ -14,11 +14,12 @@ export interface Translations {
     subtitle: string;
     statement: string;
   };
-  // Featured works (homepage)
+  // Featured works (homepage) — Recent Works in V1
   featured: {
     label: string;
     title: string;
     viewSelected: string;
+    viewAll: string;
   };
   // Statement section
   statement: {
@@ -251,6 +252,26 @@ export interface Translations {
     termsConditions: string;
     disputeResolution: string;
     complaintsBook: string;
+  };
+  // Cookie consent
+  cookies: {
+    title: string;
+    description: string;
+    accept: string;
+    reject: string;
+    manage: string;
+    save: string;
+    essential: string;
+    essentialDesc: string;
+    analytics: string;
+    analyticsDesc: string;
+    marketing: string;
+    marketingDesc: string;
+    learnMore: string;
+  };
+  // Floating WhatsApp button
+  whatsappFloat: {
+    label: string;
   };
   // Legal pages
   legal: {

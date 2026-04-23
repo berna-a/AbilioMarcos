@@ -13,9 +13,10 @@ export const en: Translations = {
     statement: 'Each gesture carries the weight of intention — color as emotion, texture as memory, the canvas as a space where thought and instinct converge.',
   },
   featured: {
-    label: 'Featured',
-    title: 'Selected Works',
-    viewSelected: 'View Selected Works',
+    label: 'Recent',
+    title: 'Recent Works',
+    viewSelected: 'View All Works',
+    viewAll: 'View All Works',
   },
   statement: {
     quote: '"I paint to make visible what lives beneath the surface — the tension between control and surrender, between what we remember and what we feel."',
@@ -259,6 +260,24 @@ export const en: Translations = {
     termsConditions: 'Terms & Conditions',
     disputeResolution: 'Dispute Resolution',
     complaintsBook: 'Complaints Book',
+  },
+  cookies: {
+    title: 'Privacy & Cookies',
+    description: 'We use cookies to improve your experience, understand how the site is used and — with your consent — support tailored communication. You can accept all, reject optional ones, or set your own preferences.',
+    accept: 'Accept all',
+    reject: 'Reject optional',
+    manage: 'Preferences',
+    save: 'Save preferences',
+    essential: 'Essential',
+    essentialDesc: 'Required for the site to function. Always on.',
+    analytics: 'Analytics',
+    analyticsDesc: 'Help us understand how the site is used.',
+    marketing: 'Marketing',
+    marketingDesc: 'Enable relevant communication and campaign measurement.',
+    learnMore: 'Learn more',
+  },
+  whatsappFloat: {
+    label: 'Chat on WhatsApp',
   },
   legal: {
     backToHome: 'Back to Home',

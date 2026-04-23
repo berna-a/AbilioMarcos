@@ -15,9 +15,10 @@ export const es: Translations = {
     statement: 'Cada gesto sostiene el peso de la intención — el color como emoción, la textura como memoria, el lienzo como espacio donde pensamiento e instinto convergen.',
   },
   featured: {
-    label: 'Destacado',
-    title: 'Obras Seleccionadas',
-    viewSelected: 'Ver Obras Seleccionadas',
+    label: 'Recientes',
+    title: 'Obras Recientes',
+    viewSelected: 'Ver Todas las Obras',
+    viewAll: 'Ver Todas las Obras',
   },
   statement: {
     quote: '«Pinto para hacer visible lo que vive bajo la superficie — la tensión entre el control y la entrega, entre lo que recordamos y lo que sentimos.»',
@@ -261,6 +262,24 @@ export const es: Translations = {
     termsConditions: 'Términos y Condiciones',
     disputeResolution: 'Resolución de Conflictos',
     complaintsBook: 'Libro de Reclamaciones',
+  },
+  cookies: {
+    title: 'Privacidad y Cookies',
+    description: 'Usamos cookies para mejorar su experiencia, analizar el uso del sitio y — con su consentimiento — apoyar una comunicación personalizada. Puede aceptarlas todas, rechazar las opcionales o definir sus preferencias.',
+    accept: 'Aceptar todo',
+    reject: 'Rechazar opcionales',
+    manage: 'Preferencias',
+    save: 'Guardar preferencias',
+    essential: 'Esenciales',
+    essentialDesc: 'Necesarias para el funcionamiento del sitio. Siempre activas.',
+    analytics: 'Análisis',
+    analyticsDesc: 'Nos ayudan a entender cómo se usa el sitio.',
+    marketing: 'Marketing',
+    marketingDesc: 'Permiten una comunicación relevante y la medición de campañas.',
+    learnMore: 'Más información',
+  },
+  whatsappFloat: {
+    label: 'Hablar por WhatsApp',
   },
   legal: {
     backToHome: 'Volver al Inicio',

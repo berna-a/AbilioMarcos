@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import SignatureLogo from "./SignatureLogo";
 import { useT } from "@/i18n";
 import { Instagram, Facebook, MessageCircle } from "lucide-react";
+import ComplaintsBookBadge from "@/components/ComplaintsBookBadge";
 
 const SOCIALS = {
   instagram: "https://www.instagram.com/abilio.marcos.arte/",
@@ -13,7 +14,6 @@ const Footer = () => {
   const t = useT();
 
   const navLinks = [
-    { label: t.nav.selectedWorks, href: "/selected-works" },
     { label: t.nav.allWorks, href: "/works" },
     { label: t.nav.about, href: "/about" },
     { label: t.nav.contact, href: "/contact" },
@@ -115,6 +115,9 @@ const Footer = () => {
                   {link.label}
                 </Link>
               ))}
+            </div>
+            <div className="mt-5">
+              <ComplaintsBookBadge />
             </div>
           </div>
         </div>

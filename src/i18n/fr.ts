@@ -13,9 +13,10 @@ export const fr: Translations = {
     statement: 'Chaque geste porte le poids de l\'intention — la couleur comme émotion, la texture comme mémoire, la toile comme espace où pensée et instinct convergent.',
   },
   featured: {
-    label: 'En Vedette',
-    title: 'Œuvres Choisies',
-    viewSelected: 'Voir les Œuvres Choisies',
+    label: 'Récentes',
+    title: 'Œuvres Récentes',
+    viewSelected: 'Voir Toutes les Œuvres',
+    viewAll: 'Voir Toutes les Œuvres',
   },
   statement: {
     quote: '« Je peins pour rendre visible ce qui vit sous la surface — la tension entre contrôle et abandon, entre ce dont nous nous souvenons et ce que nous ressentons. »',
@@ -259,6 +260,24 @@ export const fr: Translations = {
     termsConditions: 'Conditions Générales',
     disputeResolution: 'Résolution des Litiges',
     complaintsBook: 'Livre de Réclamations',
+  },
+  cookies: {
+    title: 'Confidentialité & Cookies',
+    description: 'Nous utilisons des cookies pour améliorer votre expérience, comprendre l\'utilisation du site et — avec votre accord — soutenir une communication personnalisée. Vous pouvez tout accepter, refuser les optionnels ou définir vos préférences.',
+    accept: 'Tout accepter',
+    reject: 'Refuser les optionnels',
+    manage: 'Préférences',
+    save: 'Enregistrer les préférences',
+    essential: 'Essentiels',
+    essentialDesc: 'Nécessaires au fonctionnement du site. Toujours actifs.',
+    analytics: 'Analyse',
+    analyticsDesc: 'Nous aident à comprendre l\'utilisation du site.',
+    marketing: 'Marketing',
+    marketingDesc: 'Permettent une communication pertinente et la mesure des campagnes.',
+    learnMore: 'En savoir plus',
+  },
+  whatsappFloat: {
+    label: 'Écrire sur WhatsApp',
   },
   legal: {
     backToHome: 'Retour à l\'Accueil',
