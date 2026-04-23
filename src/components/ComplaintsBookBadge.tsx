@@ -1,8 +1,9 @@
 import { useT } from "@/i18n";
+import lrLogo from "@/assets/livro-reclamacoes.png";
 
 /**
- * Refined placeholder slot for the official "Livro de Reclamações" badge.
- * The real asset/link will replace the inner content when available.
+ * Official "Livro de Reclamações" link for the footer.
+ * Uses the official PT logo asset.
  */
 const ComplaintsBookBadge = () => {
   const t = useT();
@@ -12,22 +13,15 @@ const ComplaintsBookBadge = () => {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t.footer.complaintsBook}
-      className="inline-flex items-center gap-3 border border-border bg-background/60 px-3.5 py-2.5 hover:border-brand-red/40 hover:bg-background transition-colors duration-300 group"
+      title={t.footer.complaintsBook}
+      className="inline-flex items-center bg-white/95 hover:bg-white border border-white/10 px-3 py-2 rounded-sm transition-colors duration-300"
     >
-      <span
-        aria-hidden
-        className="flex items-center justify-center w-7 h-7 border border-border text-[10px] tracking-[0.15em] uppercase text-foreground/55 group-hover:text-brand-red group-hover:border-brand-red/40 transition-colors"
-      >
-        LR
-      </span>
-      <span className="flex flex-col leading-tight">
-        <span className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground">
-          {t.footer.legal}
-        </span>
-        <span className="text-[12px] text-foreground/80 group-hover:text-foreground transition-colors">
-          {t.footer.complaintsBook}
-        </span>
-      </span>
+      <img
+        src={lrLogo}
+        alt={t.footer.complaintsBook}
+        className="h-9 w-auto select-none"
+        draggable={false}
+      />
     </a>
   );
 };
