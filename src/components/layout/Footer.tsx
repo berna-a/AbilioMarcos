@@ -116,6 +116,9 @@ const Footer = () => {
                 </Link>
               ))}
             </div>
+            <div className="mt-5">
+              <ComplaintsBookBadge />
+            </div>
           </div>
         </div>
 
