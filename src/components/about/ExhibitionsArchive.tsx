@@ -5,18 +5,16 @@ import { useT } from "@/i18n";
 type ExhibitionEntry = { year: string; title: string; type: "solo" | "group" | "fair"; location: string };
 
 const exhibitions: ExhibitionEntry[] = [
-  { year: "2024", title: "Solo Exhibition — Gallery Name", type: "solo", location: "Lisbon" },
-  { year: "2024", title: "International Art Fair", type: "fair", location: "London" },
-  { year: "2023", title: "Group Exhibition — Contemporary Art Space", type: "group", location: "Berlin" },
-  { year: "2023", title: "Art Fair", type: "fair", location: "Paris" },
+  { year: "2024", title: "Solo Exhibition — Gallery Name", type: "solo", location: "Lisboa" },
+  { year: "2023", title: "Group Exhibition — Contemporary Art Space", type: "group", location: "Porto" },
   { year: "2023", title: "Two-Person Show — Gallery", type: "group", location: "Porto" },
-  { year: "2022", title: "Solo Exhibition — Gallery Name", type: "solo", location: "Lisbon" },
-  { year: "2022", title: "International Biennale", type: "group", location: "Venice" },
-  { year: "2019", title: "Retrospective Exhibition", type: "solo", location: "Lisbon" },
-  { year: "2017", title: "Solo Exhibition — International Gallery", type: "solo", location: "Paris" },
-  { year: "2015", title: "Museum Group Exhibition", type: "group", location: "Madrid" },
-  { year: "2012", title: "Art Fair — Featured Artist", type: "fair", location: "Basel" },
-  { year: "2008", title: "Solo Exhibition — Debut Gallery", type: "solo", location: "Lisbon" },
+  { year: "2022", title: "Solo Exhibition — Gallery Name", type: "solo", location: "Lisboa" },
+  { year: "2022", title: "International Biennale", type: "group", location: "Cascais" },
+  { year: "2019", title: "Retrospective Exhibition", type: "solo", location: "Lisboa" },
+  { year: "2017", title: "Solo Exhibition — Gallery", type: "solo", location: "Sintra" },
+  { year: "2015", title: "Museum Group Exhibition", type: "group", location: "Évora" },
+  { year: "2012", title: "Art Fair — Featured Artist", type: "fair", location: "Lisboa" },
+  { year: "2008", title: "Solo Exhibition — Debut Gallery", type: "solo", location: "Lisboa" },
   { year: "2005", title: "Young Painters Prize", type: "group", location: "Porto" },
 ];
 
