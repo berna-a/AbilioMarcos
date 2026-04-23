@@ -6,7 +6,7 @@ import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
 import { useT, techniqueLabel } from "@/i18n";
-import ArtworkHoverZoom from "@/components/ArtworkHoverZoom";
+import ArtworkPreviewImage from "@/components/ArtworkPreviewImage";
 import { track, trackArtwork } from "@/lib/analytics";
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
@@ -235,32 +235,23 @@ const AllWorks = () => {
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-12">
-                  {filtered.map((work, i) => {
-                    const w = work.width_cm ?? work.custom_width_cm;
-                    const h = work.height_cm ?? work.custom_height_cm;
-                    const ratio = w && h ? `${Number(w)} / ${Number(h)}` : "4 / 5";
-                    return (
-                      <motion.div key={work.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ duration: 0.45, delay: 0.04 * (i % 3) }}>
-                        <Link to={`/artwork/${work.slug}`} className="group block" onClick={() => trackArtwork('artwork_card_click', work)}>
-                          {work.primary_image_url ? (
-                            <ArtworkHoverZoom src={work.primary_image_url} alt={work.title} ratio={ratio} />
-                          ) : (
-                            <div className="w-full bg-muted" style={{ aspectRatio: ratio }} />
-                          )}
-                          <div className="mt-3.5">
-                            <div className="flex justify-between items-baseline gap-3">
-                              <p className="font-serif text-sm md:text-base tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{work.title}</p>
-                              {formatPrice(work.price) && (
-                                <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground whitespace-nowrap">{formatPrice(work.price)}</p>
-                              )}
-                            </div>
-                            <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-12 items-start">
+                  {filtered.map((work, i) => (
+                    <motion.div key={work.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ duration: 0.45, delay: 0.04 * (i % 3) }}>
+                      <Link to={`/artwork/${work.slug}`} className="group block" onClick={() => trackArtwork('artwork_card_click', work)}>
+                        <ArtworkPreviewImage artwork={work} hoverZoom />
+                        <div className="mt-3.5">
+                          <div className="flex justify-between items-baseline gap-3">
+                            <p className="font-serif text-sm md:text-base tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{work.title}</p>
+                            {formatPrice(work.price) && (
+                              <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground whitespace-nowrap">{formatPrice(work.price)}</p>
+                            )}
                           </div>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
+                          <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
                 </div>
               )}
             </div>
