@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/i18n";
+import AnimatedSignature from "@/components/AnimatedSignature";
 
 const HeroSection = () => {
   const t = useT();
