@@ -4,9 +4,10 @@ import { en } from './en';
 import { pt } from './pt';
 import { fr } from './fr';
 import { de } from './de';
+import { es } from './es';
 import { adminPt } from './admin-pt';
 
-const translations: Record<Locale, Translations> = { en, pt, fr, de };
+const translations: Record<Locale, Translations> = { en, pt, fr, de, es };
 
 const STORAGE_KEY = 'am_locale';
 
@@ -18,6 +19,7 @@ function detectLocale(): Locale {
   if (browserLang.startsWith('pt')) return 'pt';
   if (browserLang.startsWith('fr')) return 'fr';
   if (browserLang.startsWith('de')) return 'de';
+  if (browserLang.startsWith('es')) return 'es';
   return 'en';
 }
 
@@ -64,6 +66,7 @@ export const localeLabels: Record<Locale, string> = {
   pt: 'PT',
   fr: 'FR',
   de: 'DE',
+  es: 'ES',
 };
 
 export const localeNames: Record<Locale, string> = {
@@ -71,4 +74,21 @@ export const localeNames: Record<Locale, string> = {
   pt: 'Português',
   fr: 'Français',
   de: 'Deutsch',
+  es: 'Español',
+};
+
+/** Map a stored technique value to its localized label using current translations. */
+export const techniqueLabel = (
+  t: Translations,
+  technique: string | null | undefined
+): string => {
+  const value = (technique || '').trim();
+  if (!value) return t.allWorks.techniqueOil;
+  // Match against canonical PT-stored values
+  switch (value) {
+    case 'Óleo sobre tela': return t.allWorks.techniqueOil;
+    case 'Acrílico sobre tela': return t.allWorks.techniqueAcrylic;
+    case 'Técnica mista': return t.allWorks.techniqueMixed;
+    default: return value;
+  }
 };
