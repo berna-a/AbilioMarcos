@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getRecentArtworks } from "@/lib/artworks";
 import { useT, techniqueLabel } from "@/i18n";
 import { Artwork } from "@/lib/types";
+import ArtworkPreviewImage from "@/components/ArtworkPreviewImage";
 
 const placeholderWorks: Partial<Artwork>[] = [
   { id: "1", title: "Erosion of Light", slug: "erosion-of-light", primary_image_url: null, technique: null },
@@ -29,11 +30,6 @@ const FeaturedWorks = () => {
   }, []);
 
   const getLink = (work: Partial<Artwork>) => work.slug ? `/artwork/${work.slug}` : `/artwork/${work.id}`;
-  const getRatio = (work: Partial<Artwork>, fallback: string) => {
-    const w = (work as any).width_cm ?? (work as any).custom_width_cm;
-    const h = (work as any).height_cm ?? (work as any).custom_height_cm;
-    return w && h ? `${Number(w)} / ${Number(h)}` : fallback;
-  };
 
   return (
     <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto">
