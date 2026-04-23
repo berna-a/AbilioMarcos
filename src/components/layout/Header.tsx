@@ -114,8 +114,10 @@ const Header = () => {
             <Link
               to="/"
               aria-label="Abílio Marcos"
-              className={`transition-colors duration-700 ${
-                heroState ? "text-white/90 hover:text-white" : "text-white"
+              className={`transition-all duration-700 ${
+                heroState
+                  ? "opacity-0 pointer-events-none -translate-y-1 text-white"
+                  : "opacity-100 translate-y-0 text-white hover:text-white/90"
               }`}
             >
               <SignatureLogo className="h-7 w-[9.25rem] md:h-8 md:w-[10.5rem]" />
