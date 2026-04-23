@@ -6,10 +6,16 @@ serve(async (req) => {
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
   const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
   if (!stripeKey || !webhookSecret) {
+    console.error("Missing STRIPE_SECRET_KEY or STRIPE_WEBHOOK_SECRET");
     return new Response("Server configuration error", { status: 500 });
   }
 
-  const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+  const stripe = new Stripe(stripeKey, {
+    apiVersion: "2023-10-16",
+    httpClient: Stripe.createFetchHttpClient(),
+  });
+  const cryptoProvider = Stripe.createSubtleCryptoProvider();
+
   const signature = req.headers.get("stripe-signature");
   if (!signature) {
     return new Response("Missing signature", { status: 400 });
@@ -19,10 +25,17 @@ serve(async (req) => {
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    // Deno/Edge Runtime requires the async variant (Web Crypto is async)
+    event = await stripe.webhooks.constructEventAsync(
+      body,
+      signature,
+      webhookSecret,
+      undefined,
+      cryptoProvider,
+    );
   } catch (err) {
-    console.error("Webhook signature verification failed:", err.message);
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
+    console.error("Webhook signature verification failed:", (err as Error).message);
+    return new Response(`Webhook Error: ${(err as Error).message}`, { status: 400 });
   }
 
   if (event.type === "checkout.session.completed") {
@@ -73,7 +86,7 @@ serve(async (req) => {
       }
     }
 
-    // Mark artwork as sold
+    // Mark artwork as sold (atomic: only flips when still available)
     if (artworkId) {
       const { error: updateError } = await supabase
         .from("artworks")
