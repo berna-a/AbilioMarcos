@@ -105,37 +105,11 @@ const HeroSection = () => {
         </motion.h1>
 
         <motion.div
-          className="w-12 md:w-16 h-px bg-primary-foreground/40 mt-8 md:mt-10 mb-8 md:mb-10"
+          className="w-12 md:w-16 h-px bg-primary-foreground/40 mt-8 md:mt-10"
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
           transition={{ delay: 1, duration: 0.8 }}
         />
-
-        <motion.p
-          className="max-w-md md:max-w-lg text-sm md:text-base text-primary-foreground/85 font-serif italic leading-[1.8] tracking-wide drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.1, duration: 1.2 }}
-        >
-          {t.hero.statement}
-        </motion.p>
-
-        <motion.div
-          className="mt-10 md:mt-14"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.6 }}
-          transition={{ delay: 1.6, duration: 1.2 }}
-        >
-          <svg viewBox="0 0 200 50" className="w-28 md:w-36" fill="none">
-            <path
-              d="M15 35 Q30 10 50 28 Q65 42 80 22 Q95 5 110 30 Q120 42 140 20 Q155 5 175 32"
-              stroke="hsl(var(--primary-foreground))"
-              strokeWidth="0.8"
-              strokeLinecap="round"
-              opacity="0.6"
-            />
-          </svg>
-        </motion.div>
       </div>
 
       <motion.div
