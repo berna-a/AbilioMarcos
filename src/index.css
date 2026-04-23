@@ -45,9 +45,9 @@
     --status-available: 140 30% 32%;   /* muted forest green */
     --status-sold: 18 70% 38%;         /* warm rust red */
 
-    /* Footer surface */
-    --footer-bg: 35 6% 91%;            /* soft elegant grey */
-    --footer-border: 35 8% 84%;
+    /* Footer surface — dark elegant grey */
+    --footer-bg: 30 6% 14%;            /* deep warm charcoal */
+    --footer-border: 30 6% 22%;
 
     /* Gallery-specific tokens */
     --gallery-warm: 35 20% 94%;
