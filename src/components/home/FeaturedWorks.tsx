@@ -38,38 +38,48 @@ const FeaturedWorks = () => {
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10">
-        {works[0] && (
-          <motion.div className="md:col-span-7" initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7 }}>
-            <Link to={getLink(works[0])} className="group block">
-              {getImage(works[0]) ? (
-                <img src={getImage(works[0])} alt={works[0].title} className="aspect-[4/5] w-full object-cover" />
-              ) : (
-                <div className="aspect-[4/5] w-full" style={{ background: getGradient(works[0]) }} />
-              )}
-              <div className="mt-5">
-                <p className="font-serif text-lg md:text-xl tracking-[0.01em]">{works[0].title}</p>
-                <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{techniqueLabel(t, works[0].technique)}</p>
-              </div>
-            </Link>
-          </motion.div>
-        )}
-
-        <div className="md:col-span-5 flex flex-col gap-8 md:gap-10">
-          {works.slice(1).map((work, i) => (
-            <motion.div key={work.id} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}>
-              <Link to={getLink(work)} className="group block">
-                {getImage(work) ? (
-                  <img src={getImage(work)} alt={work.title} className="aspect-[3/2] w-full object-cover" />
+        {works[0] && (() => {
+          const w = works[0].width_cm ?? works[0].custom_width_cm;
+          const h = works[0].height_cm ?? works[0].custom_height_cm;
+          const ratio = w && h ? `${Number(w)} / ${Number(h)}` : "4 / 5";
+          return (
+            <motion.div className="md:col-span-7" initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7 }}>
+              <Link to={getLink(works[0])} className="group block">
+                {getImage(works[0]) ? (
+                  <img src={getImage(works[0])} alt={works[0].title} className="w-full object-cover" style={{ aspectRatio: ratio }} />
                 ) : (
-                  <div className="aspect-[3/2] w-full" style={{ background: getGradient(work) }} />
+                  <div className="w-full" style={{ background: getGradient(works[0]), aspectRatio: ratio }} />
                 )}
                 <div className="mt-5">
-                  <p className="font-serif text-lg tracking-[0.01em]">{work.title}</p>
-                  <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
+                  <p className="font-serif text-lg md:text-xl tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{works[0].title}</p>
+                  <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{techniqueLabel(t, works[0].technique)}</p>
                 </div>
               </Link>
             </motion.div>
-          ))}
+          );
+        })()}
+
+        <div className="md:col-span-5 flex flex-col gap-8 md:gap-10">
+          {works.slice(1).map((work, i) => {
+            const w = work.width_cm ?? work.custom_width_cm;
+            const h = work.height_cm ?? work.custom_height_cm;
+            const ratio = w && h ? `${Number(w)} / ${Number(h)}` : "3 / 2";
+            return (
+              <motion.div key={work.id} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}>
+                <Link to={getLink(work)} className="group block">
+                  {getImage(work) ? (
+                    <img src={getImage(work)} alt={work.title} className="w-full object-cover" style={{ aspectRatio: ratio }} />
+                  ) : (
+                    <div className="w-full" style={{ background: getGradient(work), aspectRatio: ratio }} />
+                  )}
+                  <div className="mt-5">
+                    <p className="font-serif text-lg tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{work.title}</p>
+                    <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 

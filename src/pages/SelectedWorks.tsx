@@ -21,24 +21,33 @@ const SelectedWorks = () => {
     });
   }, []);
 
-  const WorkCard = ({ work, aspect }: { work: Artwork; aspect: string }) => (
-    <Link to={`/artwork/${work.slug}`} className="group block" onClick={() => trackArtwork('artwork_card_click', work)}>
-      {work.primary_image_url ? (
-        <ArtworkHoverZoom src={work.primary_image_url} alt={work.title} className="w-full object-cover" style={{ aspectRatio: aspect }} />
-      ) : (
-        <div className="w-full bg-muted" style={{ aspectRatio: aspect }} />
-      )}
-      <div className="mt-4 md:mt-5 flex justify-between items-baseline gap-4">
-        <div>
-          <p className="font-serif text-base md:text-lg tracking-[0.01em] group-hover:text-foreground/70 transition-colors duration-300">{work.title}</p>
-          <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
-        </div>
-        {formatPrice(work.price) && (
-          <p className="text-[10px] md:text-[11px] tracking-[0.08em] text-muted-foreground/70 whitespace-nowrap font-light">{formatPrice(work.price)}</p>
+  const naturalRatio = (work: Artwork): string | undefined => {
+    const w = work.width_cm ?? work.custom_width_cm;
+    const h = work.height_cm ?? work.custom_height_cm;
+    return w && h ? `${Number(w)} / ${Number(h)}` : undefined;
+  };
+
+  const WorkCard = ({ work, aspect }: { work: Artwork; aspect: string }) => {
+    const ratio = naturalRatio(work) || aspect.replace("/", " / ");
+    return (
+      <Link to={`/artwork/${work.slug}`} className="group block" onClick={() => trackArtwork('artwork_card_click', work)}>
+        {work.primary_image_url ? (
+          <ArtworkHoverZoom src={work.primary_image_url} alt={work.title} ratio={ratio} />
+        ) : (
+          <div className="w-full bg-muted" style={{ aspectRatio: ratio }} />
         )}
-      </div>
-    </Link>
-  );
+        <div className="mt-4 md:mt-5 flex justify-between items-baseline gap-4">
+          <div>
+            <p className="font-serif text-base md:text-lg tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{work.title}</p>
+            <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
+          </div>
+          {formatPrice(work.price) && (
+            <p className="text-[10px] md:text-[11px] tracking-[0.08em] text-muted-foreground/70 whitespace-nowrap font-light">{formatPrice(work.price)}</p>
+          )}
+        </div>
+      </Link>
+    );
+  };
 
   return (
     <Layout>
