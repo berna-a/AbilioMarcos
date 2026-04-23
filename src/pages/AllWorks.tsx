@@ -7,6 +7,8 @@ import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
 import { useT, techniqueLabel } from "@/i18n";
 import ArtworkPreviewImage from "@/components/ArtworkPreviewImage";
+import MasonryGrid from "@/components/MasonryGrid";
+import { useArtworkRatios } from "@/hooks/useArtworkRatios";
 import { track, trackArtwork } from "@/lib/analytics";
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
@@ -107,6 +109,8 @@ const AllWorks = () => {
 
     return result;
   }, [artworks, filters, sort]);
+
+  const ratios = useArtworkRatios(filtered);
 
   const filterContent = (
     <div>
@@ -235,24 +239,46 @@ const AllWorks = () => {
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-12 items-start">
-                  {filtered.map((work, i) => (
-                    <motion.div key={work.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-30px" }} transition={{ duration: 0.45, delay: 0.04 * (i % 3) }}>
-                      <Link to={`/artwork/${work.slug}`} className="group block" onClick={() => trackArtwork('artwork_card_click', work)}>
-                        <ArtworkPreviewImage artwork={work} hoverZoom />
-                        <div className="mt-3.5">
-                          <div className="flex justify-between items-baseline gap-3">
-                            <p className="font-serif text-sm md:text-base tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{work.title}</p>
-                            {formatPrice(work.price) && (
-                              <p className="text-[10px] md:text-[11px] tracking-[0.06em] text-muted-foreground whitespace-nowrap">{formatPrice(work.price)}</p>
-                            )}
+                <MasonryGrid
+                  columns={{ base: 2, md: 2, lg: 3, xl: 3 }}
+                  gapX={16}
+                  gapY={28}
+                  items={filtered.map((work, i) => ({
+                    key: work.id,
+                    ratio: ratios[work.id],
+                    render: () => (
+                      <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
+                      >
+                        <Link
+                          to={`/artwork/${work.slug}`}
+                          className="group block"
+                          onClick={() => trackArtwork('artwork_card_click', work)}
+                        >
+                          <ArtworkPreviewImage artwork={work} hoverZoom />
+                          <div className="mt-2.5 space-y-0.5">
+                            <div className="flex items-baseline justify-between gap-3">
+                              <p className="font-serif text-sm md:text-[15px] tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300 truncate">
+                                {work.title}
+                              </p>
+                              {formatPrice(work.price) && (
+                                <p className="text-[10px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                                  {formatPrice(work.price)}
+                                </p>
+                              )}
+                            </div>
+                            <p className="text-[10px] tracking-[0.05em] text-muted-foreground/90 truncate">
+                              {techniqueLabel(t, work.technique)}
+                            </p>
                           </div>
-                          <p className="text-[9px] md:text-[10px] tracking-[0.06em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
+                        </Link>
+                      </motion.div>
+                    ),
+                  }))}
+                />
               )}
             </div>
           </div>
