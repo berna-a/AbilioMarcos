@@ -178,6 +178,9 @@ const AdminAnalytics = () => {
                   <p className="text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)]">{kpi.label}</p>
                 </div>
                 <p className="text-2xl font-medium text-[hsl(0_0%_12%)]">{kpi.value}</p>
+                {('hint' in kpi) && kpi.hint && (
+                  <p className="text-[11px] text-[hsl(0_0%_50%)] mt-1">{kpi.hint}</p>
+                )}
               </div>
             ))}
           </div>
