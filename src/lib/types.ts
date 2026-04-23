@@ -9,7 +9,6 @@ export interface Artwork {
   status: 'draft' | 'published' | 'archived';
   availability: 'available' | 'sold' | 'not_for_sale';
   price: number | null;
-  purchase_url: string | null;
   size_category: SizeCategory;
   custom_width_cm: number | null;
   custom_height_cm: number | null;

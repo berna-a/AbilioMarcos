@@ -105,20 +105,31 @@ function volumeOverTime(events: AnalyticsEvent[], period: Period) {
 // ── Component ──────────────────────────────────────────────
 const AdminAnalytics = () => {
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
+  const [ordersCount, setOrdersCount] = useState(0);
+  const [ordersRevenue, setOrdersRevenue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<Period>('30d');
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchData = async () => {
       setLoading(true);
-      let query = supabase.from('analytics_events').select('id, event_name, properties, created_at').order('created_at', { ascending: false }).limit(5000);
       const since = sinceDate(period);
-      if (since) query = query.gte('created_at', since);
-      const { data } = await query;
-      setEvents(data || []);
+
+      // Events
+      let eventsQuery = supabase.from('analytics_events').select('id, event_name, properties, created_at').order('created_at', { ascending: false }).limit(5000);
+      if (since) eventsQuery = eventsQuery.gte('created_at', since);
+
+      // Orders — source of truth for confirmed purchases
+      let ordersQuery = supabase.from('orders').select('amount, currency, payment_status, created_at').eq('payment_status', 'paid');
+      if (since) ordersQuery = ordersQuery.gte('created_at', since);
+
+      const [{ data: eventsData }, { data: ordersData }] = await Promise.all([eventsQuery, ordersQuery]);
+      setEvents(eventsData || []);
+      setOrdersCount((ordersData || []).length);
+      setOrdersRevenue((ordersData || []).reduce((sum, o: any) => sum + (Number(o.amount) || 0), 0));
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [period]);
 
   const kpis = useMemo(() => [
@@ -126,9 +137,9 @@ const AdminAnalytics = () => {
     { label: 'Cliques em obras', value: countByEvent(events, 'artwork_card_click'), icon: MousePointer },
     { label: 'Inquiries submetidos', value: countByEvent(events, 'inquiry_submitted'), icon: MessageSquare },
     { label: 'Checkouts iniciados', value: countByEvent(events, 'checkout_started'), icon: ShoppingCart },
-    { label: 'Compras concluídas', value: countByEvent(events, 'checkout_completed'), icon: CheckCircle },
+    { label: 'Vendas confirmadas', value: ordersCount, icon: CheckCircle, hint: ordersRevenue > 0 ? `${ordersRevenue.toLocaleString('de-DE', { maximumFractionDigits: 0 })} €` : undefined },
     { label: 'Newsletter', value: countByEvent(events, 'newsletter_signup'), icon: Mail },
-  ], [events]);
+  ], [events, ordersCount, ordersRevenue]);
 
   const mostViewed = useMemo(() => rankByProperty(events, ['artwork_view']), [events]);
   const mostClicked = useMemo(() => rankByProperty(events, ['artwork_card_click']), [events]);
@@ -167,6 +178,9 @@ const AdminAnalytics = () => {
                   <p className="text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)]">{kpi.label}</p>
                 </div>
                 <p className="text-2xl font-medium text-[hsl(0_0%_12%)]">{kpi.value}</p>
+                {('hint' in kpi) && kpi.hint && (
+                  <p className="text-[11px] text-[hsl(0_0%_50%)] mt-1">{kpi.hint}</p>
+                )}
               </div>
             ))}
           </div>
