@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
 import SignatureLogo from "./SignatureLogo";
 import { useT } from "@/i18n";
+import { Instagram, Facebook, MessageCircle } from "lucide-react";
+
+const SOCIALS = {
+  instagram: "https://www.instagram.com/abilio.marcos.arte/",
+  facebook: "https://www.facebook.com/abilio.marcos.9",
+  whatsapp: "https://wa.me/351968181117",
+};
 
 const Footer = () => {
   const t = useT();
@@ -9,6 +16,7 @@ const Footer = () => {
     { label: t.nav.selectedWorks, href: "/selected-works" },
     { label: t.nav.allWorks, href: "/works" },
     { label: t.nav.about, href: "/about" },
+    { label: t.nav.contact, href: "/contact" },
   ];
 
   const legalLinks = [
@@ -33,17 +41,14 @@ const Footer = () => {
             </p>
             {/* Social */}
             <div className="flex items-center gap-4 mt-5">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" />
-                  <circle cx="12" cy="12" r="5" />
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-                </svg>
+              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
+                <Instagram className="w-4 h-4" />
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-                </svg>
+              <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-muted-foreground/50 hover:text-foreground transition-colors duration-300">
+                <MessageCircle className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -78,6 +83,20 @@ const Footer = () => {
               >
                 {t.footer.contact}
               </Link>
+              <a
+                href="mailto:marcos4011@gmail.com"
+                className="text-[13px] text-foreground/45 hover:text-foreground transition-colors duration-300"
+              >
+                marcos4011@gmail.com
+              </a>
+              <a
+                href={SOCIALS.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-[13px] text-foreground/45 hover:text-foreground transition-colors duration-300"
+              >
+                <MessageCircle className="w-3 h-3" /> WhatsApp
+              </a>
             </div>
           </div>
 
@@ -91,7 +110,7 @@ const Footer = () => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="text-[11px] text-foreground/35 hover:text-foreground/60 transition-colors duration-300"
+                  className={`text-[11px] hover:text-foreground/60 transition-colors duration-300 ${link.href === "/legal/complaints" ? "text-foreground/55 font-medium" : "text-foreground/35"}`}
                 >
                   {link.label}
                 </Link>

@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { useT } from "@/i18n";
 
 const authorityItems = [
-  "Private Collections, Lisbon",
-  "Contemporary Art Fair, London",
-  "Gallery Exhibition, Berlin",
+  "Private Collections, Portugal",
+  "Contemporary Art Fair, Lisboa",
+  "Gallery Exhibition, Porto",
   "International Art Biennale",
 ];
 

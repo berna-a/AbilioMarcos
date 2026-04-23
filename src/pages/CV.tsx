@@ -4,17 +4,16 @@ import { useT } from "@/i18n";
 
 const exhibitions = [
   { year: "2024", entries: [
-    "Solo Exhibition — Gallery Name, Lisbon",
-    "International Art Fair, London",
+    "Solo Exhibition — Gallery Name, Lisboa",
+    "Contemporary Art Fair, Lisboa",
   ]},
   { year: "2023", entries: [
-    "Group Exhibition — Contemporary Art Space, Berlin",
-    "Art Fair, Paris",
+    "Group Exhibition — Contemporary Art Space, Porto",
     "Two-Person Show — Gallery, Porto",
   ]},
   { year: "2022", entries: [
-    "Solo Exhibition — Gallery Name, Lisbon",
-    "International Biennale, Location",
+    "Solo Exhibition — Gallery Name, Lisboa",
+    "International Biennale, Cascais",
   ]},
 ];
 
