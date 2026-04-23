@@ -148,6 +148,12 @@ export interface Translations {
     studioLabel: string;
     studioLocation: string;
     emailLabel: string;
+    phoneLabel: string;
+    whatsappLabel: string;
+    whatsappCta: string;
+    socialsLabel: string;
+    mapsLabel: string;
+    openInMaps: string;
     nameLabel: string;
     emailFieldLabel: string;
     subjectLabel: string;
