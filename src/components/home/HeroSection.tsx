@@ -104,8 +104,6 @@ const HeroSection = () => {
         >
           <AnimatedSignature
             className="w-[320px] h-[80px] md:w-[520px] md:h-[130px] lg:w-[640px] lg:h-[160px]"
-            duration={2.6}
-            delay={0.8}
           />
         </motion.div>
       </div>
