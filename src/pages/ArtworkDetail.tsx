@@ -4,7 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getArtworkBySlug, getRelatedArtworks } from "@/lib/artworks";
-import { Artwork, getDimensions, formatPrice, getSalesMode, MEDIUM_DISPLAY } from "@/lib/types";
+import { Artwork, getRealDimensions, formatPrice, getSalesMode, getTechnique } from "@/lib/types";
+import { techniqueLabel } from "@/i18n";
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
@@ -56,9 +57,10 @@ const ArtworkDetail = () => {
 
   const status = statusDisplay[artwork.availability] || statusDisplay.available;
   const additionalImages = artwork.additional_images || [];
-  const dimensions = getDimensions(artwork);
+  const dimensions = getRealDimensions(artwork);
   const salesMode = getSalesMode(artwork.price);
   const displayPrice = formatPrice(artwork.price);
+  const techniqueText = techniqueLabel(t, getTechnique(artwork));
 
   return (
     <Layout>
@@ -83,11 +85,10 @@ const ArtworkDetail = () => {
             </motion.div>
 
             <motion.div className="lg:col-span-5 flex flex-col lg:py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
-              <h1 className="font-serif text-[3rem] md:text-[3.5rem] lg:text-[3.75rem] font-light text-foreground leading-[1.02] mb-2">{artwork.title}</h1>
-              <p className="font-serif text-xl md:text-2xl text-muted-foreground italic mb-14 lg:mb-16">{artwork.year}</p>
+              <h1 className="font-serif text-[3rem] md:text-[3.5rem] lg:text-[3.75rem] font-light text-foreground leading-[1.02] mb-14 lg:mb-16">{artwork.title}</h1>
 
               <div className="space-y-6 mb-14 lg:mb-16">
-                <MetadataLine label={t.artwork.medium} value={MEDIUM_DISPLAY} />
+                <MetadataLine label={t.artwork.medium} value={techniqueText} />
                 {dimensions && <MetadataLine label={t.artwork.dimensions} value={dimensions} />}
                 {status.label && <MetadataLine label={t.artwork.status} value={status.label} valueClassName={status.className} />}
                 {displayPrice && salesMode !== 'inquiry_only' && (
@@ -135,8 +136,7 @@ const ArtworkDetail = () => {
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
                     <p className="font-serif text-lg md:text-xl text-foreground group-hover:text-foreground/70 transition-colors duration-500 leading-tight">{rel.title}</p>
-                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-2">{MEDIUM_DISPLAY}</p>
-                    <p className="font-serif text-sm text-muted-foreground italic mt-1">{rel.year}</p>
+                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
                   </Link>
                 ))}
               </div>
