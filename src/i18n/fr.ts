@@ -133,7 +133,7 @@ export const fr: Translations = {
     inquiriesLabel: 'Demandes',
     inquiriesText: 'Pour toute demande d\'information, acquisition ou commande, veuillez utiliser le formulaire ou nous contacter directement.',
     studioLabel: 'Atelier',
-    studioLocation: 'Lisbonne, Portugal',
+    studioLocation: 'Monfirre, Portugal',
     emailLabel: 'Email',
     nameLabel: 'Nom',
     emailFieldLabel: 'Email',

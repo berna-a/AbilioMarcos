@@ -135,7 +135,7 @@ export const es: Translations = {
     inquiriesLabel: 'Consultas',
     inquiriesText: 'Para consultas, adquisiciones y encargos, utilice el formulario o póngase en contacto directamente.',
     studioLabel: 'Estudio',
-    studioLocation: 'Lisboa, Portugal',
+    studioLocation: 'Monfirre, Portugal',
     emailLabel: 'Correo',
     nameLabel: 'Nombre',
     emailFieldLabel: 'Correo',
