@@ -105,7 +105,7 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle }: Props) => {
                 <label className="block text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1.5">{t.inquiry.message} *</label>
                 <textarea value={form.message} onChange={(e) => setForm(p => ({ ...p, message: e.target.value }))} rows={4} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-foreground transition-colors resize-none" placeholder={t.inquiry.messagePlaceholder} />
               </div>
-              <button type="submit" disabled={submitting} className="w-full py-3 text-[11px] tracking-[0.2em] uppercase bg-foreground text-background hover:bg-foreground/85 transition-colors disabled:opacity-50">
+              <button type="submit" disabled={submitting} className="w-full py-3.5 text-[11px] tracking-[0.22em] uppercase font-medium bg-brand-red text-primary-foreground hover:bg-brand-red-soft transition-colors disabled:opacity-50">
                 {submitting ? t.inquiry.sending : t.inquiry.send}
               </button>
             </form>

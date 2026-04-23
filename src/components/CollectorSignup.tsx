@@ -47,7 +47,7 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
         </p>
         <form onSubmit={handleSubmit} className="flex gap-0 border border-foreground/20">
           <input type="email" placeholder={t.collector.emailPlaceholder} value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 px-4 py-3.5 bg-transparent text-sm placeholder:text-muted-foreground/60 focus:outline-none" required />
-          <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-foreground text-primary-foreground text-[10px] tracking-[0.2em] uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50">
+          <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-brand-red text-primary-foreground text-[10px] tracking-[0.22em] uppercase font-medium hover:bg-brand-red-soft transition-colors disabled:opacity-50">
             {t.collector.subscribe}
           </button>
         </form>
@@ -62,7 +62,7 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
       <p className="text-[13px] text-muted-foreground mb-8 leading-[1.8] max-w-sm">{t.collector.description}</p>
       <form onSubmit={handleSubmit} className="flex gap-0 border border-foreground/20 max-w-md">
         <input type="email" placeholder={t.collector.emailPlaceholder} value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 px-4 py-3.5 bg-transparent text-sm placeholder:text-muted-foreground/60 focus:outline-none" required />
-        <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-foreground text-primary-foreground text-[10px] tracking-[0.2em] uppercase hover:bg-foreground/90 transition-colors disabled:opacity-50">
+        <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-brand-red text-primary-foreground text-[10px] tracking-[0.22em] uppercase font-medium hover:bg-brand-red-soft transition-colors disabled:opacity-50">
           {t.collector.join}
         </button>
       </form>
