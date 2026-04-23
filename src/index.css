@@ -38,8 +38,8 @@
     /* Brand accents */
     --brand-red: 18 93% 30%;           /* #973304 — primary accent */
     --brand-red-soft: 18 60% 42%;
-    --brand-brown: 28 35% 26%;         /* deep walnut — pairs with terracotta */
-    --brand-brown-soft: 28 25% 38%;
+    --brand-brown: 30 11% 18%;         /* #34302a — deep warm charcoal-brown */
+    --brand-brown-soft: 30 9% 28%;
 
     /* Status colors */
     --status-available: 140 30% 32%;   /* muted forest green */
