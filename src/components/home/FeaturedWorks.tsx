@@ -75,25 +75,6 @@ const FeaturedWorks = () => {
               </Link>
             </motion.div>
           ))}
-        </div>
-
-        <div className="md:col-span-5 flex flex-col gap-8 md:gap-10">
-          {works.slice(1).map((work, i) => (
-            <motion.div key={work.id} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}>
-              <Link to={getLink(work)} className="group block">
-                {work.primary_image_url ? (
-                  <img src={work.primary_image_url} alt={work.title} className="w-full object-cover" style={{ aspectRatio: getRatio(work, "3 / 2") }} />
-                ) : (
-                  <div className="w-full" style={{ background: placeholderGradients[i + 1] || placeholderGradients[0], aspectRatio: "3 / 2" }} />
-                )}
-                <div className="mt-5">
-                  <p className="font-serif text-lg tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{work.title}</p>
-                  {hasReal && <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>}
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
       </div>
 
       <motion.div className="mt-20 md:mt-24 text-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.2 }}>
