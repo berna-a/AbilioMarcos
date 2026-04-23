@@ -61,7 +61,7 @@ const Header = () => {
         className={`flex items-center gap-1.5 text-[11px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
           heroState && !mobile
             ? "text-white/60 hover:text-white/90"
-            : "text-foreground/40 hover:text-foreground/70"
+            : "text-white/65 hover:text-white/95"
         }`}
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
@@ -103,8 +103,10 @@ const Header = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
           isScrolled
-            ? "bg-background/95 backdrop-blur-sm border-b border-gallery-border"
-            : "bg-transparent border-b border-transparent"
+            ? "bg-brand-brown/95 backdrop-blur-sm border-b border-white/10"
+            : isHome
+              ? "bg-transparent border-b border-transparent"
+              : "bg-brand-brown border-b border-white/10"
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
@@ -113,7 +115,7 @@ const Header = () => {
               to="/"
               aria-label="Abílio Marcos"
               className={`transition-colors duration-700 ${
-                heroState ? "text-white/90 hover:text-white" : "text-foreground"
+                heroState ? "text-white/90 hover:text-white" : "text-white"
               }`}
             >
               <SignatureLogo className="h-7 w-[9.25rem] md:h-8 md:w-[10.5rem]" />
@@ -128,20 +130,18 @@ const Header = () => {
                     key={item.href}
                     to={item.href}
                     className={`text-[11px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
-                      heroState
-                        ? isActive ? "text-white" : "text-white/65 hover:text-white/90"
-                        : isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground/75"
+                      isActive ? "text-white" : "text-white/65 hover:text-white/95"
                     }`}
                   >
                     {item.label}
                     {isActive && (
-                      <span className={`absolute -bottom-1 left-0 right-0 h-px transition-colors duration-700 ${heroState ? "bg-white/40" : "bg-foreground/25"}`} />
+                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-white/40" />
                     )}
                   </Link>
                 );
               })}
 
-              <div className="w-px h-4 bg-current opacity-15 mx-1" />
+              <div className="w-px h-4 bg-white opacity-20 mx-1" />
               <LanguageDropdown />
             </nav>
 
@@ -149,7 +149,7 @@ const Header = () => {
             <div className="flex items-center gap-2 lg:hidden">
               <LanguageDropdown mobile />
               <button
-                className={`p-2 -mr-2 transition-colors duration-700 ${heroState ? "text-white/80" : "text-foreground"}`}
+                className="p-2 -mr-2 transition-colors duration-700 text-white/85 hover:text-white"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               >
