@@ -48,11 +48,10 @@ const FeaturedWorks = () => {
         {works[0] && (
           <motion.div className="md:col-span-7" initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7 }}>
             <Link to={getLink(works[0])} className="group block">
-              {works[0].primary_image_url ? (
-                <img src={works[0].primary_image_url} alt={works[0].title} className="w-full object-cover" style={{ aspectRatio: getRatio(works[0], "4 / 5") }} />
-              ) : (
-                <div className="w-full" style={{ background: placeholderGradients[0], aspectRatio: "4 / 5" }} />
-              )}
+              <ArtworkPreviewImage
+                artwork={works[0] as Artwork}
+                placeholderStyle={{ background: placeholderGradients[0] }}
+              />
               <div className="mt-5">
                 <p className="font-serif text-lg md:text-xl tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{works[0].title}</p>
                 {hasReal && <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{techniqueLabel(t, works[0].technique)}</p>}
@@ -60,6 +59,23 @@ const FeaturedWorks = () => {
             </Link>
           </motion.div>
         )}
+
+        <div className="md:col-span-5 flex flex-col gap-8 md:gap-10">
+          {works.slice(1).map((work, i) => (
+            <motion.div key={work.id} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, delay: 0.1 * (i + 1) }}>
+              <Link to={getLink(work)} className="group block">
+                <ArtworkPreviewImage
+                  artwork={work as Artwork}
+                  placeholderStyle={{ background: placeholderGradients[i + 1] || placeholderGradients[0] }}
+                />
+                <div className="mt-5">
+                  <p className="font-serif text-lg tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300">{work.title}</p>
+                  {hasReal && <p className="text-[11px] tracking-[0.05em] text-muted-foreground mt-1.5">{techniqueLabel(t, work.technique)}</p>}
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
 
         <div className="md:col-span-5 flex flex-col gap-8 md:gap-10">
           {works.slice(1).map((work, i) => (
