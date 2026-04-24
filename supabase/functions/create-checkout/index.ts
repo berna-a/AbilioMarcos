@@ -44,7 +44,10 @@ serve(async (req) => {
       });
     }
 
-    if (artwork.status !== "published" || artwork.availability !== "available") {
+    // Block only artworks that are unpublished or already sold.
+    // Per business rule: any priced artwork (including `not_for_sale` with a price)
+    // is acquirable online via Stripe checkout.
+    if (artwork.status !== "published" || artwork.availability === "sold") {
       return new Response(
         JSON.stringify({ error: "This artwork is not available for purchase" }),
         { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -54,14 +57,6 @@ serve(async (req) => {
     if (!artwork.price || artwork.price <= 0) {
       return new Response(
         JSON.stringify({ error: "This artwork does not have a price set" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Only allow checkout for direct_purchase or hybrid (price <= 2999)
-    if (artwork.price > 2999) {
-      return new Response(
-        JSON.stringify({ error: "This artwork is inquiry-only" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
