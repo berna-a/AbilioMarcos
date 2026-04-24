@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/i18n";
-import AnimatedSignature from "@/components/AnimatedSignature";
+import SignatureLogo from "@/components/layout/SignatureLogo";
 
 const HeroSection = () => {
   const t = useT();
@@ -100,11 +100,9 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
-          className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
+          className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)] text-white"
         >
-          <AnimatedSignature
-            className="w-[320px] h-[80px] md:w-[520px] md:h-[130px] lg:w-[640px] lg:h-[160px]"
-          />
+          <SignatureLogo className="w-[min(90vw,1600px)] h-[200px] md:h-[400px] lg:h-[500px]" />
         </motion.div>
       </div>
 
