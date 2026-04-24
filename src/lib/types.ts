@@ -49,17 +49,17 @@ export const getSalesMode = (price: number | null): 'direct_purchase' | 'hybrid'
 
 /** Single source of truth: can this artwork be purchased online via Stripe?
  *  Must mirror the validation in supabase/functions/create-checkout/index.ts.
- *  Eligibility requires:
+ *  Eligibility requires ALL of:
  *    - status === 'published'
- *    - availability !== 'sold'
+ *    - availability === 'available' (NOT 'sold' and NOT 'not_for_sale')
  *    - a valid positive price
- *  Note: artworks marked `not_for_sale` with a price are still acquirable —
- *  the business rule is that any priced, published, unsold work can be bought. */
+ *  Artworks marked `not_for_sale` are explicitly excluded from online checkout —
+ *  they fall back to the inquiry CTA regardless of whether a price is set. */
 export const isOnlineCheckoutEligible = (
   artwork: Pick<Artwork, 'status' | 'availability' | 'price'>
 ): boolean => {
   if (artwork.status !== 'published') return false;
-  if (artwork.availability === 'sold') return false;
+  if (artwork.availability !== 'available') return false;
   const p = artwork.price;
   return p != null && Number.isFinite(p) && p > 0;
 };
