@@ -104,6 +104,8 @@ export const es: Translations = {
     preparing: 'Preparando…',
     askQuestion: 'Hacer una Pregunta',
     inquireAbout: 'Consultar sobre Esta Obra',
+    checkoutErrorTitle: 'No se pudo iniciar el pago',
+    checkoutErrorBody: 'Por favor, inténtelo de nuevo o contáctenos para completar la adquisición.',
   },
   trust: {
     certificate: 'Certificado de Autenticidad incluido',

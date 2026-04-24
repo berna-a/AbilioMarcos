@@ -112,6 +112,8 @@ export interface Translations {
     preparing: string;
     askQuestion: string;
     inquireAbout: string;
+    checkoutErrorTitle: string;
+    checkoutErrorBody: string;
   };
   // Trust info
   trust: {

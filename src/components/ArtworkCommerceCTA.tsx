@@ -1,8 +1,9 @@
-import { Artwork, getSalesMode, formatPrice } from '@/lib/types';
+import { Artwork, getSalesMode, formatPrice, isOnlineCheckoutEligible } from '@/lib/types';
 import { createCheckoutSession } from '@/lib/checkout';
 import { useState } from 'react';
 import { useT } from '@/i18n';
 import { trackArtwork, trackMetaInitiateCheckout } from '@/lib/analytics';
+import { toast } from '@/hooks/use-toast';
 
 interface Props {
   artwork: Artwork;
@@ -13,6 +14,7 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
   const { availability, price } = artwork;
   const salesMode = getSalesMode(price);
   const displayPrice = formatPrice(price);
+  const canCheckout = isOnlineCheckoutEligible(artwork);
   const [checkingOut, setCheckingOut] = useState(false);
   const t = useT();
 
@@ -20,12 +22,17 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
     setCheckingOut(true);
     trackArtwork('acquire_online_clicked', artwork);
     trackMetaInitiateCheckout(artwork.price ?? undefined);
-    const url = await createCheckoutSession(artwork.id);
+    const { url, error } = await createCheckoutSession(artwork.id);
     if (url) {
       trackArtwork('checkout_started', artwork);
       window.location.href = url;
     } else {
-      alert('Unable to start checkout. Please try again.');
+      console.error('[ArtworkCommerceCTA] checkout failed', { artworkId: artwork.id, error });
+      toast({
+        title: t.commerce.checkoutErrorTitle,
+        description: error || t.commerce.checkoutErrorBody,
+        variant: 'destructive',
+      });
       setCheckingOut(false);
     }
   };
@@ -44,17 +51,9 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
     );
   }
 
-  // Note: artworks marked as `not_for_sale` but with a price still allow direct
-  // online purchase — per business rule, every priced artwork is acquirable online.
-  if (availability === 'not_for_sale' && price == null) {
-    return (
-      <nav className="space-y-3 mt-auto mb-10" aria-label="Artwork actions">
-        <button onClick={onInquiryClick} className={outlineBtn}>{t.commerce.inquire}</button>
-      </nav>
-    );
-  }
-
-  if (salesMode === 'direct_purchase') {
+  // Single source of truth: only show "Acquire Online" when the artwork is
+  // actually eligible for Stripe checkout. Falls back to inquiry otherwise.
+  if (canCheckout && salesMode === 'direct_purchase') {
     return (
       <nav className="space-y-3 mt-auto mb-10" aria-label="Artwork actions">
         {displayPrice && <p className="text-base tracking-wide text-foreground font-medium mb-2">{displayPrice}</p>}
@@ -66,20 +65,12 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
     );
   }
 
-  if (salesMode === 'hybrid') {
-    return (
-      <nav className="space-y-3 mt-auto mb-10" aria-label="Artwork actions">
-        {displayPrice && <p className="text-base tracking-wide text-foreground font-medium mb-2">{displayPrice}</p>}
-        <button onClick={handleAcquire} disabled={checkingOut} className={filledBtn}>
-          {checkingOut ? t.commerce.preparing : t.commerce.acquireOnline}
-        </button>
-        <button onClick={onInquiryClick} className={outlineBtn}>{t.commerce.inquireAbout}</button>
-      </nav>
-    );
-  }
-
+  // No price, missing data, or otherwise ineligible → inquiry only.
   return (
     <nav className="space-y-3 mt-auto mb-10" aria-label="Artwork actions">
+      {displayPrice && canCheckout === false && availability !== 'not_for_sale' && (
+        <p className="text-base tracking-wide text-foreground font-medium mb-2">{displayPrice}</p>
+      )}
       <button onClick={onInquiryClick} className={filledBtn}>{t.commerce.inquireAbout}</button>
     </nav>
   );

@@ -9,6 +9,37 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+/**
+ * Single source of truth for online checkout eligibility.
+ * MUST mirror `isOnlineCheckoutEligible` in src/lib/types.ts.
+ *
+ * Eligibility rule:
+ *   - status === 'published'
+ *   - availability !== 'sold'
+ *   - price is a positive finite number
+ *
+ * Note: artworks marked `not_for_sale` with a valid price are still
+ * acquirable — per business rule, every priced + published + unsold work
+ * can be bought online.
+ */
+function checkEligibility(artwork: {
+  status: string | null;
+  availability: string | null;
+  price: number | null;
+}): { ok: true } | { ok: false; reason: string; httpStatus: number } {
+  if (artwork.status !== "published") {
+    return { ok: false, reason: "artwork_not_published", httpStatus: 409 };
+  }
+  if (artwork.availability === "sold") {
+    return { ok: false, reason: "artwork_sold", httpStatus: 409 };
+  }
+  const price = artwork.price;
+  if (price == null || !Number.isFinite(price) || price <= 0) {
+    return { ok: false, reason: "artwork_no_valid_price", httpStatus: 400 };
+  }
+  return { ok: true };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -30,7 +61,6 @@ serve(async (req) => {
       });
     }
 
-    // Fetch artwork
     const { data: artwork, error: artworkError } = await supabase
       .from("artworks")
       .select("id, title, slug, price, availability, status, primary_image_url, technique")
@@ -38,26 +68,36 @@ serve(async (req) => {
       .single();
 
     if (artworkError || !artwork) {
+      console.error("[create-checkout] artwork not found", { artwork_id, artworkError });
       return new Response(JSON.stringify({ error: "Artwork not found" }), {
         status: 404,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Block only artworks that are unpublished or already sold.
-    // Per business rule: any priced artwork (including `not_for_sale` with a price)
-    // is acquirable online via Stripe checkout.
-    if (artwork.status !== "published" || artwork.availability === "sold") {
-      return new Response(
-        JSON.stringify({ error: "This artwork is not available for purchase" }),
-        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const eligibility = checkEligibility({
+      status: artwork.status,
+      availability: artwork.availability,
+      price: artwork.price,
+    });
 
-    if (!artwork.price || artwork.price <= 0) {
+    if (!eligibility.ok) {
+      // Detailed internal log + structured error response so the frontend
+      // can surface a useful reason and we can debug stale data quickly.
+      console.error("[create-checkout] not eligible", {
+        artwork_id,
+        slug: artwork.slug,
+        status: artwork.status,
+        availability: artwork.availability,
+        price: artwork.price,
+        reason: eligibility.reason,
+      });
       return new Response(
-        JSON.stringify({ error: "This artwork does not have a price set" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({
+          error: "This artwork is not available for purchase",
+          reason: eligibility.reason,
+        }),
+        { status: eligibility.httpStatus, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -66,7 +106,6 @@ serve(async (req) => {
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    // Final domain readiness: prefer SITE_URL, fall back to abiliomarcos.com
     const siteUrl = Deno.env.get("SITE_URL") || "https://abiliomarcos.com";
     const origin = siteUrl.replace(/\/+$/, "");
 
@@ -74,7 +113,7 @@ serve(async (req) => {
       quantity: 1,
       price_data: {
         currency: "eur",
-        unit_amount: Math.round(artwork.price * 100),
+        unit_amount: Math.round(artwork.price! * 100),
         product_data: {
           name: artwork.title,
           description: artwork.technique || "Original painting",
@@ -95,13 +134,19 @@ serve(async (req) => {
       },
     });
 
+    console.log("[create-checkout] session created", {
+      artwork_id: artwork.id,
+      slug: artwork.slug,
+      session_id: session.id,
+    });
+
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Checkout error:", error);
+    console.error("[create-checkout] unexpected error:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Internal server error" }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

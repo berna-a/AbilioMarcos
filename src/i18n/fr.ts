@@ -102,6 +102,8 @@ export const fr: Translations = {
     preparing: 'Préparation…',
     askQuestion: 'Poser une Question',
     inquireAbout: 'Se Renseigner sur Cette Œuvre',
+    checkoutErrorTitle: 'Impossible de démarrer le paiement',
+    checkoutErrorBody: 'Veuillez réessayer ou nous contacter pour finaliser l\'acquisition.',
   },
   trust: {
     certificate: 'Certificat d\'Authenticité inclus',
