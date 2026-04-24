@@ -31,7 +31,7 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
   };
 
   // Shared button styles — filled (primary action) and outlined (secondary)
-  const filledBtn = "inline-flex w-full items-center justify-center bg-brand-red text-primary-foreground px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase font-medium hover:bg-brand-red-soft transition-colors duration-300 disabled:opacity-50";
+  const filledBtn = "inline-flex w-full items-center justify-center bg-[hsl(0_85%_45%)] text-white px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase font-medium hover:bg-[hsl(0_85%_38%)] transition-colors duration-300 disabled:opacity-50";
   const outlineBtn = "inline-flex w-full items-center justify-center border border-foreground/40 text-foreground px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase hover:bg-foreground hover:text-primary-foreground transition-colors duration-300";
   const ghostBtn = "inline-flex w-full items-center justify-center text-[11px] tracking-[0.22em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 py-2";
 
