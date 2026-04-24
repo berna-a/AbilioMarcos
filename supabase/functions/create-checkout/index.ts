@@ -65,7 +65,7 @@ serve(async (req) => {
 
     const { data: artwork, error: artworkError } = await supabase
       .from("artworks")
-      .select("id, title, slug, price, availability, status, primary_image_url, technique")
+      .select("id, title, slug, price, availability, status, primary_image_url")
       .eq("id", artwork_id)
       .single();
 
