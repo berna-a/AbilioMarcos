@@ -13,14 +13,10 @@ const corsHeaders = {
  * Single source of truth for online checkout eligibility.
  * MUST mirror `isOnlineCheckoutEligible` in src/lib/types.ts.
  *
- * Eligibility rule:
+ * Eligibility rule (ALL must be true):
  *   - status === 'published'
- *   - availability !== 'sold'
+ *   - availability === 'available' (excludes 'sold' AND 'not_for_sale')
  *   - price is a positive finite number
- *
- * Note: artworks marked `not_for_sale` with a valid price are still
- * acquirable — per business rule, every priced + published + unsold work
- * can be bought online.
  */
 function checkEligibility(artwork: {
   status: string | null;
@@ -32,6 +28,12 @@ function checkEligibility(artwork: {
   }
   if (artwork.availability === "sold") {
     return { ok: false, reason: "artwork_sold", httpStatus: 409 };
+  }
+  if (artwork.availability === "not_for_sale") {
+    return { ok: false, reason: "artwork_not_for_sale", httpStatus: 409 };
+  }
+  if (artwork.availability !== "available") {
+    return { ok: false, reason: "artwork_unavailable", httpStatus: 409 };
   }
   const price = artwork.price;
   if (price == null || !Number.isFinite(price) || price <= 0) {
