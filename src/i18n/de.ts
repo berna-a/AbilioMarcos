@@ -102,6 +102,8 @@ export const de: Translations = {
     preparing: 'Wird vorbereitet…',
     askQuestion: 'Eine Frage stellen',
     inquireAbout: 'Anfrage zu diesem Werk',
+    checkoutErrorTitle: 'Bezahlvorgang konnte nicht gestartet werden',
+    checkoutErrorBody: 'Bitte versuchen Sie es erneut oder kontaktieren Sie uns, um den Erwerb abzuschließen.',
   },
   trust: {
     certificate: 'Echtheitszertifikat inklusive',

@@ -102,6 +102,8 @@ export const en: Translations = {
     preparing: 'Preparing…',
     askQuestion: 'Ask a Question',
     inquireAbout: 'Inquire About This Work',
+    checkoutErrorTitle: 'Unable to start checkout',
+    checkoutErrorBody: 'Please try again, or contact us to complete the acquisition.',
   },
   trust: {
     certificate: 'Certificate of Authenticity included',
