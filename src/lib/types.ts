@@ -39,11 +39,29 @@ export type ArtworkInsert = Omit<Artwork, 'id' | 'created_at' | 'updated_at'>;
 export type ArtworkUpdate = Partial<ArtworkInsert>;
 
 /** Derive sales mode from price.
- *  All artworks with a price are eligible for direct online purchase via Stripe,
- *  regardless of price tier. Only artworks without a price fall back to inquiry. */
+ *  All artworks with a valid positive price are eligible for direct online
+ *  purchase via Stripe, regardless of price tier. Anything else falls back
+ *  to inquiry. */
 export const getSalesMode = (price: number | null): 'direct_purchase' | 'hybrid' | 'inquiry_only' => {
-  if (price == null) return 'inquiry_only';
+  if (price == null || !Number.isFinite(price) || price <= 0) return 'inquiry_only';
   return 'direct_purchase';
+};
+
+/** Single source of truth: can this artwork be purchased online via Stripe?
+ *  Must mirror the validation in supabase/functions/create-checkout/index.ts.
+ *  Eligibility requires:
+ *    - status === 'published'
+ *    - availability !== 'sold'
+ *    - a valid positive price
+ *  Note: artworks marked `not_for_sale` with a price are still acquirable —
+ *  the business rule is that any priced, published, unsold work can be bought. */
+export const isOnlineCheckoutEligible = (
+  artwork: Pick<Artwork, 'status' | 'availability' | 'price'>
+): boolean => {
+  if (artwork.status !== 'published') return false;
+  if (artwork.availability === 'sold') return false;
+  const p = artwork.price;
+  return p != null && Number.isFinite(p) && p > 0;
 };
 
 /** Format price for display — European style: 1.500 € */
