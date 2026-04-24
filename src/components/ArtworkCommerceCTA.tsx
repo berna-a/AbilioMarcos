@@ -44,7 +44,9 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
     );
   }
 
-  if (availability === 'not_for_sale') {
+  // Note: artworks marked as `not_for_sale` but with a price still allow direct
+  // online purchase — per business rule, every priced artwork is acquirable online.
+  if (availability === 'not_for_sale' && price == null) {
     return (
       <nav className="space-y-3 mt-auto mb-10" aria-label="Artwork actions">
         <button onClick={onInquiryClick} className={outlineBtn}>{t.commerce.inquire}</button>
