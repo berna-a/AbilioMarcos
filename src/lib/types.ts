@@ -38,12 +38,12 @@ export interface Artwork {
 export type ArtworkInsert = Omit<Artwork, 'id' | 'created_at' | 'updated_at'>;
 export type ArtworkUpdate = Partial<ArtworkInsert>;
 
-/** Derive sales mode from price */
+/** Derive sales mode from price.
+ *  All artworks with a price are eligible for direct online purchase via Stripe,
+ *  regardless of price tier. Only artworks without a price fall back to inquiry. */
 export const getSalesMode = (price: number | null): 'direct_purchase' | 'hybrid' | 'inquiry_only' => {
   if (price == null) return 'inquiry_only';
-  if (price <= 1000) return 'direct_purchase';
-  if (price <= 2999) return 'hybrid';
-  return 'inquiry_only';
+  return 'direct_purchase';
 };
 
 /** Format price for display — European style: 1.500 € */
