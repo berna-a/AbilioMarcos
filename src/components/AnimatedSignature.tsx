@@ -1,64 +1,31 @@
-import abmaGif from "@/assets/AbMa_GIF.gif";
+import abmaSignature from "@/assets/AbMa_signature.png";
 
 type AnimatedSignatureProps = {
   className?: string;
 };
 
 /**
- * Renders the artist's signature using the same animated GIF asset
- * shown on the admin login page (`AbMa_GIF.gif`), recolored to white
- * with a fully transparent background.
+ * Renders the artist's animated signature.
  *
- * The GIF ships with a solid white background and black ink. We use an
- * inline SVG filter to:
- *   1. Invert the colors (black ink becomes white, white bg becomes black).
- *   2. Map luminance to the alpha channel via `feColorMatrix` so the
- *      now-black background becomes fully transparent while the white
- *      ink stays opaque.
+ * The asset (`AbMa_signature.png`) is an APNG generated from the original
+ * `AbMa_GIF.gif` with **real alpha transparency**:
+ *   - The black ink was remapped to opaque white pixels.
+ *   - The white background was remapped to fully transparent pixels.
+ *   - The animation is authored with `loop: 1` so it plays once and rests
+ *     on the final frame (the completed signature stays visible).
  *
- * The animation is baked into the GIF itself: it plays automatically on
- * load and rests on the final frame (the GIF is authored without
- * looping, so the signature stays visible once written).
+ * Because the asset already has true transparency, no CSS/SVG hacks
+ * (mix-blend-mode, invert(), feColorMatrix, masks) are needed — we just
+ * render it as a normal <img>.
  */
 const AnimatedSignature = ({ className = "" }: AnimatedSignatureProps) => {
   return (
-    <>
-      {/* SVG filter definition — rendered once, applied via CSS `filter: url(#...)`. */}
-      <svg
-        width="0"
-        height="0"
-        style={{ position: "absolute" }}
-        aria-hidden="true"
-      >
-        <defs>
-          <filter id="signature-white-on-transparent" colorInterpolationFilters="sRGB">
-            {/* Step 1: invert RGB so ink (black) -> white, bg (white) -> black. */}
-            <feColorMatrix
-              type="matrix"
-              values="-1 0 0 0 1
-                       0 -1 0 0 1
-                       0 0 -1 0 1
-                       0 0 0 1 0"
-            />
-            {/* Step 2: use luminance as alpha — black bg becomes transparent. */}
-            <feColorMatrix
-              type="matrix"
-              values="0 0 0 0 1
-                      0 0 0 0 1
-                      0 0 0 0 1
-                      1 1 1 0 0"
-            />
-          </filter>
-        </defs>
-      </svg>
-
-      <img
-        src={abmaGif}
-        alt="Abílio Marcos"
-        className={`object-contain ${className}`.trim()}
-        style={{ filter: "url(#signature-white-on-transparent)" }}
-      />
-    </>
+    <img
+      src={abmaSignature}
+      alt="Abílio Marcos"
+      className={`object-contain ${className}`.trim()}
+      draggable={false}
+    />
   );
 };
 
