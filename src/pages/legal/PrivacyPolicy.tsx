@@ -22,7 +22,6 @@ const sections: Section[] = [
         type: "kv",
         items: [
           { label: "Nome", value: "Abílio António Roussado Marcos" },
-          { label: "NIF", value: "[CONFIRMAR — o número indicado anteriormente parece incompleto]" },
           { label: "Endereço", value: "Rua dos Serrados, 32 A – Maceira, 2715-654 Montelavar" },
           { label: "Email", value: "marcos4011@gmail.com" },
         ],
