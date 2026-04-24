@@ -118,7 +118,7 @@ serve(async (req) => {
         unit_amount: Math.round(artwork.price! * 100),
         product_data: {
           name: artwork.title,
-          description: artwork.technique || "Original painting",
+          description: "Original painting",
           ...(artwork.primary_image_url ? { images: [artwork.primary_image_url] } : {}),
         },
       },
