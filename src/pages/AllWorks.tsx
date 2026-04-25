@@ -241,8 +241,8 @@ const AllWorks = () => {
               ) : (
                 <MasonryGrid
                   columns={{ base: 2, md: 2, lg: 3, xl: 3 }}
-                  gapX={16}
-                  gapY={28}
+                  gapX={32}
+                  gapY={56}
                   items={filtered.map((work, i) => ({
                     key: work.id,
                     ratio: ratios[work.id],
@@ -259,9 +259,9 @@ const AllWorks = () => {
                           onClick={() => trackArtwork('artwork_card_click', work)}
                         >
                           <ArtworkPreviewImage artwork={work} hoverZoom />
-                          <div className="mt-2.5 space-y-0.5">
+                          <div className="mt-4 space-y-1">
                             <div className="flex items-baseline justify-between gap-3">
-                              <p className="font-serif text-sm md:text-[15px] tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300 truncate">
+                              <p className="font-serif text-lg md:text-xl tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300 truncate">
                                 {work.title}
                               </p>
                               {formatPrice(work.price) && (
