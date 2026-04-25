@@ -34,6 +34,12 @@ import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
+/** Redirect /artwork/:slug → /obra/:slug (legacy URL preservation). */
+const LegacyArtworkRedirect = () => {
+  const { slug } = useParams<{ slug: string }>();
+  return <Navigate to={`/obra/${slug ?? ''}`} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
