@@ -85,6 +85,7 @@ export const de: Translations = {
     dimensions: 'Maße',
     status: 'Status',
     price: 'Preis',
+    reference: 'Referenz',
     detailViews: 'Detailansichten',
     artistNote: 'Anmerkung des Künstlers',
     furtherViewing: 'Weitere Werke',
