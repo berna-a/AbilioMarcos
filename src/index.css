@@ -74,7 +74,8 @@
 
   html {
     scroll-behavior: smooth;
-    font-size: 132%;
+    /* Root font size scaled +15% from previous 132%. */
+    font-size: 152%;
   }
 
   body {
