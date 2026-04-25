@@ -38,14 +38,14 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
   };
 
   // Shared button styles — filled (primary action) and outlined (secondary)
-  const filledBtn = "inline-flex w-full items-center justify-center bg-brand-brown text-white px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase font-medium hover:bg-[hsl(0_85%_45%)] transition-colors duration-300 disabled:opacity-50";
-  const outlineBtn = "inline-flex w-full items-center justify-center border border-foreground/40 text-foreground px-6 py-3.5 text-[11px] tracking-[0.22em] uppercase hover:bg-foreground hover:text-primary-foreground transition-colors duration-300";
-  const ghostBtn = "inline-flex w-full items-center justify-center text-[11px] tracking-[0.22em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 py-2";
+  const filledBtn = "inline-flex w-full items-center justify-center bg-brand-brown text-white px-6 py-3.5 text-[13px] tracking-[0.22em] uppercase font-medium hover:bg-[hsl(0_85%_45%)] transition-colors duration-300 disabled:opacity-50";
+  const outlineBtn = "inline-flex w-full items-center justify-center border border-foreground/40 text-foreground px-6 py-3.5 text-[13px] tracking-[0.22em] uppercase hover:bg-foreground hover:text-primary-foreground transition-colors duration-300";
+  const ghostBtn = "inline-flex w-full items-center justify-center text-[13px] tracking-[0.22em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 py-2";
 
   if (availability === 'sold') {
     return (
       <nav className="space-y-3 mt-auto mb-10" aria-label="Artwork actions">
-        <span className="block text-center text-[11px] tracking-[0.22em] uppercase text-status-sold font-medium py-3.5 border border-status-sold/30 bg-status-sold/5">{t.commerce.sold}</span>
+        <span className="block text-center text-[13px] tracking-[0.22em] uppercase text-status-sold font-medium py-3.5 border border-status-sold/30 bg-status-sold/5">{t.commerce.sold}</span>
         <button onClick={onInquiryClick} className={outlineBtn}>{t.commerce.inquireSimilar}</button>
       </nav>
     );

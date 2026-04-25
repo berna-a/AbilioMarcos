@@ -58,7 +58,7 @@ const Header = () => {
     <div className="relative">
       <button
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
-        className={`flex items-center gap-1.5 text-[11px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
+        className={`flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
           heroState && !mobile
             ? "text-white/60 hover:text-white/90"
             : "text-white/65 hover:text-white/95"
@@ -82,7 +82,7 @@ const Header = () => {
               <button
                 key={l}
                 onClick={() => { track('language_changed', { language: l }); setLocale(l); setLangOpen(false); }}
-                className={`flex items-center gap-3 w-full text-left px-4 py-2 text-[11px] tracking-[0.08em] transition-colors duration-200 ${
+                className={`flex items-center gap-3 w-full text-left px-4 py-2 text-[13px] tracking-[0.08em] transition-colors duration-200 ${
                   locale === l
                     ? "text-foreground font-medium"
                     : "text-foreground/40 hover:text-foreground/70 hover:bg-muted/40"
@@ -131,7 +131,7 @@ const Header = () => {
                   <Link
                     key={item.href}
                     to={item.href}
-                    className={`text-[11px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
+                    className={`text-[13px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
                       isActive ? "text-white" : "text-white/65 hover:text-white/95"
                     }`}
                   >

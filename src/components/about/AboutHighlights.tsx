@@ -20,10 +20,10 @@ const AboutHighlights = () => {
       transition={{ duration: 0.7 }}
     >
       <div className="flex items-baseline justify-between mb-12 pb-3 border-b border-gallery-border">
-        <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
+        <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground">
           {t.aboutPage.trajectoryTitle}
         </p>
-        <p className="text-[11px] tracking-[0.18em] uppercase text-muted-foreground/60 hidden md:block">
+        <p className="text-[13px] tracking-[0.18em] uppercase text-muted-foreground/60 hidden md:block">
           {t.aboutPage.trajectoryNote}
         </p>
       </div>
@@ -34,7 +34,7 @@ const AboutHighlights = () => {
             <p className="font-serif text-5xl md:text-6xl font-light text-brand-red leading-none mb-4">
               {it.value}
             </p>
-            <p className="text-[12px] tracking-[0.12em] uppercase text-foreground/60 leading-[1.6]">
+            <p className="text-[14px] tracking-[0.12em] uppercase text-foreground/60 leading-[1.6]">
               {it.label}
             </p>
           </div>

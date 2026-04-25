@@ -90,7 +90,7 @@ const ArtworkLightbox = ({ src, alt, children }: ArtworkLightboxProps) => {
               />
             </div>
 
-            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.2em] uppercase text-white/30">
+            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[12px] tracking-[0.2em] uppercase text-white/30">
               {scale <= 1 ? "Scroll to zoom" : "Scroll to zoom · Click outside to close"}
             </p>
           </motion.div>

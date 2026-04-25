@@ -38,7 +38,7 @@ const WhatsAppFloat = () => {
           transition={{ duration: 0.35, ease: "easeOut" }}
           className="group fixed bottom-5 right-5 md:bottom-7 md:right-7 z-50 inline-flex items-center"
         >
-          <span className="hidden md:flex items-center pr-3 pl-4 py-2.5 mr-[-14px] text-[11px] tracking-[0.15em] uppercase bg-background/95 border border-border text-foreground/75 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shadow-sm rounded-l-full">
+          <span className="hidden md:flex items-center pr-3 pl-4 py-2.5 mr-[-14px] text-[13px] tracking-[0.15em] uppercase bg-background/95 border border-border text-foreground/75 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shadow-sm rounded-l-full">
             {t.whatsappFloat.label}
           </span>
           <span className="relative flex items-center justify-center w-12 h-12 md:w-[52px] md:h-[52px] rounded-full bg-[#25D366] text-white shadow-lg hover:bg-[#1ebe5a] transition-colors duration-300 ring-1 ring-black/5">

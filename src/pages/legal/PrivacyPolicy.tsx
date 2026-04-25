@@ -302,7 +302,7 @@ const PrivacyPolicy = () => {
           >
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-[11px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-10"
+              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-10"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Voltar ao Início
@@ -310,7 +310,7 @@ const PrivacyPolicy = () => {
 
             {/* Header */}
             <header className="mb-14 md:mb-20">
-              <p className="text-[11px] tracking-[0.18em] uppercase text-muted-foreground mb-5">
+              <p className="text-[13px] tracking-[0.18em] uppercase text-muted-foreground mb-5">
                 Documento Legal
               </p>
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] mb-8">
@@ -348,7 +348,7 @@ const PrivacyPolicy = () => {
                         return (
                           <p
                             key={i}
-                            className="text-[15px] text-foreground/80 leading-[1.85] font-light"
+                            className="text-[17px] text-foreground/80 leading-[1.85] font-light"
                           >
                             {block.text}
                           </p>
@@ -360,7 +360,7 @@ const PrivacyPolicy = () => {
                             {block.items.map((item, j) => (
                               <li
                                 key={j}
-                                className="text-[15px] text-foreground/80 leading-[1.75] font-light pl-5 relative"
+                                className="text-[17px] text-foreground/80 leading-[1.75] font-light pl-5 relative"
                               >
                                 <span className="absolute left-0 top-[0.7em] w-2 h-px bg-foreground/40" />
                                 {item}
@@ -377,10 +377,10 @@ const PrivacyPolicy = () => {
                                 key={j}
                                 className="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-1 sm:gap-6"
                               >
-                                <dt className="text-[11px] tracking-[0.12em] uppercase text-muted-foreground pt-1">
+                                <dt className="text-[13px] tracking-[0.12em] uppercase text-muted-foreground pt-1">
                                   {item.label}
                                 </dt>
-                                <dd className="text-[15px] text-foreground/85 leading-[1.7] font-light">
+                                <dd className="text-[17px] text-foreground/85 leading-[1.7] font-light">
                                   {item.value}
                                 </dd>
                               </div>
@@ -397,7 +397,7 @@ const PrivacyPolicy = () => {
 
             {/* Footer note */}
             <div className="border-t border-border mt-16 pt-8">
-              <p className="text-[11px] tracking-[0.12em] uppercase text-muted-foreground">
+              <p className="text-[13px] tracking-[0.12em] uppercase text-muted-foreground">
                 Última atualização: [INSERIR DATA FINAL]
               </p>
             </div>

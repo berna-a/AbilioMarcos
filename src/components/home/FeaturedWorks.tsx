@@ -50,7 +50,7 @@ const FeaturedWorks = () => {
         className="mb-12 md:mb-16 flex items-end justify-between gap-6"
       >
         <div>
-          <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground mb-4">
             {t.featured.label}
           </p>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-light leading-tight">
@@ -59,7 +59,7 @@ const FeaturedWorks = () => {
         </div>
         <Link
           to="/obras"
-          className="hidden md:inline-block text-[10px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300 whitespace-nowrap"
+          className="hidden md:inline-block text-[12px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300 whitespace-nowrap"
         >
           {t.featured.viewAll}
         </Link>
@@ -88,17 +88,17 @@ const FeaturedWorks = () => {
                 />
                 <div className="mt-2.5 space-y-0.5">
                   <div className="flex items-baseline justify-between gap-3">
-                    <p className="font-serif text-[15px] md:text-base tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300 truncate">
+                    <p className="font-serif text-[17px] md:text-base tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300 truncate">
                       {work.title}
                     </p>
                     {hasReal && formatPrice((work as Artwork).price) && (
-                      <p className="text-[10px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                      <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
                         {formatPrice((work as Artwork).price)}
                       </p>
                     )}
                   </div>
                   {hasReal && (
-                    <p className="text-[10px] tracking-[0.05em] text-muted-foreground/90 truncate">
+                    <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
                       {techniqueLabel(t, work.technique)}
                     </p>
                   )}
@@ -118,7 +118,7 @@ const FeaturedWorks = () => {
       >
         <Link
           to="/obras"
-          className="inline-block text-[11px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300"
+          className="inline-block text-[13px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300"
         >
           {t.featured.viewAll}
         </Link>

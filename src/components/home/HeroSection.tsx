@@ -88,7 +88,7 @@ const HeroSection = () => {
 
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
         <motion.p
-          className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-primary-foreground/70 mb-10 md:mb-12"
+          className="text-[12px] md:text-xs tracking-[0.4em] uppercase text-primary-foreground/70 mb-10 md:mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 1.2 }}

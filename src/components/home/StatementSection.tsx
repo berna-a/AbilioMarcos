@@ -21,7 +21,7 @@ const StatementSection = () => {
           {t.statement.quote}
         </motion.blockquote>
 
-        <motion.p className="mt-10 md:mt-12 text-[10px] tracking-[0.35em] uppercase text-muted-foreground" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.3 }}>
+        <motion.p className="mt-10 md:mt-12 text-[12px] tracking-[0.35em] uppercase text-muted-foreground" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.3 }}>
           Abílio Marcos
         </motion.p>
       </div>

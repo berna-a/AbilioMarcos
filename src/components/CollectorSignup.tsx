@@ -31,7 +31,7 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
     return (
       <div className={variant === "footer" ? "text-center max-w-md mx-auto" : "max-w-lg"}>
         <p className="font-serif text-xl md:text-2xl mb-3">{t.collector.thankYou}</p>
-        <p className="text-[13px] text-muted-foreground leading-relaxed">
+        <p className="text-[15px] text-muted-foreground leading-relaxed">
           {t.collector.thankYouMessage}
         </p>
       </div>
@@ -42,12 +42,12 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
     return (
       <div className="text-center max-w-md mx-auto">
         <p className="font-serif text-xl md:text-2xl mb-3">{t.collector.stayConnected}</p>
-        <p className="text-[13px] text-muted-foreground mb-8 leading-relaxed">
+        <p className="text-[15px] text-muted-foreground mb-8 leading-relaxed">
           {t.collector.footerDescription}
         </p>
         <form onSubmit={handleSubmit} className="flex gap-0 border border-foreground/20">
           <input type="email" placeholder={t.collector.emailPlaceholder} value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 px-4 py-3.5 bg-transparent text-sm placeholder:text-muted-foreground/60 focus:outline-none" required />
-          <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-brand-red text-primary-foreground text-[10px] tracking-[0.22em] uppercase font-medium hover:bg-brand-red-soft transition-colors disabled:opacity-50">
+          <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-brand-red text-primary-foreground text-[12px] tracking-[0.22em] uppercase font-medium hover:bg-brand-red-soft transition-colors disabled:opacity-50">
             {t.collector.subscribe}
           </button>
         </form>
@@ -57,12 +57,12 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
 
   return (
     <div className="max-w-lg">
-      <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">{t.collector.listLabel}</p>
+      <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground mb-4">{t.collector.listLabel}</p>
       <p className="font-serif text-2xl md:text-3xl mb-3 leading-tight">{t.collector.title}</p>
-      <p className="text-[13px] text-muted-foreground mb-8 leading-[1.8] max-w-sm">{t.collector.description}</p>
+      <p className="text-[15px] text-muted-foreground mb-8 leading-[1.8] max-w-sm">{t.collector.description}</p>
       <form onSubmit={handleSubmit} className="flex gap-0 border border-foreground/20 max-w-md">
         <input type="email" placeholder={t.collector.emailPlaceholder} value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 px-4 py-3.5 bg-transparent text-sm placeholder:text-muted-foreground/60 focus:outline-none" required />
-        <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-brand-red text-primary-foreground text-[10px] tracking-[0.22em] uppercase font-medium hover:bg-brand-red-soft transition-colors disabled:opacity-50">
+        <button type="submit" disabled={submitting} className="px-6 py-3.5 bg-brand-red text-primary-foreground text-[12px] tracking-[0.22em] uppercase font-medium hover:bg-brand-red-soft transition-colors disabled:opacity-50">
           {t.collector.join}
         </button>
       </form>

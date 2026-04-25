@@ -23,7 +23,7 @@ const AboutCollections = () => {
     >
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
         <div className="md:col-span-3">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground md:sticky md:top-32">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground md:sticky md:top-32">
             {t.aboutPage.collectionsTitle}
           </p>
         </div>
@@ -36,7 +36,7 @@ const AboutCollections = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-14 gap-y-10 mb-14">
             {groups.map((g) => (
               <div key={g.label} className="border-t border-gallery-border pt-5">
-                <p className="text-[11px] tracking-[0.22em] uppercase text-brand-red/85 mb-3">
+                <p className="text-[13px] tracking-[0.22em] uppercase text-brand-red/85 mb-3">
                   {g.label}
                 </p>
                 <p className="text-[14.5px] text-foreground/75 leading-[1.8]">{g.body}</p>
@@ -45,7 +45,7 @@ const AboutCollections = () => {
           </div>
 
           <div className="pt-8 border-t border-gallery-border">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">
+            <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground mb-5">
               {t.aboutPage.privateCollectionsIn}
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-3">
