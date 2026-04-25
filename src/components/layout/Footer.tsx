@@ -35,7 +35,7 @@ const Footer = () => {
             <Link to="/" aria-label="Abílio Marcos" className="text-white inline-block mb-5">
               <SignatureLogo className="h-7 w-[9.25rem] md:h-8 md:w-[10.5rem]" />
             </Link>
-            <p className="text-[12px] text-white/55 leading-[1.8] max-w-xs whitespace-pre-line">
+            <p className="text-[14px] text-white/55 leading-[1.8] max-w-xs whitespace-pre-line">
               {t.footer.description}
             </p>
             {/* Social */}
@@ -54,7 +54,7 @@ const Footer = () => {
 
           {/* Navigate */}
           <div>
-            <p className="text-[10px] tracking-[0.25em] uppercase text-white/45 mb-5">
+            <p className="text-[12px] tracking-[0.25em] uppercase text-white/45 mb-5">
               {t.footer.navigate}
             </p>
             <div className="flex flex-col gap-3">
@@ -62,7 +62,7 @@ const Footer = () => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="text-[13px] text-white/60 hover:text-white transition-colors duration-300"
+                  className="text-[15px] text-white/60 hover:text-white transition-colors duration-300"
                 >
                   {link.label}
                 </Link>
@@ -72,19 +72,19 @@ const Footer = () => {
 
           {/* Inquiries */}
           <div>
-            <p className="text-[10px] tracking-[0.25em] uppercase text-white/45 mb-5">
+            <p className="text-[12px] tracking-[0.25em] uppercase text-white/45 mb-5">
               {t.footer.inquiries}
             </p>
             <div className="flex flex-col gap-3">
               <Link
                 to="/contacto"
-                className="text-[13px] text-white/60 hover:text-white transition-colors duration-300"
+                className="text-[15px] text-white/60 hover:text-white transition-colors duration-300"
               >
                 {t.footer.contact}
               </Link>
               <a
                 href="mailto:marcos4011@gmail.com"
-                className="text-[13px] text-white/60 hover:text-white transition-colors duration-300"
+                className="text-[15px] text-white/60 hover:text-white transition-colors duration-300"
               >
                 marcos4011@gmail.com
               </a>
@@ -92,7 +92,7 @@ const Footer = () => {
                 href={SOCIALS.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-[13px] text-white/60 hover:text-white transition-colors duration-300"
+                className="inline-flex items-center gap-1.5 text-[15px] text-white/60 hover:text-white transition-colors duration-300"
               >
                 <MessageCircle className="w-3 h-3" /> WhatsApp
               </a>
@@ -101,7 +101,7 @@ const Footer = () => {
 
           {/* Legal */}
           <div>
-            <p className="text-[10px] tracking-[0.25em] uppercase text-white/45 mb-5">
+            <p className="text-[12px] tracking-[0.25em] uppercase text-white/45 mb-5">
               {t.footer.legal}
             </p>
             <div className="flex flex-col gap-2.5">
@@ -109,7 +109,7 @@ const Footer = () => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="text-[11px] text-white/45 hover:text-white/80 transition-colors duration-300"
+                  className="text-[13px] text-white/45 hover:text-white/80 transition-colors duration-300"
                 >
                   {link.label}
                 </Link>
@@ -122,11 +122,11 @@ const Footer = () => {
         </div>
 
         <div className="py-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="text-[11px] text-white/45">
+          <p className="text-[13px] text-white/45">
             {t.footer.copyright} {t.footer.madeBy}{" "}
             <a href="https://ardo.media/" target="_blank" rel="noopener noreferrer" className="font-medium text-white/70 hover:text-white transition-colors duration-300">Ardo Media</a>
           </p>
-          <p className="text-[11px] text-white/45">
+          <p className="text-[13px] text-white/45">
             {t.footer.artworksCopyright}
           </p>
         </div>

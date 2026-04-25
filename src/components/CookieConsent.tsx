@@ -76,10 +76,10 @@ const CookieConsent = () => {
           aria-label={t.cookies.title}
         >
           <div className="bg-background border border-border shadow-lg p-5 md:p-6">
-            <p className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-3">
+            <p className="text-[12px] tracking-[0.25em] uppercase text-muted-foreground mb-3">
               {t.cookies.title}
             </p>
-            <p className="text-[13px] leading-relaxed text-foreground/80 mb-4">
+            <p className="text-[15px] leading-relaxed text-foreground/80 mb-4">
               {t.cookies.description}{" "}
               <Link
                 to="/legal/cookies"
@@ -117,19 +117,19 @@ const CookieConsent = () => {
                 <>
                   <button
                     onClick={handleAcceptAll}
-                    className="flex-1 min-w-[120px] py-2.5 text-[11px] tracking-[0.15em] uppercase bg-foreground text-background hover:bg-brand-red transition-colors duration-300"
+                    className="flex-1 min-w-[120px] py-2.5 text-[13px] tracking-[0.15em] uppercase bg-foreground text-background hover:bg-brand-red transition-colors duration-300"
                   >
                     {t.cookies.accept}
                   </button>
                   <button
                     onClick={handleRejectOptional}
-                    className="flex-1 min-w-[120px] py-2.5 text-[11px] tracking-[0.15em] uppercase border border-border text-foreground/75 hover:text-foreground hover:border-foreground/40 transition-colors duration-300"
+                    className="flex-1 min-w-[120px] py-2.5 text-[13px] tracking-[0.15em] uppercase border border-border text-foreground/75 hover:text-foreground hover:border-foreground/40 transition-colors duration-300"
                   >
                     {t.cookies.reject}
                   </button>
                   <button
                     onClick={() => setShowPrefs(true)}
-                    className="basis-full text-[11px] tracking-[0.18em] uppercase text-muted-foreground hover:text-foreground transition-colors py-1.5"
+                    className="basis-full text-[13px] tracking-[0.18em] uppercase text-muted-foreground hover:text-foreground transition-colors py-1.5"
                   >
                     {t.cookies.manage}
                   </button>
@@ -138,7 +138,7 @@ const CookieConsent = () => {
               {showPrefs && (
                 <button
                   onClick={handleSavePrefs}
-                  className="w-full py-2.5 text-[11px] tracking-[0.15em] uppercase bg-foreground text-background hover:bg-brand-red transition-colors duration-300"
+                  className="w-full py-2.5 text-[13px] tracking-[0.15em] uppercase bg-foreground text-background hover:bg-brand-red transition-colors duration-300"
                 >
                   {t.cookies.save}
                 </button>
@@ -173,8 +173,8 @@ const PrefRow = ({
       className="mt-1 h-3.5 w-3.5 accent-foreground"
     />
     <div className="flex-1">
-      <p className="text-[12px] font-medium text-foreground/85">{title}</p>
-      <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">{desc}</p>
+      <p className="text-[14px] font-medium text-foreground/85">{title}</p>
+      <p className="text-[13px] text-muted-foreground leading-snug mt-0.5">{desc}</p>
     </div>
   </label>
 );

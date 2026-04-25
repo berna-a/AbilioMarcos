@@ -25,7 +25,7 @@ const FilterSection = ({
   return (
     <div className="border-b border-border pb-5 mb-5 last:border-b-0 last:pb-0 last:mb-0">
       <button onClick={() => setOpen(!open)} className="flex items-center justify-between w-full text-left group">
-        <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground group-hover:text-foreground transition-colors duration-300">{title}</span>
+        <span className="text-[12px] tracking-[0.25em] uppercase text-muted-foreground group-hover:text-foreground transition-colors duration-300">{title}</span>
         <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
       <AnimatePresence initial={false}>
@@ -33,7 +33,7 @@ const FilterSection = ({
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
             <div className="mt-3 space-y-1">
               {options.map((opt) => (
-                <button key={opt.value} onClick={() => onToggle(opt.value)} className={`block w-full text-left py-1 text-[11px] tracking-[0.03em] transition-colors duration-300 ${selected.includes(opt.value) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"}`}>
+                <button key={opt.value} onClick={() => onToggle(opt.value)} className={`block w-full text-left py-1 text-[13px] tracking-[0.03em] transition-colors duration-300 ${selected.includes(opt.value) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"}`}>
                   {opt.label}
                 </button>
               ))}
@@ -128,9 +128,9 @@ const AllWorks = () => {
   const filterContent = (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">{t.allWorks.filter}</span>
+        <span className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground">{t.allWorks.filter}</span>
         {activeCount > 0 && (
-          <button onClick={clearAll} className="text-[10px] tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors duration-300 underline underline-offset-2">{t.allWorks.clearAll}</button>
+          <button onClick={clearAll} className="text-[12px] tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors duration-300 underline underline-offset-2">{t.allWorks.clearAll}</button>
         )}
       </div>
       <FilterSection
@@ -188,13 +188,13 @@ const AllWorks = () => {
       <div className="pt-28 md:pt-36 pb-24 md:pb-36 px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-12 md:mb-16">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">{t.allWorks.label}</p>
+            <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground mb-5">{t.allWorks.label}</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light">{t.allWorks.title}</h1>
-            <p className="mt-4 text-[11px] md:text-xs tracking-[0.04em] text-muted-foreground max-w-md">{t.allWorks.description}</p>
+            <p className="mt-4 text-[13px] md:text-xs tracking-[0.04em] text-muted-foreground max-w-md">{t.allWorks.description}</p>
           </motion.div>
 
           <div className="md:hidden mb-8">
-            <button onClick={() => setMobileFiltersOpen(true)} className="flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 border border-border px-4 py-2.5">
+            <button onClick={() => setMobileFiltersOpen(true)} className="flex items-center gap-2 text-[12px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 border border-border px-4 py-2.5">
               <SlidersHorizontal className="w-3 h-3" />
               {t.allWorks.filter}{activeCount > 0 && ` (${activeCount})`}
             </button>
@@ -206,12 +206,12 @@ const AllWorks = () => {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-foreground/20 z-40 md:hidden" onClick={() => setMobileFiltersOpen(false)} />
                 <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "tween", duration: 0.35 }} className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border max-h-[80vh] overflow-y-auto px-6 py-6 md:hidden">
                   <div className="flex items-center justify-between mb-6">
-                    <span className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">{t.allWorks.filter}</span>
+                    <span className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground">{t.allWorks.filter}</span>
                     <button onClick={() => setMobileFiltersOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors"><X className="w-4 h-4" /></button>
                   </div>
                   {filterContent}
                   <div className="mt-6 pt-4 border-t border-border">
-                    <button onClick={() => setMobileFiltersOpen(false)} className="w-full text-center text-[10px] tracking-[0.2em] uppercase bg-foreground text-background py-3 hover:bg-foreground/90 transition-colors duration-300">
+                    <button onClick={() => setMobileFiltersOpen(false)} className="w-full text-center text-[12px] tracking-[0.2em] uppercase bg-foreground text-background py-3 hover:bg-foreground/90 transition-colors duration-300">
                       {t.allWorks.show} {filtered.length} {filtered.length === 1 ? t.allWorks.work : t.allWorks.works}
                     </button>
                   </div>
@@ -227,15 +227,15 @@ const AllWorks = () => {
 
             <div className="flex-1 min-w-0">
               <div className="mb-8 flex items-center justify-between">
-                <p className="text-[10px] tracking-[0.15em] text-muted-foreground">
+                <p className="text-[12px] tracking-[0.15em] text-muted-foreground">
                   {loading ? t.allWorks.loading : `${filtered.length} ${filtered.length === 1 ? t.allWorks.work : t.allWorks.works}`}
                 </p>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] tracking-[0.15em] text-muted-foreground hidden sm:inline">{t.allWorks.sort}</span>
+                  <span className="text-[12px] tracking-[0.15em] text-muted-foreground hidden sm:inline">{t.allWorks.sort}</span>
                   <select
                     value={sort}
                     onChange={(e) => { const v = e.target.value as SortOption; track('sort_used', { sort_value: v }); setSort(v); }}
-                    className="text-[10px] tracking-[0.05em] text-muted-foreground bg-transparent border border-border px-3 py-1.5 focus:outline-none cursor-pointer hover:text-foreground transition-colors"
+                    className="text-[12px] tracking-[0.05em] text-muted-foreground bg-transparent border border-border px-3 py-1.5 focus:outline-none cursor-pointer hover:text-foreground transition-colors"
                   >
                     {sortOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -248,7 +248,7 @@ const AllWorks = () => {
                 <div className="py-20 text-center">
                   <p className="text-sm text-muted-foreground">{t.allWorks.noMatch}</p>
                   {activeCount > 0 && (
-                    <button onClick={clearAll} className="mt-4 text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors">{t.allWorks.clearFilters}</button>
+                    <button onClick={clearAll} className="mt-4 text-[12px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors">{t.allWorks.clearFilters}</button>
                   )}
                 </div>
               ) : (
@@ -278,12 +278,12 @@ const AllWorks = () => {
                                 {work.title}
                               </p>
                               {formatPrice(work.price) && (
-                                <p className="text-[10px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                                <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
                                   {formatPrice(work.price)}
                                 </p>
                               )}
                             </div>
-                            <p className="text-[10px] tracking-[0.05em] text-muted-foreground/90 truncate">
+                            <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
                               {techniqueLabel(t, work.technique)}
                             </p>
                           </div>

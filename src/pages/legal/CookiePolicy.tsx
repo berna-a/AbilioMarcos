@@ -225,7 +225,7 @@ const CookiePolicy = () => {
           >
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-[11px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-10"
+              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-10"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Voltar ao Início
@@ -233,7 +233,7 @@ const CookiePolicy = () => {
 
             {/* Header */}
             <header className="mb-14 md:mb-20">
-              <p className="text-[11px] tracking-[0.18em] uppercase text-muted-foreground mb-5">
+              <p className="text-[13px] tracking-[0.18em] uppercase text-muted-foreground mb-5">
                 Documento Legal
               </p>
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] mb-8">
@@ -272,7 +272,7 @@ const CookiePolicy = () => {
                         return (
                           <p
                             key={i}
-                            className="text-[15px] text-foreground/80 leading-[1.85] font-light"
+                            className="text-[17px] text-foreground/80 leading-[1.85] font-light"
                           >
                             {block.text}
                           </p>
@@ -284,7 +284,7 @@ const CookiePolicy = () => {
                             {block.items.map((item, j) => (
                               <li
                                 key={j}
-                                className="text-[15px] text-foreground/80 leading-[1.75] font-light pl-5 relative"
+                                className="text-[17px] text-foreground/80 leading-[1.75] font-light pl-5 relative"
                               >
                                 <span className="absolute left-0 top-[0.7em] w-2 h-px bg-foreground/40" />
                                 {item}
@@ -300,7 +300,7 @@ const CookiePolicy = () => {
                             className="border-l border-border pl-5 py-1 space-y-3"
                           >
                             <div className="flex items-baseline gap-3">
-                              <span className="text-[11px] tracking-[0.12em] uppercase text-muted-foreground">
+                              <span className="text-[13px] tracking-[0.12em] uppercase text-muted-foreground">
                                 {block.label}
                               </span>
                               <h3 className="font-serif text-[17px] md:text-lg font-light text-foreground/90">
@@ -310,7 +310,7 @@ const CookiePolicy = () => {
                             {block.paragraphs.map((p, k) => (
                               <p
                                 key={k}
-                                className="text-[15px] text-foreground/80 leading-[1.85] font-light"
+                                className="text-[17px] text-foreground/80 leading-[1.85] font-light"
                               >
                                 {p}
                               </p>
@@ -327,7 +327,7 @@ const CookiePolicy = () => {
 
             {/* Footer note */}
             <div className="border-t border-border mt-16 pt-8">
-              <p className="text-[11px] tracking-[0.12em] uppercase text-muted-foreground">
+              <p className="text-[13px] tracking-[0.12em] uppercase text-muted-foreground">
                 Última atualização: [INSERIR DATA FINAL]
               </p>
             </div>

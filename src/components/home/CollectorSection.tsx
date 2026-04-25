@@ -13,7 +13,7 @@ const CollectorSection = () => {
         </motion.div>
 
         <motion.div className="flex-1 max-w-sm" initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay: 0.15 }}>
-          <p className="text-[13px] text-muted-foreground leading-[1.8]">
+          <p className="text-[15px] text-muted-foreground leading-[1.8]">
             {t.collector.sideNote}
           </p>
         </motion.div>

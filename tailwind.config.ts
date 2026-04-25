@@ -13,6 +13,13 @@ export default {
       },
     },
     extend: {
+      // Bumped default body sizes ~+15% so text-xs/text-sm read larger
+      // throughout the public site without touching every component.
+      fontSize: {
+        xs: ['0.86rem', { lineHeight: '1.25rem' }],   // 13.76px (was 12)
+        sm: ['1rem', { lineHeight: '1.5rem' }],       // 16px (was 14)
+        base: ['1.125rem', { lineHeight: '1.75rem' }], // 18px (was 16)
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

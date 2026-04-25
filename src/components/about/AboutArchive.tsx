@@ -112,7 +112,7 @@ const AboutArchive = () => {
                 <div key={i} className="flex items-baseline justify-between gap-4">
                   <p className="text-[14px] text-foreground/80 leading-[1.7]">{e.venue}</p>
                   {e.city && (
-                    <p className="text-[12px] tracking-[0.08em] text-muted-foreground/70 italic shrink-0">
+                    <p className="text-[14px] tracking-[0.08em] text-muted-foreground/70 italic shrink-0">
                       {e.city}
                     </p>
                   )}
@@ -135,10 +135,10 @@ const AboutArchive = () => {
     >
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
         <div className="md:col-span-3">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground md:sticky md:top-32">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground md:sticky md:top-32">
             {t.aboutPage.archiveTitle}
           </p>
-          <p className="mt-4 text-[12px] text-muted-foreground/70 leading-[1.7] md:sticky md:top-44 max-w-[14rem]">
+          <p className="mt-4 text-[14px] text-muted-foreground/70 leading-[1.7] md:sticky md:top-44 max-w-[14rem]">
             {t.aboutPage.archiveNote}
           </p>
         </div>
@@ -154,7 +154,7 @@ const AboutArchive = () => {
               <button
                 key={tb.key}
                 onClick={() => setTab(tb.key)}
-                className={`pb-3 -mb-px text-[11px] tracking-[0.18em] uppercase transition-colors duration-300 border-b-2 flex items-baseline gap-2 ${
+                className={`pb-3 -mb-px text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 border-b-2 flex items-baseline gap-2 ${
                   tab === tb.key
                     ? "text-foreground border-brand-red"
                     : "text-muted-foreground/55 hover:text-foreground/80 border-transparent"
@@ -162,7 +162,7 @@ const AboutArchive = () => {
               >
                 <span>{tb.label}</span>
                 {tb.count && (
-                  <span className="text-[10px] text-muted-foreground/50 normal-case tracking-normal">
+                  <span className="text-[12px] text-muted-foreground/50 normal-case tracking-normal">
                     ({tb.count})
                   </span>
                 )}
@@ -178,7 +178,7 @@ const AboutArchive = () => {
           >
             {tab === "solo" && (
               <>
-                <p className="text-[13px] text-muted-foreground italic mb-8 max-w-2xl">
+                <p className="text-[15px] text-muted-foreground italic mb-8 max-w-2xl">
                   {t.aboutPage.archiveSelectedFrom.replace("{n}", "150+")}
                 </p>
                 {renderEntries(SOLO)}
@@ -187,7 +187,7 @@ const AboutArchive = () => {
 
             {tab === "group" && (
               <>
-                <p className="text-[13px] text-muted-foreground italic mb-8 max-w-2xl">
+                <p className="text-[15px] text-muted-foreground italic mb-8 max-w-2xl">
                   {t.aboutPage.archiveSelectedFrom.replace("{n}", "70+")}
                 </p>
                 {renderEntries(GROUP)}
@@ -198,7 +198,7 @@ const AboutArchive = () => {
               <div className="space-y-10">
                 {COLLECTIONS.map((g) => (
                   <div key={g.label}>
-                    <p className="text-[11px] tracking-[0.22em] uppercase text-brand-red/85 mb-4">
+                    <p className="text-[13px] tracking-[0.22em] uppercase text-brand-red/85 mb-4">
                       {g.label}
                     </p>
                     <ul className="space-y-2">

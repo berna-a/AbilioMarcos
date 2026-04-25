@@ -22,7 +22,7 @@ const DisputeResolution = () => {
           >
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-[11px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-8"
+              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-8"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               {t.legal.backToHome}
@@ -32,7 +32,7 @@ const DisputeResolution = () => {
               {t.legal.disputesTitle}
             </h1>
 
-            <p className="text-[11px] tracking-[0.1em] text-muted-foreground mb-12">
+            <p className="text-[13px] tracking-[0.1em] text-muted-foreground mb-12">
               {t.legal.lastUpdated}
             </p>
 
