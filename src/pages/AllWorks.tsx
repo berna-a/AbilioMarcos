@@ -72,6 +72,21 @@ const AllWorks = () => {
   const clearAll = () => setFilters({ technique: [], format: [], size: [], price: [] });
   const activeCount = Object.values(filters).flat().length;
 
+  // Probe intrinsic image ratios across all artworks so the format filter
+  // works even when DB dimensions are missing.
+  const ratios = useArtworkRatios(artworks);
+
+  /** Resolve format from real cm dimensions OR from the image aspect ratio.
+   *  Square tolerance ±5%. */
+  const resolveFormat = (a: Artwork): 'vertical' | 'square' | 'horizontal' | null => {
+    const dbFmt = getFormat(a);
+    if (dbFmt) return dbFmt;
+    const r = ratios[a.id];
+    if (!r || !Number.isFinite(r)) return null;
+    if (Math.abs(r - 1) <= 0.05) return 'square';
+    return r < 1 ? 'vertical' : 'horizontal';
+  };
+
   const filtered = useMemo(() => {
     let result = artworks.filter((a) => {
       if (filters.technique.length) {
@@ -79,7 +94,7 @@ const AllWorks = () => {
         if (!filters.technique.includes(tech)) return false;
       }
       if (filters.format.length) {
-        const fmt = getFormat(a);
+        const fmt = resolveFormat(a);
         if (!fmt || !filters.format.includes(fmt)) return false;
       }
       if (filters.size.length) {
@@ -108,9 +123,7 @@ const AllWorks = () => {
     });
 
     return result;
-  }, [artworks, filters, sort]);
-
-  const ratios = useArtworkRatios(filtered);
+  }, [artworks, filters, sort, ratios]);
 
   const filterContent = (
     <div>
