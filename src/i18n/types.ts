@@ -94,6 +94,7 @@ export interface Translations {
     dimensions: string;
     status: string;
     price: string;
+    reference: string;
     detailViews: string;
     artistNote: string;
     furtherViewing: string;

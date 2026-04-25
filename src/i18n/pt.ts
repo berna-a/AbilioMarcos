@@ -85,6 +85,7 @@ export const pt: Translations = {
     dimensions: 'Dimensões',
     status: 'Estado',
     price: 'Preço',
+    reference: 'Referência',
     detailViews: 'Vistas de Detalhe',
     artistNote: 'Nota do Artista',
     furtherViewing: 'Mais Obras',

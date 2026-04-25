@@ -112,6 +112,7 @@ const ArtworkDetail = () => {
               <div className="space-y-6 mb-14 lg:mb-16">
                 <MetadataLine label={t.artwork.medium} value={techniqueText} />
                 {dimensions && <MetadataLine label={t.artwork.dimensions} value={dimensions} />}
+                {artwork.reference && <MetadataLine label={t.artwork.reference} value={artwork.reference} />}
                 {status.label && <MetadataLine label={t.artwork.status} value={status.label} valueClassName={status.className} />}
                 {displayPrice && salesMode !== 'inquiry_only' && (
                   <MetadataLine label={t.artwork.price} value={displayPrice} />
