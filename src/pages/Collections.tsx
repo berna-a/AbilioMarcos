@@ -35,7 +35,7 @@ const Collections = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <Link to={`/collections/${collection.id}`} className="group block">
+                <Link to={`/colecoes/${collection.id}`} className="group block">
                   <div
                     className="aspect-[3/2] w-full"
                     style={{ background: collection.gradient }}

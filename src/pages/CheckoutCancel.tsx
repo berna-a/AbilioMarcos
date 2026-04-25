@@ -22,9 +22,9 @@ const CheckoutCancel = () => {
             <p className="text-[13px] leading-relaxed text-muted-foreground mb-12">{t.checkout.cancelMessage}</p>
             <div className="flex flex-col items-center gap-4">
               {artworkSlug && (
-                <Link to={`/artwork/${artworkSlug}`} className="text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500">{t.checkout.returnToArtwork}</Link>
+                <Link to={`/obra/${artworkSlug}`} className="text-[11px] tracking-[0.2em] uppercase text-foreground hover:text-foreground/60 transition-colors duration-500">{t.checkout.returnToArtwork}</Link>
               )}
-              <Link to="/works" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">{t.checkout.browseAll}</Link>
+              <Link to="/obras" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">{t.checkout.browseAll}</Link>
             </div>
           </motion.div>
         </div>

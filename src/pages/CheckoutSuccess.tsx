@@ -20,7 +20,7 @@ const CheckoutSuccess = () => {
             <p className="text-[13px] leading-relaxed text-muted-foreground mb-4">{t.checkout.successMessage}</p>
             <p className="text-[13px] leading-relaxed text-muted-foreground mb-12">{t.checkout.successShipping}</p>
             <div className="h-px bg-border mb-12" />
-            <Link to="/works" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">{t.checkout.continueBrowsing}</Link>
+            <Link to="/obras" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">{t.checkout.continueBrowsing}</Link>
           </motion.div>
         </div>
       </div>

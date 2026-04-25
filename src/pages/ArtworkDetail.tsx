@@ -43,7 +43,7 @@ const ArtworkDetail = () => {
       <Layout>
         <div className="pt-40 pb-40 text-center">
           <p className="text-muted-foreground mb-4">{t.artwork.notFound}</p>
-          <Link to="/works" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors">{t.artwork.backToWorks}</Link>
+          <Link to="/obras" className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors">{t.artwork.backToWorks}</Link>
         </div>
       </Layout>
     );
@@ -76,7 +76,7 @@ const ArtworkDetail = () => {
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-6 md:mb-10">
-            <Link to="/works" className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">
+            <Link to="/obras" className="inline-flex items-center gap-2.5 text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">
               <ArrowLeft className="w-3 h-3" /> {t.artwork.backToArchive}
             </Link>
           </motion.div>
@@ -152,7 +152,7 @@ const ArtworkDetail = () => {
               <SectionLabel className="mb-14 md:mb-16">{t.artwork.furtherViewing}</SectionLabel>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
                 {related.slice(0, 3).map((rel) => (
-                  <Link key={rel.id} to={`/artwork/${rel.slug}`} className="group">
+                  <Link key={rel.id} to={`/obra/${rel.slug}`} className="group">
                     {rel.primary_image_url ? (
                       <img src={rel.primary_image_url} alt={rel.title} className="aspect-[4/5] w-full object-cover mb-5 group-hover:opacity-85 transition-opacity duration-700" />
                     ) : (

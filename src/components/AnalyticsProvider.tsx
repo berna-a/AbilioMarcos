@@ -32,10 +32,10 @@ const AnalyticsProvider = () => {
 function getPageType(path: string): string {
   if (path === '/') return 'home';
   if (path === '/selected-works') return 'selected_works';
-  if (path === '/works') return 'all_works';
-  if (path.startsWith('/artwork/')) return 'artwork_detail';
-  if (path === '/about') return 'about';
-  if (path === '/contact') return 'contact';
+  if (path === '/obras') return 'all_works';
+  if (path.startsWith('/obra/')) return 'artwork_detail';
+  if (path === '/sobre') return 'about';
+  if (path === '/contacto') return 'contact';
   if (path.startsWith('/checkout')) return 'checkout';
   if (path.startsWith('/legal')) return 'legal';
   return 'other';
