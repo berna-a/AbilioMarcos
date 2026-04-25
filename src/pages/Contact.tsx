@@ -80,13 +80,13 @@ const Contact = () => {
                 <div>
                   <p className="text-xs tracking-[0.15em] uppercase mb-3 text-foreground">{t.contact.socialsLabel}</p>
                   <div className="flex items-center gap-5">
-                    <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-muted-foreground/70 hover:text-foreground transition-colors duration-300">
+                    <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-muted-foreground/70 hover:text-social-instagram transition-colors duration-300">
                       <Instagram className="w-4 h-4" />
                     </a>
-                    <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-muted-foreground/70 hover:text-foreground transition-colors duration-300">
+                    <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-muted-foreground/70 hover:text-social-facebook transition-colors duration-300">
                       <Facebook className="w-4 h-4" />
                     </a>
-                    <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-muted-foreground/70 hover:text-foreground transition-colors duration-300">
+                    <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-muted-foreground/70 hover:text-social-whatsapp transition-colors duration-300">
                       <MessageCircle className="w-4 h-4" />
                     </a>
                   </div>
