@@ -45,16 +45,25 @@ const App = () => (
             <AnalyticsProvider />
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
+
+              {/* Public routes (PT-PT) */}
+              <Route path="/sobre" element={<About />} />
               <Route path="/cv" element={<About />} />
-              <Route path="/studio" element={<Navigate to="/" replace />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/selected-works" element={<Navigate to="/works" replace />} />
-              <Route path="/works" element={<AllWorks />} />
-              <Route path="/artwork/:slug" element={<ArtworkDetail />} />
-              <Route path="/collections" element={<Collections />} />
+              <Route path="/contacto" element={<Contact />} />
+              <Route path="/obras" element={<AllWorks />} />
+              <Route path="/obra/:slug" element={<ArtworkDetail />} />
+              <Route path="/colecoes" element={<Collections />} />
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
+
+              {/* Legacy English URL redirects (preserve external links) */}
+              <Route path="/about" element={<Navigate to="/sobre" replace />} />
+              <Route path="/contact" element={<Navigate to="/contacto" replace />} />
+              <Route path="/works" element={<Navigate to="/obras" replace />} />
+              <Route path="/artwork/:slug" element={<LegacyArtworkRedirect />} />
+              <Route path="/collections" element={<Navigate to="/colecoes" replace />} />
+              <Route path="/selected-works" element={<Navigate to="/obras" replace />} />
+              <Route path="/studio" element={<Navigate to="/" replace />} />
 
               {/* Legal pages */}
               <Route path="/legal/privacy" element={<PrivacyPolicy />} />
