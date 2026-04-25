@@ -67,8 +67,8 @@ const FeaturedWorks = () => {
 
       <MasonryGrid
         columns={{ base: 1, sm: 2, md: 2, lg: 3 }}
-        gapX={20}
-        gapY={36}
+        gapX={32}
+        gapY={56}
         items={works.map((work, i) => ({
           key: String(work.id ?? i),
           ratio: hasReal ? ratios[work.id as string] : null,
