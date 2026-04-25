@@ -71,6 +71,11 @@ export default {
           available: "hsl(var(--status-available))",
           sold: "hsl(var(--status-sold))",
         },
+        social: {
+          instagram: "hsl(var(--social-instagram))",
+          facebook: "hsl(var(--social-facebook))",
+          whatsapp: "hsl(var(--social-whatsapp))",
+        },
         footer: {
           DEFAULT: "hsl(var(--footer-bg))",
           border: "hsl(var(--footer-border))",
