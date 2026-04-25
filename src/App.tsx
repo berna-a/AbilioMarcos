@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useParams } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,6 +34,12 @@ import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
+/** Redirect /artwork/:slug → /obra/:slug (legacy URL preservation). */
+const LegacyArtworkRedirect = () => {
+  const { slug } = useParams<{ slug: string }>();
+  return <Navigate to={`/obra/${slug ?? ''}`} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -45,16 +51,25 @@ const App = () => (
             <AnalyticsProvider />
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
+
+              {/* Public routes (PT-PT) */}
+              <Route path="/sobre" element={<About />} />
               <Route path="/cv" element={<About />} />
-              <Route path="/studio" element={<Navigate to="/" replace />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/selected-works" element={<Navigate to="/works" replace />} />
-              <Route path="/works" element={<AllWorks />} />
-              <Route path="/artwork/:slug" element={<ArtworkDetail />} />
-              <Route path="/collections" element={<Collections />} />
+              <Route path="/contacto" element={<Contact />} />
+              <Route path="/obras" element={<AllWorks />} />
+              <Route path="/obra/:slug" element={<ArtworkDetail />} />
+              <Route path="/colecoes" element={<Collections />} />
               <Route path="/checkout/success" element={<CheckoutSuccess />} />
               <Route path="/checkout/cancel" element={<CheckoutCancel />} />
+
+              {/* Legacy English URL redirects (preserve external links) */}
+              <Route path="/about" element={<Navigate to="/sobre" replace />} />
+              <Route path="/contact" element={<Navigate to="/contacto" replace />} />
+              <Route path="/works" element={<Navigate to="/obras" replace />} />
+              <Route path="/artwork/:slug" element={<LegacyArtworkRedirect />} />
+              <Route path="/collections" element={<Navigate to="/colecoes" replace />} />
+              <Route path="/selected-works" element={<Navigate to="/obras" replace />} />
+              <Route path="/studio" element={<Navigate to="/" replace />} />
 
               {/* Legal pages */}
               <Route path="/legal/privacy" element={<PrivacyPolicy />} />

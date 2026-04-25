@@ -38,7 +38,7 @@ const FeaturedWorks = () => {
   const ratios = useArtworkRatios(hasReal ? (works as Artwork[]) : []);
 
   const getLink = (work: Partial<Artwork>) =>
-    work.slug ? `/artwork/${work.slug}` : `/artwork/${work.id}`;
+    work.slug ? `/obra/${work.slug}` : `/obra/${work.id}`;
 
   return (
     <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto">
@@ -58,7 +58,7 @@ const FeaturedWorks = () => {
           </h2>
         </div>
         <Link
-          to="/works"
+          to="/obras"
           className="hidden md:inline-block text-[10px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300 whitespace-nowrap"
         >
           {t.featured.viewAll}
@@ -117,7 +117,7 @@ const FeaturedWorks = () => {
         transition={{ duration: 0.7, delay: 0.2 }}
       >
         <Link
-          to="/works"
+          to="/obras"
           className="inline-block text-[11px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300"
         >
           {t.featured.viewAll}

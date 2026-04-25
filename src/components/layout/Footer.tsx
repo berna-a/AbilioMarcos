@@ -14,9 +14,9 @@ const Footer = () => {
   const t = useT();
 
   const navLinks = [
-    { label: t.nav.allWorks, href: "/works" },
-    { label: t.nav.about, href: "/about" },
-    { label: t.nav.contact, href: "/contact" },
+    { label: t.nav.allWorks, href: "/obras" },
+    { label: t.nav.about, href: "/sobre" },
+    { label: t.nav.contact, href: "/contacto" },
   ];
 
   const legalLinks = [
@@ -77,7 +77,7 @@ const Footer = () => {
             </p>
             <div className="flex flex-col gap-3">
               <Link
-                to="/contact"
+                to="/contacto"
                 className="text-[13px] text-white/60 hover:text-white transition-colors duration-300"
               >
                 {t.footer.contact}

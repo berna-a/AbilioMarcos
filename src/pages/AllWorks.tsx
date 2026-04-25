@@ -254,7 +254,7 @@ const AllWorks = () => {
                         transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
                       >
                         <Link
-                          to={`/artwork/${work.slug}`}
+                          to={`/obra/${work.slug}`}
                           className="group block"
                           onClick={() => trackArtwork('artwork_card_click', work)}
                         >
