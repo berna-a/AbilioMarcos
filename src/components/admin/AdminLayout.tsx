@@ -28,9 +28,9 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen bg-[hsl(0_0%_97%)] flex">
       {sidebarOpen && <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-60 bg-white border-r border-[hsl(0_0%_90%)] flex flex-col transition-transform duration-200 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-[10.5rem] bg-white border-r border-[hsl(0_0%_90%)] flex flex-col transition-transform duration-200 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-14 flex items-center px-5 border-b border-[hsl(0_0%_90%)]">
-          <Link to="/admin" className="flex items-center"><SignatureLogo className="h-10 w-48 text-[hsl(0_0%_15%)]" /></Link>
+          <Link to="/admin" className="flex items-center"><SignatureLogo className="h-10 w-36 text-[hsl(0_0%_15%)]" /></Link>
           <button className="ml-auto lg:hidden text-[hsl(0_0%_40%)]" onClick={() => setSidebarOpen(false)}><X className="w-4 h-4" /></button>
         </div>
         <nav className="flex-1 py-4 px-3 space-y-0.5">
