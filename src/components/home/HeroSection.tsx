@@ -88,7 +88,7 @@ const HeroSection = () => {
 
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
         <motion.p
-          className="text-[12px] md:text-xs tracking-[0.4em] uppercase text-primary-foreground/70 mb-10 md:mb-12"
+          className="text-[10px] md:text-[10px] tracking-[0.4em] uppercase text-primary-foreground/70 mb-8 md:mb-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 1.2 }}
@@ -102,7 +102,7 @@ const HeroSection = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)] text-white"
         >
-          <SignatureLogo className="w-[min(90vw,1600px)] h-[200px] md:h-[400px] lg:h-[500px]" />
+          <SignatureLogo className="w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px]" />
         </motion.div>
       </div>
 
