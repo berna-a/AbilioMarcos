@@ -147,12 +147,14 @@ const Header = () => {
               <LanguageDropdown />
             </nav>
 
-            {/* Mobile: lang + toggle */}
+            {/* Mobile/tablet: lang (only at top of home) + hamburger (only when scrolled) */}
             <div className="flex items-center gap-3 lg:hidden shrink-0">
-              <LanguageDropdown mobile />
+              {!isScrolled && <LanguageDropdown mobile />}
               <button
                 type="button"
-                className="inline-flex items-center justify-center w-11 h-11 -mr-2 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] hover:text-white/90 transition-colors shrink-0"
+                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent text-white hover:text-white/90 transition-all duration-300 shrink-0 ${
+                  isScrolled ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                }`}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               >
