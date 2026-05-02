@@ -202,20 +202,9 @@ const Header = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: navItems.length * 0.04 + 0.05, duration: 0.3 }}
-                className="mt-6 pt-6 border-t border-border/40 w-32 flex flex-col items-center gap-3"
+                className="mt-6 pt-6 border-t border-border/40 flex flex-col items-center"
               >
-                {localeOrder.map((l) => (
-                  <button
-                    key={l}
-                    onClick={() => { track('language_changed', { language: l }); setLocale(l); }}
-                    className={`flex items-center gap-2 text-[13px] tracking-[0.12em] uppercase transition-colors ${
-                      locale === l ? "text-foreground font-medium" : "text-foreground/40 hover:text-foreground/70"
-                    }`}
-                  >
-                    <span className="text-base leading-none">{localeFlags[l]}</span>
-                    <span>{localeNames[l]}</span>
-                  </button>
-                ))}
+                <LanguageDropdown mobile />
               </motion.div>
             </nav>
           </motion.div>
