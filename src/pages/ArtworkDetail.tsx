@@ -34,6 +34,59 @@ const ArtworkDetail = () => {
     });
   }, [slug]);
 
+  // Dynamic meta tags per artwork; restore defaults on unmount
+  useEffect(() => {
+    if (!artwork) return;
+
+    const setMeta = (selector: string, attr: "content", value: string) => {
+      const el = document.head.querySelector<HTMLMetaElement>(selector);
+      if (el) el.setAttribute(attr, value);
+    };
+
+    const originalTitle = document.title;
+    const originalValues: Record<string, string | null> = {};
+    const selectors = [
+      'meta[name="description"]',
+      'meta[property="og:title"]',
+      'meta[property="og:description"]',
+      'meta[property="og:image"]',
+      'meta[property="og:url"]',
+      'meta[name="twitter:title"]',
+      'meta[name="twitter:description"]',
+      'meta[name="twitter:image"]',
+    ];
+    selectors.forEach((s) => {
+      originalValues[s] = document.head.querySelector(s)?.getAttribute("content") ?? null;
+    });
+
+    const title = `${artwork.title} — Abílio Marcos`;
+    const description =
+      artwork.description?.trim() ||
+      `${artwork.title} — obra original de Abílio Marcos, pintor expressionista abstrato português.`;
+    const image = artwork.primary_image_url || originalValues['meta[property="og:image"]'] || "";
+    const url = `https://abiliomarcos.com/obra/${artwork.slug}`;
+
+    document.title = title;
+    setMeta('meta[name="description"]', "content", description);
+    setMeta('meta[property="og:title"]', "content", title);
+    setMeta('meta[property="og:description"]', "content", description);
+    setMeta('meta[property="og:image"]', "content", image);
+    setMeta('meta[property="og:url"]', "content", url);
+    setMeta('meta[name="twitter:title"]', "content", title);
+    setMeta('meta[name="twitter:description"]', "content", description);
+    setMeta('meta[name="twitter:image"]', "content", image);
+
+    return () => {
+      document.title = originalTitle;
+      selectors.forEach((s) => {
+        const original = originalValues[s];
+        if (original !== null) {
+          document.head.querySelector(s)?.setAttribute("content", original);
+        }
+      });
+    };
+  }, [artwork]);
+
   if (loading) {
     return <Layout><div className="pt-40 pb-40 text-center"><p className="text-[15px] text-muted-foreground">{t.artwork.loading}</p></div></Layout>;
   }
