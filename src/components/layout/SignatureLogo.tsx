@@ -1,26 +1,16 @@
-import signatureUrl from "@/assets/signature.svg";
+import logoUrl from "@/assets/abilio-marcos-logo.png";
 
 type SignatureLogoProps = {
   className?: string;
 };
 
-const signatureMaskStyle = {
-  WebkitMaskImage: `url(${signatureUrl})`,
-  maskImage: `url(${signatureUrl})`,
-  WebkitMaskRepeat: "no-repeat",
-  maskRepeat: "no-repeat",
-  WebkitMaskPosition: "center",
-  maskPosition: "center",
-  WebkitMaskSize: "contain",
-  maskSize: "contain",
-};
-
 const SignatureLogo = ({ className = "" }: SignatureLogoProps) => {
   return (
-    <span
-      aria-hidden="true"
-      className={`block bg-current ${className}`.trim()}
-      style={signatureMaskStyle}
+    <img
+      src={logoUrl}
+      alt="Abílio Marcos — Artista Plástico"
+      className={`object-contain ${className}`.trim()}
+      draggable={false}
     />
   );
 };

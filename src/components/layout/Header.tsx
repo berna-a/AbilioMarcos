@@ -62,8 +62,8 @@ const Header = () => {
           mobile
             ? "text-brand-brown hover:text-brand-brown/80"
             : heroState
-              ? "text-white/60 hover:text-white/90"
-              : "text-white/65 hover:text-white/95"
+              ? "text-brand-brown/70 hover:text-brand-brown"
+              : "text-brand-brown/75 hover:text-brand-brown"
         }`}
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
@@ -105,10 +105,10 @@ const Header = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
           isScrolled
-            ? "bg-brand-brown/95 backdrop-blur-sm border-b border-white/10"
+            ? "bg-background/95 backdrop-blur-sm border-b border-brand-brown/10"
             : isHome
               ? "bg-transparent border-b border-transparent"
-              : "bg-brand-brown border-b border-white/10"
+              : "bg-background border-b border-brand-brown/10"
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
@@ -118,11 +118,11 @@ const Header = () => {
               aria-label="Abílio Marcos"
               className={`transition-all duration-700 ${
                 heroState
-                  ? "opacity-0 pointer-events-none -translate-y-1 text-white"
-                  : "opacity-100 translate-y-0 text-white hover:text-white/90"
+                  ? "opacity-0 pointer-events-none -translate-y-1"
+                  : "opacity-100 translate-y-0"
               }`}
             >
-              <SignatureLogo className="h-7 w-[9.25rem] md:h-8 md:w-[10.5rem]" />
+              <SignatureLogo className="h-9 w-auto md:h-11" />
             </Link>
 
             {/* Desktop nav */}
@@ -134,18 +134,18 @@ const Header = () => {
                     key={item.href}
                     to={item.href}
                     className={`text-[13px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
-                      isActive ? "text-white" : "text-white/65 hover:text-white/95"
+                      isActive ? "text-brand-brown" : "text-brand-brown/70 hover:text-brand-brown"
                     }`}
                   >
                     {item.label}
                     {isActive && (
-                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-white/40" />
+                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-brand-brown/40" />
                     )}
                   </Link>
                 );
               })}
 
-              <div className="w-px h-4 bg-white opacity-20 mx-1" />
+              <div className="w-px h-4 bg-brand-brown opacity-20 mx-1" />
               <LanguageDropdown />
             </nav>
 
@@ -154,7 +154,7 @@ const Header = () => {
               {heroState && <LanguageDropdown mobile />}
               <button
                 type="button"
-                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent text-white hover:text-white/90 transition-all duration-300 shrink-0 ${
+                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent text-brand-brown hover:text-brand-brown/80 transition-all duration-300 shrink-0 ${
                   !heroState ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                 }`}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
