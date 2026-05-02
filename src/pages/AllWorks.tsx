@@ -234,46 +234,49 @@ const AllWorks = () => {
                   )}
                 </div>
               ) : (
-                <MasonryGrid
-                  columns={{ base: 2, md: 2, lg: 3, xl: 3 }}
-                  gapX={32}
-                  gapY={56}
-                  items={filtered.map((work, i) => ({
-                    key: work.id,
-                    ratio: ratios[work.id],
-                    render: () => (
-                      <motion.div
-                        initial={{ opacity: 0, y: 12 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-30px" }}
-                        transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+                  {filtered.map((work, i) => (
+                    <motion.div
+                      key={work.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-30px" }}
+                      transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
+                    >
+                      <Link
+                        to={`/obra/${work.slug}`}
+                        className="group block"
+                        onClick={() => trackArtwork('artwork_card_click', work)}
                       >
-                        <Link
-                          to={`/obra/${work.slug}`}
-                          className="group block"
-                          onClick={() => trackArtwork('artwork_card_click', work)}
-                        >
-                          <ArtworkPreviewImage artwork={work} hoverZoom />
-                          <div className="mt-4 space-y-1">
-                            <div className="flex items-baseline justify-between gap-3">
-                              <p className="font-serif text-lg md:text-xl tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300 truncate">
-                                {work.title}
-                              </p>
-                              {formatPrice(work.price) && (
-                                <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
-                                  {formatPrice(work.price)}
-                                </p>
-                              )}
-                            </div>
-                            <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
-                              {techniqueLabel(t, work.technique)}
+                        <div className="relative w-full overflow-hidden bg-muted" style={{ aspectRatio: "4 / 5" }}>
+                          {work.primary_image_url && (
+                            <img
+                              src={work.primary_image_url}
+                              alt={work.title}
+                              loading="lazy"
+                              className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                            />
+                          )}
+                        </div>
+                        <div className="mt-3 space-y-0.5">
+                          <div className="flex items-baseline justify-between gap-3">
+                            <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                              {work.title}
                             </p>
+                            {formatPrice(work.price) && (
+                              <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                                {formatPrice(work.price)}
+                              </p>
+                            )}
                           </div>
-                        </Link>
-                      </motion.div>
-                    ),
-                  }))}
-                />
+                          <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
+                            {techniqueLabel(t, work.technique)}
+                          </p>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
