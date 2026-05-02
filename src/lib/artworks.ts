@@ -37,11 +37,13 @@ export const getFeaturedArtworks = async (): Promise<Artwork[]> => {
  * Most recent published artworks for the public homepage "Recent Works" section.
  * Ordered by created_at (newest first), independent of `is_featured`.
  */
-export const getRecentArtworks = async (limit = 3): Promise<Artwork[]> => {
+export const getRecentArtworks = async (limit = 6): Promise<Artwork[]> => {
   const { data, error } = await supabase
     .from('artworks')
     .select('*')
     .eq('status', 'published')
+    .eq('availability', 'available')
+    .not('primary_image_url', 'is', null)
     .order('created_at', { ascending: false })
     .limit(limit);
 
