@@ -151,11 +151,11 @@ const Header = () => {
             <div className="flex items-center gap-2 lg:hidden">
               <LanguageDropdown mobile />
               <button
-                className="p-2 -mr-2 transition-colors duration-700 text-white/85 hover:text-white"
+                className="p-2 -mr-2 transition-colors duration-700 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] hover:text-white/90"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               >
-                {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                {mobileMenuOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
               </button>
             </div>
           </div>
