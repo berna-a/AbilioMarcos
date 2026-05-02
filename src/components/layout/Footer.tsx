@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import SignatureLogo from "./SignatureLogo";
+import signatureUrl from "@/assets/signature.svg";
 import { useT } from "@/i18n";
 import { Instagram, Facebook, MessageCircle } from "lucide-react";
 import ComplaintsBookBadge from "@/components/ComplaintsBookBadge";
@@ -33,7 +33,20 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <Link to="/" aria-label="Abílio Marcos" className="text-white inline-block mb-5">
-              <SignatureLogo className="h-7 w-[9.25rem] md:h-8 md:w-[10.5rem]" />
+              <span
+                aria-hidden="true"
+                className="block bg-current h-7 w-[9.25rem] md:h-8 md:w-[10.5rem]"
+                style={{
+                  WebkitMaskImage: `url(${signatureUrl})`,
+                  maskImage: `url(${signatureUrl})`,
+                  WebkitMaskRepeat: "no-repeat",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskPosition: "center",
+                  WebkitMaskSize: "contain",
+                  maskSize: "contain",
+                }}
+              />
             </Link>
             <p className="text-[14px] text-white/55 leading-[1.8] max-w-xs whitespace-pre-line">
               {t.footer.description}
