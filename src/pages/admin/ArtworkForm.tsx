@@ -13,7 +13,9 @@ const slugify = (text: string) =>
 const isMissingColumnError = (message: string, column: string) =>
   message.includes(`'${column}' column`) && message.includes('schema cache');
 
-const saveArtwork = async (isNew: boolean, payload: Record<string, any>, id?: string) => {
+type ArtworkPayloadValue = string | number | boolean | string[] | null;
+
+const saveArtwork = async (isNew: boolean, payload: Record<string, ArtworkPayloadValue>, id?: string) => {
   const query = isNew
     ? supabase.from('artworks').insert([payload])
     : supabase.from('artworks').update(payload).eq('id', id);
@@ -97,7 +99,7 @@ const ArtworkForm = () => {
     fetch();
   }, [id, isNew, navigate]);
 
-  const updateField = (field: string, value: any) => {
+  const updateField = (field: string, value: unknown) => {
     setForm((prev) => {
       const next = { ...prev, [field]: value };
       if (field === 'title' && !slugManual) next.slug = slugify(value);
@@ -149,7 +151,7 @@ const ArtworkForm = () => {
 
     setSaving(true);
     const priceNum = form.price ? parseFloat(form.price) : null;
-    const payload: Record<string, any> = {
+    const payload: Record<string, ArtworkPayloadValue> = {
       title: form.title.trim(),
       slug: form.slug.trim(),
       year: form.year,
@@ -186,7 +188,7 @@ const ArtworkForm = () => {
     size_category: null,
     custom_width_cm: null,
     custom_height_cm: null,
-  } as any;
+  };
   const bucket = getSizeBucket(previewArtwork);
   const format = getFormat(previewArtwork);
   const bucketLabel = bucket === 'small' ? t.sizeBucketSmall : bucket === 'medium' ? t.sizeBucketMedium : bucket === 'large' ? t.sizeBucketLarge : '—';
