@@ -159,7 +159,6 @@ const Header = () => {
                 {mobileMenuOpen ? <X size={26} strokeWidth={2.25} /> : <Menu size={26} strokeWidth={2.25} />}
               </button>
             </div>
-            </div>
           </div>
         </div>
       </header>
