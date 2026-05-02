@@ -62,8 +62,8 @@ const Header = () => {
           mobile
             ? "text-brand-brown hover:text-brand-brown/80"
             : heroState
-              ? "text-white/60 hover:text-white/90"
-              : "text-white/65 hover:text-white/95"
+              ? "text-brand-brown/70 hover:text-brand-brown"
+              : "text-brand-brown/75 hover:text-brand-brown"
         }`}
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
