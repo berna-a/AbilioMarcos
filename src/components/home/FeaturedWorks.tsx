@@ -88,7 +88,7 @@ const FeaturedWorks = () => {
                 />
                 <div className="mt-2.5 space-y-0.5">
                   <div className="flex items-baseline justify-between gap-3">
-                    <p className="font-serif text-[17px] md:text-base tracking-[0.01em] text-brand-brown group-hover:text-brand-red transition-colors duration-300 truncate">
+                    <p className="font-serif text-[19px] md:text-[17px] tracking-[0.01em] text-brand-red transition-colors duration-300 truncate">
                       {work.title}
                     </p>
                     {hasReal && formatPrice((work as Artwork).price) && (
