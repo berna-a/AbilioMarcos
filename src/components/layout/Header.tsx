@@ -152,11 +152,11 @@ const Header = () => {
               <LanguageDropdown mobile />
               <button
                 type="button"
-                style={{ width: 44, height: 44, color: 'white', background: 'red', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 700 }}
+                className="inline-flex items-center justify-center w-11 h-11 -mr-2 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] hover:text-white/90 transition-colors shrink-0"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               >
-                ☰
+                {mobileMenuOpen ? <X size={26} strokeWidth={2.25} /> : <Menu size={26} strokeWidth={2.25} />}
               </button>
             </div>
           </div>
