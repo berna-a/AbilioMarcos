@@ -6,6 +6,8 @@ export const getPublishedArtworks = async (): Promise<Artwork[]> => {
     .from('artworks')
     .select('*')
     .eq('status', 'published')
+    .eq('availability', 'available')
+    .not('primary_image_url', 'is', null)
     .order('year', { ascending: false });
 
   if (error) {
