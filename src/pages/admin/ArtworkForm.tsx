@@ -10,6 +10,27 @@ import { useAdmin } from '@/i18n';
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
 
+const isMissingColumnError = (message: string, column: string) =>
+  message.includes(`'${column}' column`) && message.includes('schema cache');
+
+type ArtworkPayloadValue = string | number | boolean | string[] | null;
+
+const saveArtwork = async (isNew: boolean, payload: Record<string, ArtworkPayloadValue>, id?: string) => {
+  const query = isNew
+    ? supabase.from('artworks').insert([payload])
+    : supabase.from('artworks').update(payload).eq('id', id);
+
+  const { error } = await query;
+  if (!error || !isMissingColumnError(error.message, 'technique')) return { error };
+
+  const fallbackPayload = { ...payload };
+  delete fallbackPayload.technique;
+
+  return isNew
+    ? supabase.from('artworks').insert([fallbackPayload])
+    : supabase.from('artworks').update(fallbackPayload).eq('id', id);
+};
+
 const initialForm = {
   title: '',
   slug: '',
@@ -78,10 +99,10 @@ const ArtworkForm = () => {
     fetch();
   }, [id, isNew, navigate]);
 
-  const updateField = (field: string, value: any) => {
+  const updateField = (field: string, value: unknown) => {
     setForm((prev) => {
       const next = { ...prev, [field]: value };
-      if (field === 'title' && !slugManual) next.slug = slugify(value);
+      if (field === 'title' && !slugManual) next.slug = slugify(String(value));
       return next;
     });
   };
@@ -130,7 +151,7 @@ const ArtworkForm = () => {
 
     setSaving(true);
     const priceNum = form.price ? parseFloat(form.price) : null;
-    const payload: Record<string, any> = {
+    const payload: Record<string, ArtworkPayloadValue> = {
       title: form.title.trim(),
       slug: form.slug.trim(),
       year: form.year,
@@ -148,13 +169,8 @@ const ArtworkForm = () => {
       updated_at: new Date().toISOString(),
     };
 
-    if (isNew) {
-      const { error } = await supabase.from('artworks').insert([payload]);
-      if (error) { setError(error.message); setSaving(false); return; }
-    } else {
-      const { error } = await supabase.from('artworks').update(payload).eq('id', id);
-      if (error) { setError(error.message); setSaving(false); return; }
-    }
+    const { error } = await saveArtwork(isNew, payload, id);
+    if (error) { setError(error.message); setSaving(false); return; }
     navigate('/admin/artworks');
   };
 
@@ -172,7 +188,7 @@ const ArtworkForm = () => {
     size_category: null,
     custom_width_cm: null,
     custom_height_cm: null,
-  } as any;
+  };
   const bucket = getSizeBucket(previewArtwork);
   const format = getFormat(previewArtwork);
   const bucketLabel = bucket === 'small' ? t.sizeBucketSmall : bucket === 'medium' ? t.sizeBucketMedium : bucket === 'large' ? t.sizeBucketLarge : '—';
