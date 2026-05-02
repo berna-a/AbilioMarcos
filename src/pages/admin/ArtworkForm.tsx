@@ -10,6 +10,25 @@ import { useAdmin } from '@/i18n';
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
 
+const isMissingColumnError = (message: string, column: string) =>
+  message.includes(`'${column}' column`) && message.includes('schema cache');
+
+const saveArtwork = async (isNew: boolean, payload: Record<string, any>, id?: string) => {
+  const query = isNew
+    ? supabase.from('artworks').insert([payload])
+    : supabase.from('artworks').update(payload).eq('id', id);
+
+  const { error } = await query;
+  if (!error || !isMissingColumnError(error.message, 'technique')) return { error };
+
+  const fallbackPayload = { ...payload };
+  delete fallbackPayload.technique;
+
+  return isNew
+    ? supabase.from('artworks').insert([fallbackPayload])
+    : supabase.from('artworks').update(fallbackPayload).eq('id', id);
+};
+
 const initialForm = {
   title: '',
   slug: '',
@@ -148,13 +167,8 @@ const ArtworkForm = () => {
       updated_at: new Date().toISOString(),
     };
 
-    if (isNew) {
-      const { error } = await supabase.from('artworks').insert([payload]);
-      if (error) { setError(error.message); setSaving(false); return; }
-    } else {
-      const { error } = await supabase.from('artworks').update(payload).eq('id', id);
-      if (error) { setError(error.message); setSaving(false); return; }
-    }
+    const { error } = await saveArtwork(isNew, payload, id);
+    if (error) { setError(error.message); setSaving(false); return; }
     navigate('/admin/artworks');
   };
 
