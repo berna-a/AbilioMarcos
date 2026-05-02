@@ -59,14 +59,16 @@ const Header = () => {
       <button
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
         className={`flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
-          heroState && !mobile
-            ? "text-white/60 hover:text-white/90"
-            : "text-white/65 hover:text-white/95"
+          mobile
+            ? "text-brand-brown hover:text-brand-brown/80"
+            : heroState
+              ? "text-white/60 hover:text-white/90"
+              : "text-white/65 hover:text-white/95"
         }`}
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
         <span>{localeLabels[locale]}</span>
-        <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${mobile ? "text-brand-brown" : ""} ${langOpen ? "rotate-180" : ""}`} />
       </button>
       <AnimatePresence>
         {langOpen && (
