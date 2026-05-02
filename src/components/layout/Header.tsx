@@ -148,7 +148,7 @@ const Header = () => {
             </nav>
 
             {/* Mobile: lang + toggle */}
-            <div className="flex items-center gap-3 lg:hidden shrink-0">
+            <div className="flex items-center gap-3 lg:hidden shrink-0" style={{outline: '2px solid red'}}>
               <LanguageDropdown mobile />
               <button
                 type="button"
