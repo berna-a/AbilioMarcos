@@ -6,9 +6,6 @@ import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
 import { useT, techniqueLabel } from "@/i18n";
-import ArtworkPreviewImage from "@/components/ArtworkPreviewImage";
-import MasonryGrid from "@/components/MasonryGrid";
-import { useArtworkRatios } from "@/hooks/useArtworkRatios";
 import { track, trackArtwork } from "@/lib/analytics";
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
