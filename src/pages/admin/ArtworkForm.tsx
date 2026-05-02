@@ -102,7 +102,7 @@ const ArtworkForm = () => {
   const updateField = (field: string, value: unknown) => {
     setForm((prev) => {
       const next = { ...prev, [field]: value };
-      if (field === 'title' && !slugManual) next.slug = slugify(value);
+      if (field === 'title' && !slugManual) next.slug = slugify(String(value));
       return next;
     });
   };
