@@ -105,10 +105,10 @@ const Header = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
           isScrolled
-            ? "bg-background/95 backdrop-blur-sm border-b border-brand-brown/10"
+            ? "bg-white/95 backdrop-blur-sm border-b border-brand-brown/10"
             : isHome
               ? "bg-transparent border-b border-transparent"
-              : "bg-background border-b border-brand-brown/10"
+              : "bg-white border-b border-brand-brown/10"
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
