@@ -4,9 +4,6 @@ import { useEffect, useState } from "react";
 import { getRecentArtworks } from "@/lib/artworks";
 import { useT, techniqueLabel } from "@/i18n";
 import { Artwork, formatPrice } from "@/lib/types";
-import ArtworkPreviewImage from "@/components/ArtworkPreviewImage";
-import MasonryGrid from "@/components/MasonryGrid";
-import { useArtworkRatios } from "@/hooks/useArtworkRatios";
 
 const placeholderWorks: Partial<Artwork>[] = [
   { id: "1", title: "Erosion of Light", slug: "erosion-of-light", primary_image_url: null, technique: null },
@@ -33,9 +30,6 @@ const FeaturedWorks = () => {
       }
     });
   }, []);
-
-  // Only call the ratios hook with real artworks (placeholders have no images / dims).
-  const ratios = useArtworkRatios(hasReal ? (works as Artwork[]) : []);
 
   const getLink = (work: Partial<Artwork>) =>
     work.slug ? `/obra/${work.slug}` : `/obra/${work.id}`;
@@ -65,49 +59,52 @@ const FeaturedWorks = () => {
         </Link>
       </motion.div>
 
-      <MasonryGrid
-        columns={{ base: 1, sm: 2, md: 2, lg: 3 }}
-        gapX={32}
-        gapY={56}
-        items={works.map((work, i) => ({
-          key: String(work.id ?? i),
-          ratio: hasReal ? ratios[work.id as string] : null,
-          render: () => (
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, delay: 0.05 * (i % 3) }}
-            >
-              <Link to={getLink(work)} className="group block">
-                <ArtworkPreviewImage
-                  artwork={work as Artwork}
-                  placeholderStyle={{
-                    background: placeholderGradients[i % placeholderGradients.length],
-                  }}
-                />
-                <div className="mt-2.5 space-y-0.5">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <p className="font-serif text-[19px] md:text-[17px] tracking-[0.01em] text-brand-red transition-colors duration-300 truncate">
-                      {work.title}
-                    </p>
-                    {hasReal && formatPrice((work as Artwork).price) && (
-                      <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
-                        {formatPrice((work as Artwork).price)}
-                      </p>
-                    )}
-                  </div>
-                  {hasReal && (
-                    <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
-                      {techniqueLabel(t, work.technique)}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+        {works.map((work, i) => (
+          <motion.div
+            key={String(work.id ?? i)}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.05 * (i % 3) }}
+          >
+            <Link to={getLink(work)} className="group block">
+              <div className="relative w-full overflow-hidden bg-muted" style={{ aspectRatio: "4 / 5" }}>
+                {hasReal && work.primary_image_url ? (
+                  <img
+                    src={work.primary_image_url}
+                    alt={work.title || ""}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: placeholderGradients[i % placeholderGradients.length] }}
+                  />
+                )}
+              </div>
+              <div className="mt-3 space-y-0.5">
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                    {work.title}
+                  </p>
+                  {hasReal && formatPrice((work as Artwork).price) && (
+                    <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                      {formatPrice((work as Artwork).price)}
                     </p>
                   )}
                 </div>
-              </Link>
-            </motion.div>
-          ),
-        }))}
-      />
+                {hasReal && (
+                  <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
+                    {techniqueLabel(t, work.technique)}
+                  </p>
+                )}
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
 
       <motion.div
         className="mt-16 md:mt-20 text-center md:hidden"
