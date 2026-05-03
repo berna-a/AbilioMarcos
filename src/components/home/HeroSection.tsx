@@ -73,28 +73,13 @@ const HeroSection = () => {
 
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
         <motion.p
-          className="text-[10px] md:text-[10px] tracking-[0.4em] uppercase text-primary-foreground/70 mb-8 md:mb-10"
+          className="text-2xl md:text-4xl lg:text-5xl tracking-[0.2em] uppercase text-primary-foreground font-serif"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 1.2 }}
         >
           {t.hero.subtitle}
         </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
-        >
-          <img
-            src={signatureGif}
-            alt="Abílio Marcos"
-            className="block w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px] object-contain"
-            style={{ mixBlendMode: "screen", filter: "invert(1)" }}
-            draggable={false}
-          />
-        </motion.div>
       </div>
 
       <motion.div
