@@ -91,7 +91,7 @@ const HeroSection = () => {
             src={signatureGif}
             alt="Abílio Marcos"
             className="block w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px] object-contain"
-            style={{ mixBlendMode: "screen", filter: "invert(1)" }}
+            style={{ mixBlendMode: "screen" }}
             draggable={false}
           />
         </motion.div>
