@@ -78,6 +78,13 @@ const FeaturedWorks = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.6, delay: 0.05 * (i % 3) }}
+                style={{
+                  breakInside: "avoid",
+                  pageBreakInside: "avoid",
+                  width: "100%",
+                  display: "inline-block",
+                  marginBottom: "40px",
+                }}
               >
                 <Link to={getLink(work)} className="group block">
                   <div

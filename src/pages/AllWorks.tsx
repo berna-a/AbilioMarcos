@@ -251,6 +251,13 @@ const AllWorks = () => {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true, margin: "-30px" }}
                           transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
+                          style={{
+                            breakInside: "avoid",
+                            pageBreakInside: "avoid",
+                            width: "100%",
+                            display: "inline-block",
+                            marginBottom: "40px",
+                          }}
                         >
                           <Link
                             to={`/obra/${work.slug}`}
