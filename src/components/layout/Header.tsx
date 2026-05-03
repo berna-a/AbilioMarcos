@@ -62,7 +62,7 @@ const Header = () => {
           mobile
             ? "text-brand-brown hover:text-brand-brown/80"
             : heroState
-              ? "text-brand-brown/70 hover:text-brand-brown"
+              ? "text-white/80 hover:text-white"
               : "text-brand-brown/75 hover:text-brand-brown"
         }`}
       >
