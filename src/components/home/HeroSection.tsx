@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/i18n";
-import signatureGif from "@/assets/AbMa_signature.png";
+import signatureGif from "@/assets/AbMa_GIF.gif";
 
 const HeroSection = () => {
   const t = useT();
@@ -91,6 +91,7 @@ const HeroSection = () => {
             src={signatureGif}
             alt="Abílio Marcos"
             className="block w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px] object-contain"
+            style={{ mixBlendMode: "screen" }}
             draggable={false}
           />
         </motion.div>
