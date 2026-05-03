@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/i18n";
-import signatureUrl from "@/assets/signature.svg";
+import signatureGif from "@/assets/AbMa_GIF.gif";
 
 const HeroSection = () => {
   const t = useT();
@@ -85,23 +85,15 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
-          className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)] text-white"
+          className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)]"
         >
-          <span
-            aria-hidden="true"
-            className="block bg-current w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px]"
-            style={{
-              maskImage: `url(${signatureUrl})`,
-              maskRepeat: "no-repeat",
-              maskPosition: "center",
-              maskSize: "contain",
-              WebkitMaskImage: `url(${signatureUrl})`,
-              WebkitMaskRepeat: "no-repeat",
-              WebkitMaskPosition: "center",
-              WebkitMaskSize: "contain",
-            }}
+          <img
+            src={signatureGif}
+            alt="Abílio Marcos"
+            className="block w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px] object-contain"
+            style={{ mixBlendMode: "screen", filter: "invert(1)" }}
+            draggable={false}
           />
-          <span className="sr-only">Abílio Marcos</span>
         </motion.div>
       </div>
 
