@@ -134,12 +134,14 @@ const Header = () => {
                     key={item.href}
                     to={item.href}
                     className={`text-[13px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
-                      isActive ? "text-brand-brown" : "text-brand-brown/70 hover:text-brand-brown"
+                      heroState
+                        ? isActive ? "text-white" : "text-white/80 hover:text-white"
+                        : isActive ? "text-brand-brown" : "text-brand-brown/70 hover:text-brand-brown"
                     }`}
                   >
                     {item.label}
                     {isActive && (
-                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-brand-brown/40" />
+                      <span className={`absolute -bottom-1 left-0 right-0 h-px ${heroState ? "bg-white/50" : "bg-brand-brown/40"}`} />
                     )}
                   </Link>
                 );
