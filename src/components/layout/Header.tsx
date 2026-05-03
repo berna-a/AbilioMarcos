@@ -147,7 +147,7 @@ const Header = () => {
                 );
               })}
 
-              <div className="w-px h-4 bg-brand-brown opacity-20 mx-1" />
+              <div className={`w-px h-4 mx-1 ${heroState ? "bg-white/30" : "bg-brand-brown opacity-20"}`} />
               <LanguageDropdown />
             </nav>
 
