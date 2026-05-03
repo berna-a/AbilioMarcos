@@ -2,15 +2,13 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/i18n";
-import SignatureLogo from "@/components/layout/SignatureLogo";
+import signatureUrl from "@/assets/signature.svg";
 
 const HeroSection = () => {
   const t = useT();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
 
-  // Always mount the <video>. We honour `prefers-reduced-motion` by pausing
-  // playback rather than removing the element (so the poster still shows).
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
@@ -21,9 +19,7 @@ const HeroSection = () => {
 
     const tryPlay = () => {
       if (reduce) return;
-      v.play().catch(() => {
-        // Autoplay can be blocked (rare for muted+playsInline). Poster will show.
-      });
+      v.play().catch(() => {});
     };
 
     const onLoaded = () => {
@@ -44,7 +40,6 @@ const HeroSection = () => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden bg-gallery-charcoal">
-      {/* Background video */}
       <video
         ref={videoRef}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
@@ -54,8 +49,6 @@ const HeroSection = () => {
         loop
         muted
         playsInline
-        // `auto` is required by some browsers (and Lovable's preview) to actually
-        // download enough data to begin autoplay. `metadata` was preventing playback.
         preload="auto"
         poster="/video/hero-poster.jpg"
         aria-hidden="true"
@@ -64,19 +57,11 @@ const HeroSection = () => {
           console.warn("Hero video failed to load", e.currentTarget.error);
         }}
       >
-        {/*
-          Order matters:
-          1) Mobile MP4 (only used by browsers that match the media query)
-          2) Desktop MP4 (universal — Safari, Chrome, Edge, Firefox)
-          3) WebM as a smaller fallback for browsers that prefer it
-          MP4 must come BEFORE WebM, otherwise Safari picks WebM and silently fails.
-        */}
         <source src="/video/hero-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
         <source src="/video/hero.mp4" type="video/mp4" />
         <source src="/video/hero.webm" type="video/webm" />
       </video>
 
-      {/* Tonal overlay — kept light so the video remains clearly visible */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden="true"
@@ -102,7 +87,21 @@ const HeroSection = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)] text-white"
         >
-          <SignatureLogo className="w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px]" />
+          <span
+            aria-hidden="true"
+            className="block bg-current w-[min(72vw,1280px)] h-[160px] md:h-[320px] lg:h-[400px]"
+            style={{
+              maskImage: `url(${signatureUrl})`,
+              maskRepeat: "no-repeat",
+              maskPosition: "center",
+              maskSize: "contain",
+              WebkitMaskImage: `url(${signatureUrl})`,
+              WebkitMaskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              WebkitMaskSize: "contain",
+            }}
+          />
+          <span className="sr-only">Abílio Marcos</span>
         </motion.div>
       </div>
 
