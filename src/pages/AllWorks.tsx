@@ -7,8 +7,24 @@ import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
 import { useT, techniqueLabel } from "@/i18n";
 import { track, trackArtwork } from "@/lib/analytics";
-import MasonryGrid from "@/components/MasonryGrid";
 import { getClampedRatio } from "@/lib/artworkRatio";
+
+const useColumnCount = () => {
+  const getCount = () => {
+    if (typeof window === "undefined") return 3;
+    const w = window.innerWidth;
+    if (w < 640) return 1;
+    if (w < 1024) return 2;
+    return 3;
+  };
+  const [cols, setCols] = useState<number>(getCount);
+  useEffect(() => {
+    const handler = () => setCols(getCount());
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return cols;
+};
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
 
