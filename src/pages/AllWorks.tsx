@@ -241,8 +241,15 @@ const AllWorks = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 lg:gap-x-8">
                   {(() => {
                     const columns: Artwork[][] = Array.from({ length: NUM_COLUMNS }, () => []);
-                    filtered.forEach((work, i) => {
-                      columns[i % NUM_COLUMNS].push(work);
+                    const heights = new Array(NUM_COLUMNS).fill(0);
+                    filtered.forEach((work) => {
+                      const ratio = getClampedRatio(work);
+                      let shortestIdx = 0;
+                      for (let c = 1; c < NUM_COLUMNS; c++) {
+                        if (heights[c] < heights[shortestIdx]) shortestIdx = c;
+                      }
+                      columns[shortestIdx].push(work);
+                      heights[shortestIdx] += ratio;
                     });
                     return columns.map((col, colIdx) => (
                       <div key={colIdx} className="flex flex-col gap-y-10">
