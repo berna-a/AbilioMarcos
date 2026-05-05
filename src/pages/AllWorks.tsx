@@ -67,6 +67,7 @@ const AllWorks = () => {
   const [sort, setSort] = useState<SortOption>('newest');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const t = useT();
+  const columnCount = useColumnCount();
 
   useEffect(() => {
     track('all_works_view');
