@@ -24,7 +24,6 @@ const FeaturedWorks = () => {
   const [works, setWorks] = useState<Partial<Artwork>[]>(placeholderWorks);
   const [hasReal, setHasReal] = useState(false);
   const t = useT();
-  const columnCount = useColumnCount();
 
   useEffect(() => {
     getRecentArtworks(6).then((data) => {
@@ -40,11 +39,11 @@ const FeaturedWorks = () => {
 
   // Round-robin distribute artworks into columns
   const columns: Array<Array<{ work: Partial<Artwork>; originalIndex: number }>> = Array.from(
-    { length: columnCount },
+    { length: NUM_COLUMNS },
     () => []
   );
   works.forEach((work, i) => {
-    columns[i % columnCount].push({ work, originalIndex: i });
+    columns[i % NUM_COLUMNS].push({ work, originalIndex: i });
   });
 
   return (
