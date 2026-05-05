@@ -18,28 +18,12 @@ const placeholderGradients = [
   "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))",
 ];
 
-const useColumnCount = () => {
-  const getCount = () => {
-    if (typeof window === "undefined") return 3;
-    const w = window.innerWidth;
-    if (w < 640) return 1;
-    if (w < 1024) return 2;
-    return 3;
-  };
-  const [cols, setCols] = useState<number>(getCount);
-  useEffect(() => {
-    const handler = () => setCols(getCount());
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-  return cols;
-};
+const NUM_COLUMNS = 3;
 
 const FeaturedWorks = () => {
   const [works, setWorks] = useState<Partial<Artwork>[]>(placeholderWorks);
   const [hasReal, setHasReal] = useState(false);
   const t = useT();
-  const columnCount = useColumnCount();
 
   useEffect(() => {
     getRecentArtworks(6).then((data) => {
@@ -55,11 +39,11 @@ const FeaturedWorks = () => {
 
   // Round-robin distribute artworks into columns
   const columns: Array<Array<{ work: Partial<Artwork>; originalIndex: number }>> = Array.from(
-    { length: columnCount },
+    { length: NUM_COLUMNS },
     () => []
   );
   works.forEach((work, i) => {
-    columns[i % columnCount].push({ work, originalIndex: i });
+    columns[i % NUM_COLUMNS].push({ work, originalIndex: i });
   });
 
   return (
@@ -87,57 +71,49 @@ const FeaturedWorks = () => {
         </Link>
       </motion.div>
 
-      <div className="flex flex-row gap-8 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8">
         {columns.map((col, colIdx) => (
-          <div key={colIdx} className="flex-1 min-w-0 flex flex-col gap-10">
+          <div key={colIdx} className="flex flex-col gap-y-12">
             {col.map(({ work, originalIndex: i }) => {
               const clamped = hasReal ? getClampedRatio(work as Artwork) : 1.25;
               return (
-                <motion.div
-                  key={String(work.id ?? i)}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-40px" }}
-                  transition={{ duration: 0.6, delay: 0.05 * (i % 3) }}
-                >
-                  <Link to={getLink(work)} className="group block">
-                    <div
-                      className="relative w-full overflow-hidden bg-background"
-                      style={{ aspectRatio: `${1} / ${clamped}` }}
-                    >
-                      {hasReal && work.primary_image_url ? (
-                        <img
-                          src={work.primary_image_url}
-                          alt={work.title || ""}
-                          loading="lazy"
-                          className="absolute inset-0 w-full h-full object-contain object-center"
-                        />
-                      ) : (
-                        <div
-                          className="absolute inset-0"
-                          style={{ background: placeholderGradients[i % placeholderGradients.length] }}
-                        />
-                      )}
-                    </div>
-                    <div className="mt-2 space-y-0.5">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
-                          {work.title}
-                        </p>
-                        {hasReal && formatPrice((work as Artwork).price) && (
-                          <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
-                            {formatPrice((work as Artwork).price)}
-                          </p>
-                        )}
-                      </div>
-                      {hasReal && (
-                        <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
-                          {techniqueLabel(t, work.technique)}
+                <Link key={String(work.id ?? i)} to={getLink(work)} className="group block">
+                  <div
+                    className="w-full overflow-hidden bg-background"
+                    style={{ aspectRatio: `${1 / clamped}` }}
+                  >
+                    {hasReal && work.primary_image_url ? (
+                      <img
+                        src={work.primary_image_url}
+                        alt={work.title || ""}
+                        loading="lazy"
+                        className="w-full h-full object-contain object-center"
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full"
+                        style={{ background: placeholderGradients[i % placeholderGradients.length] }}
+                      />
+                    )}
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                        {work.title}
+                      </p>
+                      {hasReal && formatPrice((work as Artwork).price) && (
+                        <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                          {formatPrice((work as Artwork).price)}
                         </p>
                       )}
                     </div>
-                  </Link>
-                </motion.div>
+                    {hasReal && (
+                      <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 mt-0.5 truncate">
+                        {techniqueLabel(t, work.technique)}
+                      </p>
+                    )}
+                  </div>
+                </Link>
               );
             })}
           </div>

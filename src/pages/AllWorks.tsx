@@ -9,22 +9,7 @@ import { useT, techniqueLabel } from "@/i18n";
 import { track, trackArtwork } from "@/lib/analytics";
 import { getClampedRatio } from "@/lib/artworkRatio";
 
-const useColumnCount = () => {
-  const getCount = () => {
-    if (typeof window === "undefined") return 3;
-    const w = window.innerWidth;
-    if (w < 640) return 1;
-    if (w < 1024) return 2;
-    return 3;
-  };
-  const [cols, setCols] = useState<number>(getCount);
-  useEffect(() => {
-    const handler = () => setCols(getCount());
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-  return cols;
-};
+const NUM_COLUMNS = 3;
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
 
@@ -67,7 +52,7 @@ const AllWorks = () => {
   const [sort, setSort] = useState<SortOption>('newest');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const t = useT();
-  const columnCount = useColumnCount();
+  
 
   useEffect(() => {
     track('all_works_view');
@@ -253,62 +238,52 @@ const AllWorks = () => {
                   )}
                 </div>
               ) : (
-                <div className="flex flex-row gap-8 items-start">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8">
                   {(() => {
-                    const columns: Array<Array<{ work: Artwork; originalIndex: number }>> = Array.from(
-                      { length: columnCount },
-                      () => []
-                    );
+                    const columns: Artwork[][] = Array.from({ length: NUM_COLUMNS }, () => []);
                     filtered.forEach((work, i) => {
-                      columns[i % columnCount].push({ work, originalIndex: i });
+                      columns[i % NUM_COLUMNS].push(work);
                     });
                     return columns.map((col, colIdx) => (
-                      <div key={colIdx} className="flex-1 min-w-0 flex flex-col gap-10">
-                        {col.map(({ work, originalIndex: i }) => {
+                      <div key={colIdx} className="flex flex-col gap-y-12">
+                        {col.map((work) => {
                           const clamped = getClampedRatio(work);
                           return (
-                            <motion.div
+                            <Link
                               key={work.id}
-                              initial={{ opacity: 0, y: 12 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true, margin: "-30px" }}
-                              transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
+                              to={`/obra/${work.slug}`}
+                              className="group block"
+                              onClick={() => trackArtwork('artwork_card_click', work)}
                             >
-                              <Link
-                                to={`/obra/${work.slug}`}
-                                className="group block"
-                                onClick={() => trackArtwork('artwork_card_click', work)}
+                              <div
+                                className="w-full bg-background overflow-hidden"
+                                style={{ aspectRatio: `${1 / clamped}` }}
                               >
-                                <div
-                                  className="relative w-full overflow-hidden bg-background"
-                                  style={{ aspectRatio: `${1} / ${clamped}` }}
-                                >
-                                  {work.primary_image_url && (
-                                    <img
-                                      src={work.primary_image_url}
-                                      alt={work.title}
-                                      loading="lazy"
-                                      className="absolute inset-0 w-full h-full object-contain object-center"
-                                    />
+                                {work.primary_image_url && (
+                                  <img
+                                    src={work.primary_image_url}
+                                    alt={work.title}
+                                    loading="lazy"
+                                    className="w-full h-full object-contain object-center"
+                                  />
+                                )}
+                              </div>
+                              <div className="mt-3">
+                                <div className="flex items-baseline justify-between gap-3">
+                                  <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                                    {work.title}
+                                  </p>
+                                  {formatPrice(work.price) && (
+                                    <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                                      {formatPrice(work.price)}
+                                    </p>
                                   )}
                                 </div>
-                                <div className="mt-2 space-y-0.5">
-                                  <div className="flex items-baseline justify-between gap-3">
-                                    <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
-                                      {work.title}
-                                    </p>
-                                    {formatPrice(work.price) && (
-                                      <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
-                                        {formatPrice(work.price)}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
-                                    {techniqueLabel(t, work.technique)}
-                                  </p>
-                                </div>
-                              </Link>
-                            </motion.div>
+                                <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 mt-0.5 truncate">
+                                  {techniqueLabel(t, work.technique)}
+                                </p>
+                              </div>
+                            </Link>
                           );
                         })}
                       </div>
