@@ -59,11 +59,9 @@ const Header = () => {
       <button
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
         className={`flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
-          mobile
-            ? "text-brand-brown hover:text-brand-brown/80"
-            : heroState
-              ? "text-white/80 hover:text-white"
-              : "text-brand-brown/75 hover:text-brand-brown"
+          heroState
+            ? "text-white/80 hover:text-white"
+            : "text-brand-brown/75 hover:text-brand-brown"
         }`}
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
