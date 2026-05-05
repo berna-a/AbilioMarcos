@@ -52,23 +52,21 @@ const Header = () => {
     return () => { clearTimeout(timer); document.removeEventListener("click", handleClick); };
   }, [langOpen]);
 
-  const heroState = false;
+  const heroState = isHome && !isScrolled;
 
   const LanguageDropdown = ({ mobile = false }: { mobile?: boolean }) => (
     <div className="relative">
       <button
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
         className={`flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
-          mobile
-            ? "text-brand-brown hover:text-brand-brown/80"
-            : heroState
-              ? "text-white/80 hover:text-white"
-              : "text-brand-brown/75 hover:text-brand-brown"
+          heroState
+            ? "text-white/80 hover:text-white"
+            : "text-brand-brown/75 hover:text-brand-brown"
         }`}
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
         <span>{localeLabels[locale]}</span>
-        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${mobile ? "text-brand-brown" : ""} ${langOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
       </button>
       <AnimatePresence>
         {langOpen && (
@@ -151,13 +149,15 @@ const Header = () => {
               <LanguageDropdown />
             </nav>
 
-            {/* Mobile/tablet: lang only in hero state; hamburger only when navbar is solid */}
+            {/* Mobile/tablet: hamburger always visible, white in hero state */}
             <div className="flex items-center gap-3 lg:hidden shrink-0">
               {heroState && <LanguageDropdown mobile />}
               <button
                 type="button"
-                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent text-brand-brown hover:text-brand-brown/80 transition-all duration-300 shrink-0 ${
-                  !heroState ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent transition-all duration-300 shrink-0 ${
+                  heroState
+                    ? "text-white hover:text-white/80"
+                    : "text-brand-brown hover:text-brand-brown/80"
                 }`}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
