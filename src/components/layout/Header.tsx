@@ -52,7 +52,7 @@ const Header = () => {
     return () => { clearTimeout(timer); document.removeEventListener("click", handleClick); };
   }, [langOpen]);
 
-  const heroState = false;
+  const heroState = isHome && !isScrolled;
 
   const LanguageDropdown = ({ mobile = false }: { mobile?: boolean }) => (
     <div className="relative">
