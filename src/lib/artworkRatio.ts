@@ -13,5 +13,5 @@ export function getClampedRatio(
   const h = a.custom_height_cm ? Number(a.custom_height_cm) : 0;
   if (!w || !h) return 1;
   const natural = h / w;
-  return Math.min(Math.max(natural, 0.7), 1.4);
+  return Math.min(Math.max(natural, 0.65), 1.5);
 }
