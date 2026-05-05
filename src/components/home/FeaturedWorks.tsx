@@ -18,22 +18,7 @@ const placeholderGradients = [
   "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))",
 ];
 
-const useColumnCount = () => {
-  const getCount = () => {
-    if (typeof window === "undefined") return 3;
-    const w = window.innerWidth;
-    if (w < 640) return 1;
-    if (w < 1024) return 2;
-    return 3;
-  };
-  const [cols, setCols] = useState<number>(getCount);
-  useEffect(() => {
-    const handler = () => setCols(getCount());
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-  return cols;
-};
+const NUM_COLUMNS = 3;
 
 const FeaturedWorks = () => {
   const [works, setWorks] = useState<Partial<Artwork>[]>(placeholderWorks);
