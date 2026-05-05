@@ -39,7 +39,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-gallery-charcoal">
+    <section className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-76px)] mt-16 md:mt-[76px] w-full overflow-hidden bg-gallery-charcoal">
       <video
         ref={videoRef}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
