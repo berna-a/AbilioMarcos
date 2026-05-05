@@ -37,13 +37,20 @@ const FeaturedWorks = () => {
   const getLink = (work: Partial<Artwork>) =>
     work.slug ? `/obra/${work.slug}` : `/obra/${work.id}`;
 
-  // Round-robin distribute artworks into columns
+  // Shortest-column-first distribution
   const columns: Array<Array<{ work: Partial<Artwork>; originalIndex: number }>> = Array.from(
     { length: NUM_COLUMNS },
     () => []
   );
+  const heights = new Array(NUM_COLUMNS).fill(0);
   works.forEach((work, i) => {
-    columns[i % NUM_COLUMNS].push({ work, originalIndex: i });
+    const ratio = hasReal ? getClampedRatio(work as Artwork) : 1.25;
+    let shortestIdx = 0;
+    for (let c = 1; c < NUM_COLUMNS; c++) {
+      if (heights[c] < heights[shortestIdx]) shortestIdx = c;
+    }
+    columns[shortestIdx].push({ work, originalIndex: i });
+    heights[shortestIdx] += ratio;
   });
 
   return (
