@@ -25,7 +25,6 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const location = useLocation();
-  const isHome = location.pathname === "/";
   const { locale, setLocale, t } = useI18n();
 
   const navItems = navKeys.map((key, i) => ({
@@ -52,17 +51,11 @@ const Header = () => {
     return () => { clearTimeout(timer); document.removeEventListener("click", handleClick); };
   }, [langOpen]);
 
-  const heroState = isHome && !isScrolled;
-
   const LanguageDropdown = ({ mobile = false }: { mobile?: boolean }) => (
     <div className="relative">
       <button
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
-        className={`flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 ${
-          heroState
-            ? "text-white/80 hover:text-white"
-            : "text-brand-brown/75 hover:text-brand-brown"
-        }`}
+        className="flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 text-brand-brown/75 hover:text-brand-brown"
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
         <span>{localeLabels[locale]}</span>
@@ -104,9 +97,7 @@ const Header = () => {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
           isScrolled
             ? "bg-white/95 backdrop-blur-sm border-b border-brand-brown/10"
-            : isHome
-              ? "bg-transparent border-b border-transparent"
-              : "bg-white border-b border-brand-brown/10"
+            : "bg-white border-b border-brand-brown/10"
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
@@ -114,11 +105,7 @@ const Header = () => {
             <Link
               to="/"
               aria-label="Abílio Marcos"
-              className={`transition-all duration-700 ${
-                heroState
-                  ? "opacity-0 pointer-events-none -translate-y-1"
-                  : "opacity-100 translate-y-0"
-              }`}
+              className="transition-all duration-700 opacity-100 translate-y-0"
             >
               <SignatureLogo className="h-9 w-auto md:h-11" />
             </Link>
@@ -132,33 +119,27 @@ const Header = () => {
                     key={item.href}
                     to={item.href}
                     className={`text-[13px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
-                      heroState
-                        ? isActive ? "text-white" : "text-white/80 hover:text-white"
-                        : isActive ? "text-brand-brown" : "text-brand-brown/70 hover:text-brand-brown"
+                      isActive ? "text-brand-brown" : "text-brand-brown/70 hover:text-brand-brown"
                     }`}
                   >
                     {item.label}
                     {isActive && (
-                      <span className={`absolute -bottom-1 left-0 right-0 h-px ${heroState ? "bg-white/50" : "bg-brand-brown/40"}`} />
+                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-brand-brown/40" />
                     )}
                   </Link>
                 );
               })}
 
-              <div className={`w-px h-4 mx-1 ${heroState ? "bg-white/30" : "bg-brand-brown opacity-20"}`} />
+              <div className="w-px h-4 mx-1 bg-brand-brown opacity-20" />
               <LanguageDropdown />
             </nav>
 
-            {/* Mobile/tablet: hamburger always visible, white in hero state */}
+            {/* Mobile/tablet */}
             <div className="flex items-center gap-3 lg:hidden shrink-0">
-              {heroState && <LanguageDropdown mobile />}
+              <LanguageDropdown mobile />
               <button
                 type="button"
-                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent transition-all duration-300 shrink-0 ${
-                  heroState
-                    ? "text-white hover:text-white/80"
-                    : "text-brand-brown hover:text-brand-brown/80"
-                }`}
+                className="inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent transition-all duration-300 shrink-0 text-brand-brown hover:text-brand-brown/80"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               >
