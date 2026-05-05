@@ -238,25 +238,25 @@ const AllWorks = () => {
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 lg:gap-x-8">
                   {(() => {
                     const columns: Artwork[][] = Array.from({ length: NUM_COLUMNS }, () => []);
                     filtered.forEach((work, i) => {
                       columns[i % NUM_COLUMNS].push(work);
                     });
                     return columns.map((col, colIdx) => (
-                      <div key={colIdx} className="flex flex-col gap-y-12">
+                      <div key={colIdx} className="flex flex-col gap-y-10">
                         {col.map((work) => {
                           const clamped = getClampedRatio(work);
                           return (
                             <Link
                               key={work.id}
                               to={`/obra/${work.slug}`}
-                              className="group block"
+                              className="group block w-full"
                               onClick={() => trackArtwork('artwork_card_click', work)}
                             >
                               <div
-                                className="w-full bg-background overflow-hidden"
+                                className="w-full bg-[hsl(var(--background))] flex items-center justify-center"
                                 style={{ aspectRatio: `1 / ${clamped}` }}
                               >
                                 {work.primary_image_url && (
@@ -264,24 +264,26 @@ const AllWorks = () => {
                                     src={work.primary_image_url}
                                     alt={work.title}
                                     loading="lazy"
-                                    className="w-full h-full object-contain object-center"
+                                    className="max-w-full max-h-full w-auto h-auto object-contain"
                                   />
                                 )}
                               </div>
-                              <div className="mt-3">
+                              <div className="mt-3 w-full">
                                 <div className="flex items-baseline justify-between gap-3">
-                                  <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                                  <p className="font-serif text-[17px] text-brand-red truncate">
                                     {work.title}
                                   </p>
                                   {formatPrice(work.price) && (
-                                    <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                                    <p className="text-[12px] text-muted-foreground tabular-nums whitespace-nowrap">
                                       {formatPrice(work.price)}
                                     </p>
                                   )}
                                 </div>
-                                <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 mt-0.5 truncate">
-                                  {techniqueLabel(t, work.technique)}
-                                </p>
+                                {work.technique && (
+                                  <p className="text-[12px] text-muted-foreground/90 mt-0.5 truncate">
+                                    {techniqueLabel(t, work.technique)}
+                                  </p>
+                                )}
                               </div>
                             </Link>
                           );

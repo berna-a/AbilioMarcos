@@ -71,15 +71,15 @@ const FeaturedWorks = () => {
         </Link>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 lg:gap-x-8">
         {columns.map((col, colIdx) => (
-          <div key={colIdx} className="flex flex-col gap-y-12">
+          <div key={colIdx} className="flex flex-col gap-y-10">
             {col.map(({ work, originalIndex: i }) => {
               const clamped = hasReal ? getClampedRatio(work as Artwork) : 1.25;
               return (
-                <Link key={String(work.id ?? i)} to={getLink(work)} className="group block">
+                <Link key={String(work.id ?? i)} to={getLink(work)} className="group block w-full">
                   <div
-                    className="w-full overflow-hidden bg-background"
+                    className="w-full bg-[hsl(var(--background))] flex items-center justify-center"
                     style={{ aspectRatio: `1 / ${clamped}` }}
                   >
                     {hasReal && work.primary_image_url ? (
@@ -87,7 +87,7 @@ const FeaturedWorks = () => {
                         src={work.primary_image_url}
                         alt={work.title || ""}
                         loading="lazy"
-                        className="w-full h-full object-contain object-center"
+                        className="max-w-full max-h-full w-auto h-auto object-contain"
                       />
                     ) : (
                       <div
@@ -96,19 +96,19 @@ const FeaturedWorks = () => {
                       />
                     )}
                   </div>
-                  <div className="mt-3">
+                  <div className="mt-3 w-full">
                     <div className="flex items-baseline justify-between gap-3">
-                      <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                      <p className="font-serif text-[17px] text-brand-red truncate">
                         {work.title}
                       </p>
                       {hasReal && formatPrice((work as Artwork).price) && (
-                        <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                        <p className="text-[12px] text-muted-foreground tabular-nums whitespace-nowrap">
                           {formatPrice((work as Artwork).price)}
                         </p>
                       )}
                     </div>
-                    {hasReal && (
-                      <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 mt-0.5 truncate">
+                    {hasReal && work.technique && (
+                      <p className="text-[12px] text-muted-foreground/90 mt-0.5 truncate">
                         {techniqueLabel(t, work.technique)}
                       </p>
                     )}
