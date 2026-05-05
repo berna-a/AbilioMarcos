@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { getRecentArtworks } from "@/lib/artworks";
 import { useT, techniqueLabel } from "@/i18n";
 import { Artwork, formatPrice } from "@/lib/types";
-import MasonryGrid from "@/components/MasonryGrid";
 import { getClampedRatio } from "@/lib/artworkRatio";
 
 const placeholderWorks: Partial<Artwork>[] = [
@@ -19,10 +18,28 @@ const placeholderGradients = [
   "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))",
 ];
 
+const useColumnCount = () => {
+  const getCount = () => {
+    if (typeof window === "undefined") return 3;
+    const w = window.innerWidth;
+    if (w < 640) return 1;
+    if (w < 1024) return 2;
+    return 3;
+  };
+  const [cols, setCols] = useState<number>(getCount);
+  useEffect(() => {
+    const handler = () => setCols(getCount());
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return cols;
+};
+
 const FeaturedWorks = () => {
   const [works, setWorks] = useState<Partial<Artwork>[]>(placeholderWorks);
   const [hasReal, setHasReal] = useState(false);
   const t = useT();
+  const columnCount = useColumnCount();
 
   useEffect(() => {
     getRecentArtworks(6).then((data) => {
@@ -35,6 +52,15 @@ const FeaturedWorks = () => {
 
   const getLink = (work: Partial<Artwork>) =>
     work.slug ? `/obra/${work.slug}` : `/obra/${work.id}`;
+
+  // Round-robin distribute artworks into columns
+  const columns: Array<Array<{ work: Partial<Artwork>; originalIndex: number }>> = Array.from(
+    { length: columnCount },
+    () => []
+  );
+  works.forEach((work, i) => {
+    columns[i % columnCount].push({ work, originalIndex: i });
+  });
 
   return (
     <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto">
@@ -61,73 +87,62 @@ const FeaturedWorks = () => {
         </Link>
       </motion.div>
 
-      <MasonryGrid
-        columns={{ base: 1, sm: 2, md: 2, lg: 3 }}
-        gapX={32}
-        gapY={56}
-        items={works.map((work, i) => {
-          const clamped = hasReal ? getClampedRatio(work as Artwork) : 1.25; // 4:5 placeholder
-          // MasonryGrid expects width/height; clamped is height/width.
-          const ratio = 1 / clamped;
-          return {
-            key: String(work.id ?? i),
-            ratio,
-            render: () => (
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.6, delay: 0.05 * (i % 3) }}
-                style={{
-                  breakInside: "avoid",
-                  pageBreakInside: "avoid",
-                  width: "100%",
-                  display: "inline-block",
-                  marginBottom: "40px",
-                }}
-              >
-                <Link to={getLink(work)} className="group block">
-                  <div
-                    className="relative w-full overflow-hidden bg-background"
-                    style={{ aspectRatio: `${1} / ${clamped}` }}
-                  >
-                    {hasReal && work.primary_image_url ? (
-                      <img
-                        src={work.primary_image_url}
-                        alt={work.title || ""}
-                        loading="lazy"
-                        className="absolute inset-0 w-full h-full object-contain object-center"
-                      />
-                    ) : (
-                      <div
-                        className="absolute inset-0"
-                        style={{ background: placeholderGradients[i % placeholderGradients.length] }}
-                      />
-                    )}
-                  </div>
-                  <div className="mt-3 space-y-0.5">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
-                        {work.title}
-                      </p>
-                      {hasReal && formatPrice((work as Artwork).price) && (
-                        <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
-                          {formatPrice((work as Artwork).price)}
+      <div className="flex flex-row gap-8 items-start">
+        {columns.map((col, colIdx) => (
+          <div key={colIdx} className="flex-1 min-w-0 flex flex-col gap-10">
+            {col.map(({ work, originalIndex: i }) => {
+              const clamped = hasReal ? getClampedRatio(work as Artwork) : 1.25;
+              return (
+                <motion.div
+                  key={String(work.id ?? i)}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.6, delay: 0.05 * (i % 3) }}
+                >
+                  <Link to={getLink(work)} className="group block">
+                    <div
+                      className="relative w-full overflow-hidden bg-background"
+                      style={{ aspectRatio: `${1} / ${clamped}` }}
+                    >
+                      {hasReal && work.primary_image_url ? (
+                        <img
+                          src={work.primary_image_url}
+                          alt={work.title || ""}
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-contain object-center"
+                        />
+                      ) : (
+                        <div
+                          className="absolute inset-0"
+                          style={{ background: placeholderGradients[i % placeholderGradients.length] }}
+                        />
+                      )}
+                    </div>
+                    <div className="mt-2 space-y-0.5">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                          {work.title}
+                        </p>
+                        {hasReal && formatPrice((work as Artwork).price) && (
+                          <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                            {formatPrice((work as Artwork).price)}
+                          </p>
+                        )}
+                      </div>
+                      {hasReal && (
+                        <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
+                          {techniqueLabel(t, work.technique)}
                         </p>
                       )}
                     </div>
-                    {hasReal && (
-                      <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
-                        {techniqueLabel(t, work.technique)}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              </motion.div>
-            ),
-          };
-        })}
-      />
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
 
       <motion.div
         className="mt-16 md:mt-20 text-center md:hidden"
