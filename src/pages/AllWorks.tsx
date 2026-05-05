@@ -7,9 +7,6 @@ import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
 import { useT, techniqueLabel } from "@/i18n";
 import { track, trackArtwork } from "@/lib/analytics";
-import { getClampedRatio } from "@/lib/artworkRatio";
-
-const NUM_COLUMNS = 3;
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
 
