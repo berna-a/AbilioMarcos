@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { getRecentArtworks } from "@/lib/artworks";
 import { useT, techniqueLabel } from "@/i18n";
 import { Artwork, formatPrice } from "@/lib/types";
-import { getClampedRatio } from "@/lib/artworkRatio";
 
 const placeholderWorks: Partial<Artwork>[] = [
   { id: "1", title: "Erosion of Light", slug: "erosion-of-light", primary_image_url: null, technique: null },
   { id: "2", title: "Meridian", slug: "meridian", primary_image_url: null, technique: null },
   { id: "3", title: "Residual Warmth", slug: "residual-warmth", primary_image_url: null, technique: null },
+  { id: "4", title: "Quiet Field", slug: "quiet-field", primary_image_url: null, technique: null },
+  { id: "5", title: "Slow Tide", slug: "slow-tide", primary_image_url: null, technique: null },
+  { id: "6", title: "Dust & Ember", slug: "dust-ember", primary_image_url: null, technique: null },
 ];
 
 const placeholderGradients = [
@@ -18,7 +20,7 @@ const placeholderGradients = [
   "linear-gradient(145deg, hsl(35 50% 40%), hsl(25 40% 60%))",
 ];
 
-const NUM_COLUMNS = 3;
+const placeholderHeights = [320, 440, 380, 500, 360, 420];
 
 const FeaturedWorks = () => {
   const [works, setWorks] = useState<Partial<Artwork>[]>(placeholderWorks);
@@ -36,22 +38,6 @@ const FeaturedWorks = () => {
 
   const getLink = (work: Partial<Artwork>) =>
     work.slug ? `/obra/${work.slug}` : `/obra/${work.id}`;
-
-  // Shortest-column-first distribution
-  const columns: Array<Array<{ work: Partial<Artwork>; originalIndex: number }>> = Array.from(
-    { length: NUM_COLUMNS },
-    () => []
-  );
-  const heights = new Array(NUM_COLUMNS).fill(0);
-  works.forEach((work, i) => {
-    const ratio = hasReal ? getClampedRatio(work as Artwork) : 1.25;
-    let shortestIdx = 0;
-    for (let c = 1; c < NUM_COLUMNS; c++) {
-      if (heights[c] < heights[shortestIdx]) shortestIdx = c;
-    }
-    columns[shortestIdx].push({ work, originalIndex: i });
-    heights[shortestIdx] += ratio;
-  });
 
   return (
     <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto">
@@ -78,51 +64,50 @@ const FeaturedWorks = () => {
         </Link>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 lg:gap-x-8">
-        {columns.map((col, colIdx) => (
-          <div key={colIdx} className="flex flex-col gap-y-10">
-            {col.map(({ work, originalIndex: i }) => {
-              const clamped = hasReal ? getClampedRatio(work as Artwork) : 1.25;
-              return (
-                <Link key={String(work.id ?? i)} to={getLink(work)} className="group block w-full">
-                  <div
-                    className="w-full bg-[hsl(var(--background))] flex items-center justify-center"
-                    style={{ aspectRatio: `1 / ${clamped}` }}
-                  >
-                    {hasReal && work.primary_image_url ? (
-                      <img
-                        src={work.primary_image_url}
-                        alt={work.title || ""}
-                        loading="lazy"
-                        className="max-w-full max-h-full w-auto h-auto object-contain"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full"
-                        style={{ background: placeholderGradients[i % placeholderGradients.length] }}
-                      />
-                    )}
-                  </div>
-                  <div className="mt-3 w-full">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <p className="font-serif text-[17px] text-brand-red truncate">
-                        {work.title}
-                      </p>
-                      {hasReal && formatPrice((work as Artwork).price) && (
-                        <p className="text-[12px] text-muted-foreground tabular-nums whitespace-nowrap">
-                          {formatPrice((work as Artwork).price)}
-                        </p>
-                      )}
-                    </div>
-                    {hasReal && work.technique && (
-                      <p className="text-[12px] text-muted-foreground/90 mt-0.5 truncate">
-                        {techniqueLabel(t, work.technique)}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
+      <div
+        className="columns-1 md:columns-2 lg:columns-3 gap-6 lg:gap-8"
+        style={{ columnFill: "balance" }}
+      >
+        {works.map((work, i) => (
+          <div
+            key={String(work.id ?? i)}
+            className="break-inside-avoid mb-10 inline-block w-full"
+          >
+            <Link to={getLink(work)} className="block group">
+              {hasReal && work.primary_image_url ? (
+                <img
+                  src={work.primary_image_url}
+                  alt={work.title || ""}
+                  loading="lazy"
+                  className="w-full h-auto block"
+                />
+              ) : (
+                <div
+                  className="w-full block"
+                  style={{
+                    height: `${placeholderHeights[i % placeholderHeights.length]}px`,
+                    background: placeholderGradients[i % placeholderGradients.length],
+                  }}
+                />
+              )}
+              <div className="mt-3">
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className="font-serif text-[17px] text-brand-red truncate">
+                    {work.title}
+                  </p>
+                  {hasReal && formatPrice((work as Artwork).price) && (
+                    <p className="text-[12px] text-muted-foreground tabular-nums whitespace-nowrap">
+                      {formatPrice((work as Artwork).price)}
+                    </p>
+                  )}
+                </div>
+                {hasReal && work.technique && (
+                  <p className="text-[12px] text-muted-foreground/90 mt-0.5 truncate">
+                    {techniqueLabel(t, work.technique)}
+                  </p>
+                )}
+              </div>
+            </Link>
           </div>
         ))}
       </div>
