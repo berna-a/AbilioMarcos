@@ -7,8 +7,24 @@ import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
 import { useT, techniqueLabel } from "@/i18n";
 import { track, trackArtwork } from "@/lib/analytics";
-import MasonryGrid from "@/components/MasonryGrid";
 import { getClampedRatio } from "@/lib/artworkRatio";
+
+const useColumnCount = () => {
+  const getCount = () => {
+    if (typeof window === "undefined") return 3;
+    const w = window.innerWidth;
+    if (w < 640) return 1;
+    if (w < 1024) return 2;
+    return 3;
+  };
+  const [cols, setCols] = useState<number>(getCount);
+  useEffect(() => {
+    const handler = () => setCols(getCount());
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return cols;
+};
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
 
@@ -51,6 +67,7 @@ const AllWorks = () => {
   const [sort, setSort] = useState<SortOption>('newest');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const t = useT();
+  const columnCount = useColumnCount();
 
   useEffect(() => {
     track('all_works_view');
@@ -236,68 +253,68 @@ const AllWorks = () => {
                   )}
                 </div>
               ) : (
-                <MasonryGrid
-                  columns={{ base: 1, sm: 2, md: 2, lg: 3, xl: 3 }}
-                  gapX={32}
-                  gapY={56}
-                  items={filtered.map((work, i) => {
-                    const clamped = getClampedRatio(work);
-                    return {
-                      key: work.id,
-                      ratio: 1 / clamped,
-                      render: () => (
-                        <motion.div
-                          initial={{ opacity: 0, y: 12 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-30px" }}
-                          transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
-                          style={{
-                            breakInside: "avoid",
-                            pageBreakInside: "avoid",
-                            width: "100%",
-                            display: "inline-block",
-                            marginBottom: "40px",
-                          }}
-                        >
-                          <Link
-                            to={`/obra/${work.slug}`}
-                            className="group block"
-                            onClick={() => trackArtwork('artwork_card_click', work)}
-                          >
-                            <div
-                              className="relative w-full overflow-hidden bg-background"
-                              style={{ aspectRatio: `${1} / ${clamped}` }}
+                <div className="flex flex-row gap-8 items-start">
+                  {(() => {
+                    const columns: Array<Array<{ work: Artwork; originalIndex: number }>> = Array.from(
+                      { length: columnCount },
+                      () => []
+                    );
+                    filtered.forEach((work, i) => {
+                      columns[i % columnCount].push({ work, originalIndex: i });
+                    });
+                    return columns.map((col, colIdx) => (
+                      <div key={colIdx} className="flex-1 min-w-0 flex flex-col gap-10">
+                        {col.map(({ work, originalIndex: i }) => {
+                          const clamped = getClampedRatio(work);
+                          return (
+                            <motion.div
+                              key={work.id}
+                              initial={{ opacity: 0, y: 12 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              viewport={{ once: true, margin: "-30px" }}
+                              transition={{ duration: 0.4, delay: 0.03 * (i % 3) }}
                             >
-                              {work.primary_image_url && (
-                                <img
-                                  src={work.primary_image_url}
-                                  alt={work.title}
-                                  loading="lazy"
-                                  className="absolute inset-0 w-full h-full object-contain object-center"
-                                />
-                              )}
-                            </div>
-                            <div className="mt-3 space-y-0.5">
-                              <div className="flex items-baseline justify-between gap-3">
-                                <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
-                                  {work.title}
-                                </p>
-                                {formatPrice(work.price) && (
-                                  <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
-                                    {formatPrice(work.price)}
+                              <Link
+                                to={`/obra/${work.slug}`}
+                                className="group block"
+                                onClick={() => trackArtwork('artwork_card_click', work)}
+                              >
+                                <div
+                                  className="relative w-full overflow-hidden bg-background"
+                                  style={{ aspectRatio: `${1} / ${clamped}` }}
+                                >
+                                  {work.primary_image_url && (
+                                    <img
+                                      src={work.primary_image_url}
+                                      alt={work.title}
+                                      loading="lazy"
+                                      className="absolute inset-0 w-full h-full object-contain object-center"
+                                    />
+                                  )}
+                                </div>
+                                <div className="mt-2 space-y-0.5">
+                                  <div className="flex items-baseline justify-between gap-3">
+                                    <p className="font-serif text-[17px] tracking-[0.01em] text-brand-red truncate">
+                                      {work.title}
+                                    </p>
+                                    {formatPrice(work.price) && (
+                                      <p className="text-[12px] tracking-[0.04em] text-muted-foreground whitespace-nowrap tabular-nums">
+                                        {formatPrice(work.price)}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
+                                    {techniqueLabel(t, work.technique)}
                                   </p>
-                                )}
-                              </div>
-                              <p className="text-[12px] tracking-[0.05em] text-muted-foreground/90 truncate">
-                                {techniqueLabel(t, work.technique)}
-                              </p>
-                            </div>
-                          </Link>
-                        </motion.div>
-                      ),
-                    };
-                  })}
-                />
+                                </div>
+                              </Link>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    ));
+                  })()}
+                </div>
               )}
             </div>
           </div>
