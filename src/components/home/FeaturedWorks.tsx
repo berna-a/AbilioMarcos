@@ -80,7 +80,7 @@ const FeaturedWorks = () => {
                 <Link key={String(work.id ?? i)} to={getLink(work)} className="group block">
                   <div
                     className="w-full overflow-hidden bg-background"
-                    style={{ aspectRatio: `${1 / clamped}` }}
+                    style={{ aspectRatio: `1 / ${clamped}` }}
                   >
                     {hasReal && work.primary_image_url ? (
                       <img

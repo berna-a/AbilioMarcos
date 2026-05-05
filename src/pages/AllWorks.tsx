@@ -257,7 +257,7 @@ const AllWorks = () => {
                             >
                               <div
                                 className="w-full bg-background overflow-hidden"
-                                style={{ aspectRatio: `${1 / clamped}` }}
+                                style={{ aspectRatio: `1 / ${clamped}` }}
                               >
                                 {work.primary_image_url && (
                                   <img
