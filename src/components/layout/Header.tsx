@@ -151,13 +151,15 @@ const Header = () => {
               <LanguageDropdown />
             </nav>
 
-            {/* Mobile/tablet: lang only in hero state; hamburger only when navbar is solid */}
+            {/* Mobile/tablet: hamburger always visible, white in hero state */}
             <div className="flex items-center gap-3 lg:hidden shrink-0">
               {heroState && <LanguageDropdown mobile />}
               <button
                 type="button"
-                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent text-brand-brown hover:text-brand-brown/80 transition-all duration-300 shrink-0 ${
-                  !heroState ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                className={`inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent transition-all duration-300 shrink-0 ${
+                  heroState
+                    ? "text-white hover:text-white/80"
+                    : "text-brand-brown hover:text-brand-brown/80"
                 }`}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
