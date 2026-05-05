@@ -66,7 +66,7 @@ const Header = () => {
       >
         <span className="text-sm leading-none">{localeFlags[locale]}</span>
         <span>{localeLabels[locale]}</span>
-        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${mobile ? "text-brand-brown" : ""} ${langOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
       </button>
       <AnimatePresence>
         {langOpen && (
