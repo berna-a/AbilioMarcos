@@ -25,7 +25,6 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const location = useLocation();
-  const isHome = location.pathname === "/";
   const { locale, setLocale, t } = useI18n();
 
   const navItems = navKeys.map((key, i) => ({
@@ -51,8 +50,6 @@ const Header = () => {
     const timer = setTimeout(() => document.addEventListener("click", handleClick), 0);
     return () => { clearTimeout(timer); document.removeEventListener("click", handleClick); };
   }, [langOpen]);
-
-  const heroState = isHome && !isScrolled;
 
   const LanguageDropdown = ({ mobile = false }: { mobile?: boolean }) => (
     <div className="relative">
