@@ -242,7 +242,7 @@ const AllWorks = () => {
                   {filtered.map((work) => (
                     <div
                       key={work.id}
-                      className="break-inside-avoid mb-10 inline-block w-full"
+                      className="break-inside-avoid mb-10 inline-block w-full transition-transform duration-500 ease-out hover:-translate-y-1.5"
                     >
                       <Link
                         to={`/obra/${work.slug}`}
