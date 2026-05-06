@@ -11,7 +11,7 @@ export const es: Translations = {
     contact: 'Contacto',
   },
   hero: {
-    subtitle: 'Pintura Abstracta Contemporánea',
+    subtitle: 'PINTURA EXPRESIONISTA ABSTRACTA',
     statement: 'Cada gesto sostiene el peso de la intención — el color como emoción, la textura como memoria, el lienzo como espacio donde pensamiento e instinto convergen.',
   },
   featured: {

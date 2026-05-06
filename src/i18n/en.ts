@@ -9,7 +9,7 @@ export const en: Translations = {
     contact: 'Contact',
   },
   hero: {
-    subtitle: 'Contemporary Abstract Painting',
+    subtitle: 'ABSTRACT EXPRESSIONIST PAINTING',
     statement: 'Each gesture carries the weight of intention — color as emotion, texture as memory, the canvas as a space where thought and instinct converge.',
   },
   featured: {
