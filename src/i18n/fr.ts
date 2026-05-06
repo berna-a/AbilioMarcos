@@ -9,7 +9,7 @@ export const fr: Translations = {
     contact: 'Contact',
   },
   hero: {
-    subtitle: 'Peinture Abstraite Contemporaine',
+    subtitle: 'PEINTURE EXPRESSIONNISTE ABSTRAITE',
     statement: 'Chaque geste porte le poids de l\'intention — la couleur comme émotion, la texture comme mémoire, la toile comme espace où pensée et instinct convergent.',
   },
   featured: {
