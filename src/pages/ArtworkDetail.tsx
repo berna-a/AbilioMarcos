@@ -125,10 +125,10 @@ const ArtworkDetail = () => {
 
   return (
     <Layout>
-      <div className="pt-20 md:pt-24 pb-24 md:pb-40">
+      <div className="pt-6 md:pt-10 pb-24 md:pb-40">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-6 md:mb-10">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-4 md:mb-6">
             <Link to="/obras" className="inline-flex items-center gap-2.5 text-[12px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">
               <ArrowLeft className="w-3 h-3" /> {t.artwork.backToArchive}
             </Link>
@@ -136,31 +136,38 @@ const ArtworkDetail = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 mb-32 md:mb-48">
             <motion.div className="lg:col-span-7" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
-              {artwork.primary_image_url ? (
-                <ArtworkLightbox src={artwork.primary_image_url} alt={artwork.title}>
-                  {/* Cap height so the full work fits comfortably in the viewport on large screens. */}
-                  <div className="w-full flex justify-center">
-                    <img
-                      src={artwork.primary_image_url}
-                      alt={artwork.title}
-                      className="w-auto h-auto max-w-full object-contain"
-                      style={{
-                        ...(naturalRatio ? { aspectRatio: naturalRatio } : {}),
-                        maxHeight: "min(82vh, 880px)",
-                      }}
-                    />
-                  </div>
-                </ArtworkLightbox>
-              ) : (
-                <div
-                  className="w-full bg-muted mx-auto"
-                  style={{ aspectRatio: naturalRatio || '4/5', maxHeight: 'min(82vh, 880px)' }}
-                />
-              )}
+              {(() => {
+                const isHorizontal = !!(width && height && width > height);
+                const imgClass = isHorizontal
+                  ? "w-full h-auto object-contain"
+                  : "h-auto w-auto max-w-full object-contain";
+                const imgStyle: React.CSSProperties = isHorizontal
+                  ? { ...(naturalRatio ? { aspectRatio: naturalRatio } : {}) }
+                  : { ...(naturalRatio ? { aspectRatio: naturalRatio } : {}), maxHeight: "min(82vh, 880px)" };
+                return artwork.primary_image_url ? (
+                  <ArtworkLightbox src={artwork.primary_image_url} alt={artwork.title}>
+                    <div className="w-full flex justify-center">
+                      <img
+                        src={artwork.primary_image_url}
+                        alt={artwork.title}
+                        className={imgClass}
+                        style={imgStyle}
+                      />
+                    </div>
+                  </ArtworkLightbox>
+                ) : (
+                  <div
+                    className="w-full bg-muted mx-auto"
+                    style={isHorizontal
+                      ? { aspectRatio: naturalRatio || '4/5' }
+                      : { aspectRatio: naturalRatio || '4/5', maxHeight: 'min(82vh, 880px)' }}
+                  />
+                );
+              })()}
             </motion.div>
 
             <motion.div className="lg:col-span-5 flex flex-col lg:py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
-              <h1 className="font-serif text-[3rem] md:text-[3.5rem] lg:text-[3.75rem] font-light text-foreground leading-[1.02] mb-14 lg:mb-16">{artwork.title}</h1>
+              <h1 className="font-serif text-[1.875rem] md:text-[2.25rem] lg:text-[2.5rem] font-light text-foreground leading-[1.1] mb-14 lg:mb-16">{artwork.title}</h1>
 
               <div className="space-y-6 mb-14 lg:mb-16">
                 <MetadataLine label={t.artwork.medium} value={techniqueText} />
