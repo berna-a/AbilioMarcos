@@ -9,7 +9,7 @@ export const de: Translations = {
     contact: 'Kontakt',
   },
   hero: {
-    subtitle: 'Zeitgenössische Abstrakte Malerei',
+    subtitle: 'ABSTRAKTE EXPRESSIONISTISCHE MALEREI',
     statement: 'Jede Geste trägt das Gewicht der Absicht — Farbe als Emotion, Textur als Erinnerung, die Leinwand als Raum, in dem Gedanke und Instinkt zusammentreffen.',
   },
   featured: {
