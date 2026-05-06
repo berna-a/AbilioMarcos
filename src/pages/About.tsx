@@ -2,8 +2,6 @@ import Layout from "@/components/layout/Layout";
 import AboutHero from "@/components/about/AboutHero";
 import AboutBiography from "@/components/about/AboutBiography";
 import AboutPractice from "@/components/about/AboutPractice";
-import AboutHighlights from "@/components/about/AboutHighlights";
-import AboutCollections from "@/components/about/AboutCollections";
 import AboutBibliography from "@/components/about/AboutBibliography";
 import AboutArchive from "@/components/about/AboutArchive";
 
@@ -15,8 +13,6 @@ const About = () => {
           <AboutHero />
           <AboutBiography />
           <AboutPractice />
-          <AboutHighlights />
-          <AboutCollections />
           <AboutBibliography />
           <AboutArchive />
         </div>
