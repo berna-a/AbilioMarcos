@@ -31,6 +31,7 @@ import Commissions from "./pages/admin/Commissions";
 import SiteSettings from "./pages/admin/SiteSettings";
 import AdminAnalytics from "./pages/admin/Analytics";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
       <I18nProvider>
         <AuthProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <AnalyticsProvider />
             <Routes>
               <Route path="/" element={<Index />} />
