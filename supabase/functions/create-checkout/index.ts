@@ -111,6 +111,18 @@ serve(async (req) => {
     const siteUrl = Deno.env.get("SITE_URL") || "https://abiliomarcos.com";
     const origin = siteUrl.replace(/\/+$/, "");
 
+    // Encode image URL path segments to handle non-ASCII characters (Stripe requires ASCII URLs)
+    const encodeUrlSafely = (url: string): string => {
+      try {
+        const u = new URL(url);
+        u.pathname = u.pathname.split("/").map((seg) => encodeURIComponent(decodeURIComponent(seg))).join("/");
+        return u.toString();
+      } catch {
+        return encodeURI(url);
+      }
+    };
+    const safeImageUrl = artwork.primary_image_url ? encodeUrlSafely(artwork.primary_image_url) : null;
+
     const lineItem: Stripe.Checkout.SessionCreateParams.LineItem = {
       quantity: 1,
       price_data: {
@@ -119,7 +131,7 @@ serve(async (req) => {
         product_data: {
           name: artwork.title,
           description: "Original painting",
-          ...(artwork.primary_image_url ? { images: [artwork.primary_image_url] } : {}),
+          ...(safeImageUrl ? { images: [safeImageUrl] } : {}),
         },
       },
     };
@@ -128,7 +140,7 @@ serve(async (req) => {
       mode: "payment",
       line_items: [lineItem],
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/checkout/cancel?artwork=${artwork.slug}`,
+      cancel_url: `${origin}/checkout/cancel?artwork=${encodeURIComponent(artwork.slug)}`,
       metadata: {
         artwork_id: artwork.id,
         artwork_title: artwork.title,
