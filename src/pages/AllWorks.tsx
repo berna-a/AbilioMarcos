@@ -77,13 +77,13 @@ const AllWorks = () => {
         if (!filters.technique.includes(tech)) return false;
       }
       if (filters.format.length) {
-        const w = Number(a.custom_width_cm ?? a.width_cm) || 0;
-        const h = Number(a.custom_height_cm ?? a.height_cm) || 0;
+        const w = Number(a.custom_width_cm) || 0;
+        const h = Number(a.custom_height_cm) || 0;
         if (!w || !h) return false;
-        let fmt: 'vertical' | 'horizontal' | 'square';
-        if (Math.abs(w - h) <= w * 0.05) fmt = 'square';
-        else if (h > w) fmt = 'vertical';
-        else fmt = 'horizontal';
+        const isSquare = Math.abs(w - h) / Math.max(w, h) <= 0.05;
+        const isVertical = !isSquare && h > w;
+        const isHorizontal = !isSquare && w > h;
+        const fmt: 'vertical' | 'horizontal' | 'square' = isSquare ? 'square' : isVertical ? 'vertical' : 'horizontal';
         if (!filters.format.includes(fmt)) return false;
       }
       if (filters.size.length) {
