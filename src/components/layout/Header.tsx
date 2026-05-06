@@ -136,7 +136,6 @@ const Header = () => {
 
             {/* Mobile/tablet */}
             <div className="flex items-center gap-3 lg:hidden shrink-0">
-              <LanguageDropdown mobile />
               <button
                 type="button"
                 className="inline-flex items-center justify-center w-11 h-11 -mr-2 bg-transparent transition-all duration-300 shrink-0 text-brand-brown hover:text-brand-brown/80"
