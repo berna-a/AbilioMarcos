@@ -71,7 +71,7 @@ const FeaturedWorks = () => {
         {works.map((work, i) => (
           <div
             key={String(work.id ?? i)}
-            className="break-inside-avoid mb-10 inline-block w-full"
+            className="break-inside-avoid mb-10 inline-block w-full transition-transform duration-500 ease-out hover:-translate-y-1.5"
           >
             <Link to={getLink(work)} className="block group">
               {hasReal && work.primary_image_url ? (
