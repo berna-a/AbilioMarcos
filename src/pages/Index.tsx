@@ -5,7 +5,7 @@ import HeroSection from "@/components/home/HeroSection";
 import FeaturedWorks from "@/components/home/FeaturedWorks";
 import StatementSection from "@/components/home/StatementSection";
 import CollectorSection from "@/components/home/CollectorSection";
-import AuthorityStrip from "@/components/home/AuthorityStrip";
+
 
 const Index = () => {
   const [showIntro, setShowIntro] = useState(() => {
@@ -26,7 +26,7 @@ const Index = () => {
         <HeroSection />
         <FeaturedWorks />
         <StatementSection />
-        <AuthorityStrip />
+        
         <CollectorSection />
       </Layout>
     </>
