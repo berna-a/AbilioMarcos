@@ -117,16 +117,6 @@ const AllWorks = () => {
         )}
       </div>
       <FilterSection
-        title={t.allWorks.technique}
-        options={[
-          { label: t.allWorks.techniqueOil, value: "Óleo sobre tela" },
-          { label: t.allWorks.techniqueAcrylic, value: "Acrílico sobre tela" },
-          { label: t.allWorks.techniqueMixed, value: "Técnica mista" },
-        ]}
-        selected={filters.technique}
-        onToggle={(v) => toggleFilter("technique", v)}
-      />
-      <FilterSection
         title={t.allWorks.format}
         options={[
           { label: t.allWorks.vertical, value: "vertical" },
