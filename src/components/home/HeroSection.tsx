@@ -1,11 +1,8 @@
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useT } from "@/i18n";
-import signatureGif from "@/assets/AbMa_GIF.gif";
 
 const HeroSection = () => {
-  const t = useT();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
 
@@ -71,16 +68,7 @@ const HeroSection = () => {
         }}
       />
 
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
-        <motion.p
-          className="text-base md:text-xl lg:text-2xl tracking-[0.2em] uppercase text-white font-serif"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 1.2 }}
-        >
-          {t.hero.subtitle}
-        </motion.p>
-      </div>
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6" />
 
       <motion.div
         className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
