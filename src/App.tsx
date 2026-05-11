@@ -30,6 +30,7 @@ import Inquiries from "./pages/admin/Inquiries";
 import Commissions from "./pages/admin/Commissions";
 import SiteSettings from "./pages/admin/SiteSettings";
 import AdminAnalytics from "./pages/admin/Analytics";
+import AdminAboutContent from "./pages/admin/AboutContent";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -86,6 +87,7 @@ const App = () => (
               <Route path="/admin/artworks" element={<ProtectedRoute><AdminArtworks /></ProtectedRoute>} />
               <Route path="/admin/artworks/new" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
               <Route path="/admin/artworks/:id" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
+              <Route path="/admin/sobre" element={<ProtectedRoute><AdminAboutContent /></ProtectedRoute>} />
               <Route path="/admin/inquiries" element={<ProtectedRoute><Inquiries /></ProtectedRoute>} />
               <Route path="/admin/commissions" element={<ProtectedRoute><Commissions /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute><AdminAnalytics /></ProtectedRoute>} />
