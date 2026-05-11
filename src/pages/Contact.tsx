@@ -29,9 +29,9 @@ const Contact = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
             {/* Left column — info */}
             <motion.div className="md:col-span-5" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">{t.contact.getInTouch}</p>
+              <p className="text-xs tracking-[0.2em] uppercase text-foreground mb-4">{t.contact.getInTouch}</p>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light mb-8">{t.contact.title}</h1>
-              <div className="space-y-7 text-sm text-muted-foreground leading-relaxed">
+              <div className="space-y-7 text-sm text-foreground leading-relaxed">
                 <div>
                   <p className="text-xs tracking-[0.15em] uppercase mb-2 text-foreground">{t.contact.inquiriesLabel}</p>
                   <p>{t.contact.inquiriesText}</p>
@@ -44,7 +44,7 @@ const Contact = () => {
                     href={SOCIALS.maps}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 mt-2 text-[13px] tracking-[0.1em] uppercase text-foreground/70 hover:text-foreground transition-colors duration-300 underline-offset-4 hover:underline"
+                    className="inline-flex items-center gap-1.5 mt-2 text-[13px] tracking-[0.1em] uppercase text-foreground hover:text-foreground transition-colors duration-300 underline-offset-4 hover:underline"
                   >
                     <MapPin className="w-3 h-3" />
                     {t.contact.openInMaps}
@@ -80,13 +80,13 @@ const Contact = () => {
                 <div>
                   <p className="text-xs tracking-[0.15em] uppercase mb-3 text-foreground">{t.contact.socialsLabel}</p>
                   <div className="flex items-center gap-5">
-                    <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-muted-foreground/70 hover:text-social-instagram transition-colors duration-300">
+                    <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-foreground hover:text-social-instagram transition-colors duration-300">
                       <Instagram className="w-4 h-4" />
                     </a>
-                    <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-muted-foreground/70 hover:text-social-facebook transition-colors duration-300">
+                    <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-foreground hover:text-social-facebook transition-colors duration-300">
                       <Facebook className="w-4 h-4" />
                     </a>
-                    <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-muted-foreground/70 hover:text-social-whatsapp transition-colors duration-300">
+                    <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-foreground hover:text-social-whatsapp transition-colors duration-300">
                       <MessageCircle className="w-4 h-4" />
                     </a>
                   </div>
@@ -99,22 +99,22 @@ const Contact = () => {
               {submitted ? (
                 <div className="pt-8">
                   <p className="font-serif text-2xl mb-3">{t.contact.thankYou}</p>
-                  <p className="text-sm text-muted-foreground">{t.contact.thankYouMessage}</p>
+                  <p className="text-sm text-foreground">{t.contact.thankYouMessage}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="text-xs tracking-[0.1em] uppercase text-muted-foreground mb-2 block">{t.contact.nameLabel}</label>
+                      <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.nameLabel}</label>
                       <input type="text" required value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors" />
                     </div>
                     <div>
-                      <label className="text-xs tracking-[0.1em] uppercase text-muted-foreground mb-2 block">{t.contact.emailFieldLabel}</label>
+                      <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.emailFieldLabel}</label>
                       <input type="email" required value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors" />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs tracking-[0.1em] uppercase text-muted-foreground mb-2 block">{t.contact.subjectLabel}</label>
+                    <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.subjectLabel}</label>
                     <select value={formData.subject} onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors appearance-none">
                       <option value="">{t.contact.selectSubject}</option>
                       <option value="acquisition">{t.contact.acquisition}</option>
@@ -125,7 +125,7 @@ const Contact = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs tracking-[0.1em] uppercase text-muted-foreground mb-2 block">{t.contact.messageLabel}</label>
+                    <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.messageLabel}</label>
                     <textarea required rows={5} value={formData.message} onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors resize-none" />
                   </div>
                   <button type="submit" className="px-8 py-3.5 bg-brand-red text-primary-foreground text-xs tracking-[0.18em] uppercase font-medium hover:bg-brand-red-soft transition-colors">{t.contact.sendMessage}</button>

@@ -18,9 +18,9 @@ const Studio = () => {
       <div className="pt-24 md:pt-32 pb-20 md:pb-30">
         <div className="px-6 md:px-10 max-w-[1400px] mx-auto mb-16 md:mb-24">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">{t.studioPage.label}</p>
+            <p className="text-xs tracking-[0.2em] uppercase text-foreground mb-4">{t.studioPage.label}</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light mb-6">{t.studioPage.title}</h1>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">{t.studioPage.description}</p>
+            <p className="text-sm text-foreground leading-relaxed max-w-xl">{t.studioPage.description}</p>
           </motion.div>
         </div>
         <div className="space-y-20 md:space-y-30">
@@ -34,7 +34,7 @@ const Studio = () => {
                 <div className="px-6 md:px-0">
                   <div className="max-w-[1400px] mx-auto">
                     <div className="w-full" style={{ background: item.gradient, aspectRatio: item.aspect || "3/2" }} />
-                    {item.caption && <p className="mt-4 text-xs text-muted-foreground px-0 md:px-10">{item.caption}</p>}
+                    {item.caption && <p className="mt-4 text-xs text-foreground px-0 md:px-10">{item.caption}</p>}
                   </div>
                 </div>
               )}

@@ -5,7 +5,7 @@ import { useT } from "@/i18n";
 const AboutHero = () => {
   const t = useT();
   return (
-    <section className="mb-28 md:mb-36">
+    <section className="mb-14 md:mb-18">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-stretch">
         <motion.div
           className="md:col-span-7 order-2 md:order-1 flex flex-col justify-end"
@@ -13,16 +13,16 @@ const AboutHero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red mb-3">
             {t.aboutPage.aboutArtist}
           </p>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-[5.25rem] font-light leading-[1.02] tracking-[-0.01em] mb-8">
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-[5.25rem] font-light leading-[1.02] tracking-[-0.01em] mb-4">
             Abílio Marcos
           </h1>
-          <p className="text-[14px] tracking-[0.22em] uppercase text-brand-red/90 mb-8">
+          <p className="text-[14px] tracking-[0.22em] uppercase text-brand-red/90 mb-4">
             {t.aboutPage.discipline}
           </p>
-          <p className="font-serif text-xl md:text-2xl font-light leading-[1.55] text-foreground/75 max-w-2xl">
+          <p className="font-serif text-xl md:text-2xl font-light leading-[1.55] text-foreground max-w-2xl">
             {t.aboutPage.heroLead}
           </p>
         </motion.div>

@@ -2,7 +2,6 @@ import Layout from "@/components/layout/Layout";
 import AboutHero from "@/components/about/AboutHero";
 import AboutBiography from "@/components/about/AboutBiography";
 import AboutPractice from "@/components/about/AboutPractice";
-import AboutBibliography from "@/components/about/AboutBibliography";
 import AboutArchive from "@/components/about/AboutArchive";
 
 const About = () => {
@@ -13,7 +12,6 @@ const About = () => {
           <AboutHero />
           <AboutBiography />
           <AboutPractice />
-          <AboutBibliography />
           <AboutArchive />
         </div>
       </div>

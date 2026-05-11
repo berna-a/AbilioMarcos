@@ -7,12 +7,23 @@ import { useI18n, localeLabels, localeNames } from "@/i18n";
 import { Locale } from "@/i18n/types";
 import { track } from "@/lib/analytics";
 
-const localeFlags: Record<Locale, string> = {
-  pt: "🇵🇹",
-  en: "🇬🇧",
-  fr: "🇫🇷",
-  de: "🇩🇪",
-  es: "🇪🇸",
+const localeFlagCodes: Record<Locale, { code: string; alt: string }> = {
+  pt: { code: "pt", alt: "PT" },
+  en: { code: "gb", alt: "EN" },
+  fr: { code: "fr", alt: "FR" },
+  de: { code: "de", alt: "DE" },
+  es: { code: "es", alt: "ES" },
+};
+
+const Flag = ({ locale }: { locale: Locale }) => {
+  const f = localeFlagCodes[locale];
+  return (
+    <img
+      src={`https://flagcdn.com/${f.code}.svg`}
+      alt={f.alt}
+      className="w-5 h-4 object-cover rounded-sm"
+    />
+  );
 };
 
 const localeOrder: Locale[] = ["pt", "en", "fr", "de", "es"];
@@ -57,7 +68,7 @@ const Header = () => {
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
         className="flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 text-brand-brown/75 hover:text-brand-brown"
       >
-        <span className="text-sm leading-none">{localeFlags[locale]}</span>
+        <Flag locale={locale} />
         <span>{localeLabels[locale]}</span>
         <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
       </button>
@@ -78,10 +89,10 @@ const Header = () => {
                 className={`flex items-center gap-3 w-full text-left px-4 py-2 text-[13px] tracking-[0.08em] transition-colors duration-200 ${
                   locale === l
                     ? "text-foreground font-medium"
-                    : "text-foreground/40 hover:text-foreground/70 hover:bg-muted/40"
+                    : "text-foreground/40 hover:text-foreground hover:bg-muted/40"
                 }`}
               >
-                <span className="text-base leading-none">{localeFlags[l]}</span>
+                <Flag locale={l} />
                 <span>{localeNames[l]}</span>
               </button>
             ))}
@@ -172,7 +183,7 @@ const Header = () => {
                     <Link
                       to={item.href}
                       className={`font-serif text-2xl tracking-wide transition-colors ${
-                        isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground/70"
+                        isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground"
                       }`}
                     >
                       {item.label}

@@ -12,7 +12,7 @@ const StatementSection = () => {
         </motion.div>
 
         <motion.blockquote
-          className="font-serif text-[1.65rem] md:text-[2rem] lg:text-[2.4rem] font-light leading-[1.5] italic text-foreground/90"
+          className="font-serif text-[1.65rem] md:text-[2rem] lg:text-[2.4rem] font-light leading-[1.5] italic text-foreground"
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -21,7 +21,7 @@ const StatementSection = () => {
           {t.statement.quote}
         </motion.blockquote>
 
-        <motion.p className="mt-10 md:mt-12 text-[12px] tracking-[0.35em] uppercase text-muted-foreground" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.3 }}>
+        <motion.p className="mt-10 md:mt-12 text-[12px] tracking-[0.35em] uppercase text-foreground" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.3 }}>
           Abílio Marcos
         </motion.p>
       </div>

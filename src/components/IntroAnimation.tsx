@@ -59,7 +59,7 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
           </motion.svg>
 
           <motion.p
-            className="absolute bottom-12 text-xs tracking-[0.2em] uppercase text-muted-foreground"
+            className="absolute bottom-12 text-xs tracking-[0.2em] uppercase text-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
             transition={{ delay: 1, duration: 0.8 }}

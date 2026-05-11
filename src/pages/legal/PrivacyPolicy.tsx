@@ -302,7 +302,7 @@ const PrivacyPolicy = () => {
           >
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-10"
+              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-foreground hover:text-foreground transition-colors duration-300 mb-10"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Voltar ao Início
@@ -310,18 +310,18 @@ const PrivacyPolicy = () => {
 
             {/* Header */}
             <header className="mb-14 md:mb-20">
-              <p className="text-[13px] tracking-[0.18em] uppercase text-muted-foreground mb-5">
+              <p className="text-[13px] tracking-[0.18em] uppercase text-foreground mb-5">
                 Documento Legal
               </p>
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] mb-8">
                 Política de Privacidade
               </h1>
               <div className="w-12 h-px bg-foreground/30 mb-8" />
-              <p className="text-base md:text-lg text-foreground/80 leading-[1.7] font-light">
+              <p className="text-base md:text-lg text-foreground leading-[1.7] font-light">
                 A presente Política de Privacidade explica como são recolhidos, utilizados, conservados e
                 protegidos os dados pessoais dos utilizadores do website de Abílio Marcos.
               </p>
-              <p className="text-sm md:text-base text-muted-foreground leading-[1.7] mt-5 font-light">
+              <p className="text-sm md:text-base text-foreground leading-[1.7] mt-5 font-light">
                 Ao utilizar este website, o utilizador declara ter lido, compreendido e aceite os termos
                 desta Política de Privacidade.
               </p>
@@ -333,7 +333,7 @@ const PrivacyPolicy = () => {
                 <section key={section.number} className="border-t border-border pt-10 md:pt-12">
                   <div className="flex items-baseline gap-4 mb-6">
                     {section.number && (
-                      <span className="font-serif text-sm text-muted-foreground tabular-nums">
+                      <span className="font-serif text-sm text-foreground tabular-nums">
                         {section.number.padStart(2, "0")}
                       </span>
                     )}
@@ -348,7 +348,7 @@ const PrivacyPolicy = () => {
                         return (
                           <p
                             key={i}
-                            className="text-[17px] text-foreground/80 leading-[1.85] font-light"
+                            className="text-[17px] text-foreground leading-[1.85] font-light"
                           >
                             {block.text}
                           </p>
@@ -360,7 +360,7 @@ const PrivacyPolicy = () => {
                             {block.items.map((item, j) => (
                               <li
                                 key={j}
-                                className="text-[17px] text-foreground/80 leading-[1.75] font-light pl-5 relative"
+                                className="text-[17px] text-foreground leading-[1.75] font-light pl-5 relative"
                               >
                                 <span className="absolute left-0 top-[0.7em] w-2 h-px bg-foreground/40" />
                                 {item}
@@ -377,10 +377,10 @@ const PrivacyPolicy = () => {
                                 key={j}
                                 className="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-1 sm:gap-6"
                               >
-                                <dt className="text-[13px] tracking-[0.12em] uppercase text-muted-foreground pt-1">
+                                <dt className="text-[13px] tracking-[0.12em] uppercase text-foreground pt-1">
                                   {item.label}
                                 </dt>
-                                <dd className="text-[17px] text-foreground/85 leading-[1.7] font-light">
+                                <dd className="text-[17px] text-foreground leading-[1.7] font-light">
                                   {item.value}
                                 </dd>
                               </div>
@@ -397,7 +397,7 @@ const PrivacyPolicy = () => {
 
             {/* Footer note */}
             <div className="border-t border-border mt-16 pt-8">
-              <p className="text-[13px] tracking-[0.12em] uppercase text-muted-foreground">
+              <p className="text-[13px] tracking-[0.12em] uppercase text-foreground">
                 Última atualização: [INSERIR DATA FINAL]
               </p>
             </div>
