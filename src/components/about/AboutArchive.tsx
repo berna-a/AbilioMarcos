@@ -230,7 +230,7 @@ const BIBLIO: string[] = [
   "Pintura Contemporânea Portuguesa, 100 Pintores — Chancela Real",
 ];
 
-type TabKey = "solo" | "group" | "collections" | "bibliography";
+type TabKey = "solo" | "group";
 
 const AboutArchive = () => {
   const t = useT();
