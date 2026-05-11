@@ -11,7 +11,7 @@ const AboutPractice = () => {
 
   return (
     <motion.section
-      className="mb-28 md:mb-36 bg-muted/30 -mx-6 md:-mx-10 px-6 md:px-10 py-20 md:py-28"
+      className="mb-14 md:mb-18 bg-muted/30 -mx-6 md:-mx-10 px-6 md:px-10 py-10 md:py-14"
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -19,12 +19,12 @@ const AboutPractice = () => {
     >
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
         <div className="md:col-span-3">
-          <p className="text-[12px] tracking-[0.3em] uppercase text-foreground md:sticky md:top-32">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red md:sticky md:top-32">
             {t.aboutPage.practiceTitle}
           </p>
         </div>
         <div className="md:col-span-9">
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light leading-[1.15] mb-10 max-w-3xl">
+          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light leading-[1.15] mb-5 max-w-3xl">
             {t.aboutPage.practiceHeadline}
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-6 text-[17px] text-foreground leading-[1.85] max-w-4xl">
@@ -33,8 +33,8 @@ const AboutPractice = () => {
             ))}
           </div>
 
-          <div className="mt-14 pt-10 border-t border-foreground/10">
-            <p className="text-[12px] tracking-[0.3em] uppercase text-foreground mb-6">
+          <div className="mt-7 pt-5 border-t border-foreground/10">
+            <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red mb-3">
               {t.aboutPage.materials}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
