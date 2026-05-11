@@ -49,7 +49,7 @@ const FeaturedWorks = () => {
         className="mb-12 md:mb-16 flex items-end justify-between gap-6"
       >
         <div>
-          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground mb-4">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-foreground mb-4">
             {t.featured.label}
           </p>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-light leading-tight">
@@ -58,7 +58,7 @@ const FeaturedWorks = () => {
         </div>
         <Link
           to="/obras"
-          className="hidden md:inline-block text-[12px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300 whitespace-nowrap"
+          className="hidden md:inline-block text-[12px] tracking-[0.25em] uppercase text-foreground hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300 whitespace-nowrap"
         >
           {t.featured.viewAll}
         </Link>
@@ -96,13 +96,13 @@ const FeaturedWorks = () => {
                     {work.title}
                   </p>
                   {hasReal && formatPrice((work as Artwork).price) && (
-                    <p className="text-[12px] text-muted-foreground tabular-nums whitespace-nowrap">
+                    <p className="text-[12px] text-foreground tabular-nums whitespace-nowrap">
                       {formatPrice((work as Artwork).price)}
                     </p>
                   )}
                 </div>
                 {hasReal && work.technique && (
-                  <p className="text-[12px] text-muted-foreground/90 mt-0.5 truncate">
+                  <p className="text-[12px] text-foreground mt-0.5 truncate">
                     {techniqueLabel(t, work.technique)}
                   </p>
                 )}
@@ -121,7 +121,7 @@ const FeaturedWorks = () => {
       >
         <Link
           to="/obras"
-          className="inline-block text-[13px] tracking-[0.25em] uppercase text-foreground/60 hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300"
+          className="inline-block text-[13px] tracking-[0.25em] uppercase text-foreground hover:text-foreground border-b border-foreground/20 hover:border-foreground/50 pb-1 transition-all duration-300"
         >
           {t.featured.viewAll}
         </Link>

@@ -255,14 +255,14 @@ const AboutArchive = () => {
         {years.map((y) => (
           <div key={y} className="grid grid-cols-12 gap-4 md:gap-6">
             <div className="col-span-3 md:col-span-2">
-              <p className="font-serif text-base text-foreground/55">{y}</p>
+              <p className="font-serif text-base text-foreground">{y}</p>
             </div>
             <div className="col-span-9 md:col-span-10 space-y-2">
               {grouped[y].map((e, i) => (
                 <div key={i} className="flex items-baseline justify-between gap-4">
-                  <p className="text-[14px] text-foreground/80 leading-[1.7]">{e.venue}</p>
+                  <p className="text-[14px] text-foreground leading-[1.7]">{e.venue}</p>
                   {e.city && (
-                    <p className="text-[14px] tracking-[0.08em] text-muted-foreground/70 italic shrink-0">
+                    <p className="text-[14px] tracking-[0.08em] text-foreground italic shrink-0">
                       {e.city}
                     </p>
                   )}
@@ -285,10 +285,10 @@ const AboutArchive = () => {
     >
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
         <div className="md:col-span-3">
-          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground md:sticky md:top-32">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-foreground md:sticky md:top-32">
             {t.aboutPage.archiveTitle}
           </p>
-          <p className="mt-4 text-[14px] text-muted-foreground/70 leading-[1.7] md:sticky md:top-44 max-w-[14rem]">
+          <p className="mt-4 text-[14px] text-foreground leading-[1.7] md:sticky md:top-44 max-w-[14rem]">
             {t.aboutPage.archiveNote}
           </p>
         </div>
@@ -307,12 +307,12 @@ const AboutArchive = () => {
                 className={`pb-3 -mb-px text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 border-b-2 flex items-baseline gap-2 ${
                   tab === tb.key
                     ? "text-foreground border-brand-red"
-                    : "text-muted-foreground/55 hover:text-foreground/80 border-transparent"
+                    : "text-foreground hover:text-foreground border-transparent"
                 }`}
               >
                 <span>{tb.label}</span>
                 {tb.count && (
-                  <span className="text-[12px] text-muted-foreground/50 normal-case tracking-normal">
+                  <span className="text-[12px] text-foreground normal-case tracking-normal">
                     ({tb.count})
                   </span>
                 )}
@@ -328,7 +328,7 @@ const AboutArchive = () => {
           >
             {tab === "solo" && (
               <>
-                <p className="text-[15px] text-muted-foreground italic mb-8 max-w-2xl">
+                <p className="text-[15px] text-foreground italic mb-8 max-w-2xl">
                   {t.aboutPage.archiveSelectedFrom.replace("{n}", "106")}
                 </p>
                 {renderEntries(SOLO)}
@@ -337,7 +337,7 @@ const AboutArchive = () => {
 
             {tab === "group" && (
               <>
-                <p className="text-[15px] text-muted-foreground italic mb-8 max-w-2xl">
+                <p className="text-[15px] text-foreground italic mb-8 max-w-2xl">
                   {t.aboutPage.archiveSelectedFrom.replace("{n}", "70")}
                 </p>
                 {renderEntries(GROUP)}
@@ -353,7 +353,7 @@ const AboutArchive = () => {
                     </p>
                     <ul className="space-y-2">
                       {g.items.map((it) => (
-                        <li key={it} className="text-[14px] text-foreground/80 leading-[1.75]">
+                        <li key={it} className="text-[14px] text-foreground leading-[1.75]">
                           {it}
                         </li>
                       ))}
@@ -373,7 +373,7 @@ const AboutArchive = () => {
                     <span className="font-serif text-sm text-foreground/35 w-6 shrink-0">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <p className="font-serif text-lg md:text-xl text-foreground/85">{b}</p>
+                    <p className="font-serif text-lg md:text-xl text-foreground">{b}</p>
                   </li>
                 ))}
               </ul>

@@ -33,7 +33,7 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">{t.cv.label}</p>
+            <p className="text-xs tracking-[0.2em] uppercase text-foreground mb-4">{t.cv.label}</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light mb-16">Abílio Marcos</h1>
           </motion.div>
 
@@ -44,7 +44,7 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-border">
+            <h2 className="text-xs tracking-[0.2em] uppercase text-foreground mb-8 pb-3 border-b border-border">
               {t.cv.selectedExhibitions}
             </h2>
 
@@ -56,7 +56,7 @@ const CV = () => {
                   </div>
                   <div className="col-span-10 space-y-2">
                     {group.entries.map((entry) => (
-                      <p key={entry} className="text-sm text-muted-foreground">{entry}</p>
+                      <p key={entry} className="text-sm text-foreground">{entry}</p>
                     ))}
                   </div>
                 </div>
@@ -71,7 +71,7 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-border">
+            <h2 className="text-xs tracking-[0.2em] uppercase text-foreground mb-8 pb-3 border-b border-border">
               {t.cv.education}
             </h2>
 
@@ -82,7 +82,7 @@ const CV = () => {
                     <p className="text-sm font-light">{item.year}</p>
                   </div>
                   <div className="col-span-10">
-                    <p className="text-sm text-muted-foreground">{item.entry}</p>
+                    <p className="text-sm text-foreground">{item.entry}</p>
                   </div>
                 </div>
               ))}
@@ -95,10 +95,10 @@ const CV = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-8 pb-3 border-b border-border">
+            <h2 className="text-xs tracking-[0.2em] uppercase text-foreground mb-8 pb-3 border-b border-border">
               {t.cv.selectedCollections}
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground">
               {t.cv.collectionsText}
             </p>
           </motion.section>

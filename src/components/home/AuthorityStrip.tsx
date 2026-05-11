@@ -14,7 +14,7 @@ const AuthorityStrip = () => {
   return (
     <section className="py-16 md:py-20 px-6 md:px-10 border-t border-gallery-border">
       <div className="max-w-[1400px] mx-auto">
-        <motion.p className="text-[12px] tracking-[0.35em] uppercase text-muted-foreground mb-8 md:mb-10 text-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+        <motion.p className="text-[12px] tracking-[0.35em] uppercase text-foreground mb-8 md:mb-10 text-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
           {t.authority.label}
         </motion.p>
 

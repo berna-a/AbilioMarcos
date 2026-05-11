@@ -22,7 +22,7 @@ const Collections = () => {
             transition={{ duration: 0.6 }}
             className="mb-12 md:mb-16"
           >
-            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">{t.collectionsPage.label}</p>
+            <p className="text-xs tracking-[0.2em] uppercase text-foreground mb-4">{t.collectionsPage.label}</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light">{t.collectionsPage.title}</h1>
           </motion.div>
 
@@ -42,7 +42,7 @@ const Collections = () => {
                   />
                   <div className="mt-4">
                     <p className="font-serif text-xl md:text-2xl">{collection.title}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-foreground mt-1">
                       {collection.count} {t.collectionsPage.worksCount} · {collection.year}
                     </p>
                   </div>

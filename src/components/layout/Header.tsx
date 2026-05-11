@@ -78,7 +78,7 @@ const Header = () => {
                 className={`flex items-center gap-3 w-full text-left px-4 py-2 text-[13px] tracking-[0.08em] transition-colors duration-200 ${
                   locale === l
                     ? "text-foreground font-medium"
-                    : "text-foreground/40 hover:text-foreground/70 hover:bg-muted/40"
+                    : "text-foreground/40 hover:text-foreground hover:bg-muted/40"
                 }`}
               >
                 <span className="text-base leading-none">{localeFlags[l]}</span>
@@ -172,7 +172,7 @@ const Header = () => {
                     <Link
                       to={item.href}
                       className={`font-serif text-2xl tracking-wide transition-colors ${
-                        isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground/70"
+                        isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground"
                       }`}
                     >
                       {item.label}

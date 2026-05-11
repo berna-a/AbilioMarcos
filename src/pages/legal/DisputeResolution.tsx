@@ -22,7 +22,7 @@ const DisputeResolution = () => {
           >
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-8"
+              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-foreground hover:text-foreground transition-colors duration-300 mb-8"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               {t.legal.backToHome}
@@ -32,11 +32,11 @@ const DisputeResolution = () => {
               {t.legal.disputesTitle}
             </h1>
 
-            <p className="text-[13px] tracking-[0.1em] text-muted-foreground mb-12">
+            <p className="text-[13px] tracking-[0.1em] text-foreground mb-12">
               {t.legal.lastUpdated}
             </p>
 
-            <div className="space-y-6 text-sm text-foreground/80 leading-[1.85]">
+            <div className="space-y-6 text-sm text-foreground leading-[1.85]">
               <p>
                 Em caso de litígio ou conflito, o consumidor pode recorrer à{" "}
                 <span className="text-foreground">Resolução Alternativa de Litígios de Consumo</span>{" "}

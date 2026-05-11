@@ -88,15 +88,15 @@ const ArtworkDetail = () => {
   }, [artwork]);
 
   if (loading) {
-    return <Layout><div className="pt-40 pb-40 text-center"><p className="text-[15px] text-muted-foreground">{t.artwork.loading}</p></div></Layout>;
+    return <Layout><div className="pt-40 pb-40 text-center"><p className="text-[15px] text-foreground">{t.artwork.loading}</p></div></Layout>;
   }
 
   if (notFound || !artwork) {
     return (
       <Layout>
         <div className="pt-40 pb-40 text-center">
-          <p className="text-muted-foreground mb-4">{t.artwork.notFound}</p>
-          <Link to="/obras" className="text-[13px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors">{t.artwork.backToWorks}</Link>
+          <p className="text-foreground mb-4">{t.artwork.notFound}</p>
+          <Link to="/obras" className="text-[13px] tracking-[0.2em] uppercase text-foreground hover:text-foreground transition-colors">{t.artwork.backToWorks}</Link>
         </div>
       </Layout>
     );
@@ -129,7 +129,7 @@ const ArtworkDetail = () => {
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-4 md:mb-6">
-            <Link to="/obras" className="inline-flex items-center gap-2.5 text-[12px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-500">
+            <Link to="/obras" className="inline-flex items-center gap-2.5 text-[12px] tracking-[0.25em] uppercase text-foreground hover:text-foreground transition-colors duration-500">
               <ArrowLeft className="w-3 h-3" /> {t.artwork.backToArchive}
             </Link>
           </motion.div>
@@ -201,7 +201,7 @@ const ArtworkDetail = () => {
             <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.7 }}>
               <div className="max-w-2xl">
                 <SectionLabel className="mb-10 md:mb-12">{t.artwork.artistNote}</SectionLabel>
-                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground/80 tracking-[-0.005em]">{artwork.description}</p>
+                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground tracking-[-0.005em]">{artwork.description}</p>
               </div>
             </motion.section>
           )}
@@ -219,7 +219,7 @@ const ArtworkDetail = () => {
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
                     <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{rel.title}</p>
-                    <p className="text-[12px] tracking-[0.2em] uppercase text-muted-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
+                    <p className="text-[12px] tracking-[0.2em] uppercase text-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
                   </Link>
                 ))}
               </div>
@@ -234,12 +234,12 @@ const ArtworkDetail = () => {
 };
 
 const SectionLabel = ({ children, className = "mb-8 md:mb-10" }: { children: React.ReactNode; className?: string }) => (
-  <h2 className={`text-[13px] tracking-[0.3em] uppercase text-muted-foreground ${className}`}>{children}</h2>
+  <h2 className={`text-[13px] tracking-[0.3em] uppercase text-foreground ${className}`}>{children}</h2>
 );
 
 const MetadataLine = ({ label, value, valueClassName = "text-foreground" }: { label: string; value: string; valueClassName?: string }) => (
   <div className="flex justify-between items-baseline">
-    <span className="text-[13px] tracking-[0.2em] uppercase text-muted-foreground">{label}</span>
+    <span className="text-[13px] tracking-[0.2em] uppercase text-foreground">{label}</span>
     <span className={`text-sm md:text-[1.075rem] tracking-wide ${valueClassName}`}>{value}</span>
   </div>
 );

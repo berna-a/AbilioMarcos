@@ -32,7 +32,7 @@ const AboutBibliography = () => {
     >
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
         <div className="md:col-span-3">
-          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground md:sticky md:top-32">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-foreground md:sticky md:top-32">
             {t.aboutPage.bibliographyTitle}
           </p>
         </div>
@@ -47,11 +47,11 @@ const AboutBibliography = () => {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <p className="font-serif text-xl md:text-[1.4rem] text-foreground/90 leading-[1.35]">
+                  <p className="font-serif text-xl md:text-[1.4rem] text-foreground leading-[1.35]">
                     {r.title}
                   </p>
                   {r.publisher && (
-                    <p className="text-[14px] tracking-[0.18em] uppercase text-muted-foreground mt-2">
+                    <p className="text-[14px] tracking-[0.18em] uppercase text-foreground mt-2">
                       {r.publisher}
                     </p>
                   )}
@@ -59,7 +59,7 @@ const AboutBibliography = () => {
               </li>
             ))}
           </ol>
-          <p className="mt-8 text-[15px] text-muted-foreground/80 italic leading-[1.7]">
+          <p className="mt-8 text-[15px] text-foreground italic leading-[1.7]">
             {t.aboutPage.bibliographyNote}
           </p>
         </div>

@@ -13,7 +13,7 @@ const AboutHero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <p className="text-[12px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-foreground mb-6">
             {t.aboutPage.aboutArtist}
           </p>
           <h1 className="font-serif text-5xl md:text-6xl lg:text-[5.25rem] font-light leading-[1.02] tracking-[-0.01em] mb-8">
@@ -22,7 +22,7 @@ const AboutHero = () => {
           <p className="text-[14px] tracking-[0.22em] uppercase text-brand-red/90 mb-8">
             {t.aboutPage.discipline}
           </p>
-          <p className="font-serif text-xl md:text-2xl font-light leading-[1.55] text-foreground/75 max-w-2xl">
+          <p className="font-serif text-xl md:text-2xl font-light leading-[1.55] text-foreground max-w-2xl">
             {t.aboutPage.heroLead}
           </p>
         </motion.div>

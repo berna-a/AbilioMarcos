@@ -22,7 +22,7 @@ const LegalPage = ({ titleKey }: LegalPageProps) => {
           >
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 mb-8"
+              className="inline-flex items-center gap-2 text-[13px] tracking-[0.1em] uppercase text-foreground hover:text-foreground transition-colors duration-300 mb-8"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               {t.legal.backToHome}
@@ -32,17 +32,17 @@ const LegalPage = ({ titleKey }: LegalPageProps) => {
               {t.legal[titleKey]}
             </h1>
 
-            <p className="text-[13px] tracking-[0.1em] text-muted-foreground mb-12">
+            <p className="text-[13px] tracking-[0.1em] text-foreground mb-12">
               {t.legal.lastUpdated}
             </p>
 
             <div className="space-y-8">
-              <p className="text-sm text-muted-foreground leading-[1.8]">
+              <p className="text-sm text-foreground leading-[1.8]">
                 {t.legal.placeholderIntro}
               </p>
 
               <div className="border-t border-border pt-8">
-                <p className="text-sm text-muted-foreground leading-[1.8] whitespace-pre-line">
+                <p className="text-sm text-foreground leading-[1.8] whitespace-pre-line">
                   {t.legal.placeholderContent}
                 </p>
               </div>
