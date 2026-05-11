@@ -255,7 +255,7 @@ const AllWorks = () => {
                         )}
                         <div className="mt-3">
                           <div className="flex items-baseline justify-between gap-3">
-                            <p className="font-serif text-[17px] text-brand-red truncate">
+                            <p className="font-serif text-[17px] font-semibold text-brand-red truncate">
                               {work.title}
                             </p>
                             {formatPrice(work.price) && (
