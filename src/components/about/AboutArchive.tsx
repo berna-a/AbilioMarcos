@@ -281,9 +281,9 @@ const AboutArchive = () => {
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7 }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
         <div className="md:col-span-3">
-          <p className="text-[12px] tracking-[0.3em] uppercase text-foreground md:sticky md:top-32">
+          <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red md:sticky md:top-32">
             {t.aboutPage.archiveTitle}
           </p>
           <p className="mt-4 text-[14px] text-foreground leading-[1.7] md:sticky md:top-44 max-w-[14rem]">
@@ -292,12 +292,12 @@ const AboutArchive = () => {
         </div>
 
         <div className="md:col-span-9">
-          <h2 className="font-serif text-3xl md:text-4xl font-light leading-[1.2] mb-10 max-w-2xl">
+          <h2 className="font-serif text-3xl md:text-4xl font-light leading-[1.2] mb-5 max-w-2xl">
             {t.aboutPage.archiveHeadline}
           </h2>
 
           {/* Tabs */}
-          <div className="flex flex-wrap gap-x-7 gap-y-3 border-b border-gallery-border mb-10">
+          <div className="flex flex-wrap gap-x-7 gap-y-3 border-b border-gallery-border mb-5">
             {tabs.map((tb) => (
               <button
                 key={tb.key}
