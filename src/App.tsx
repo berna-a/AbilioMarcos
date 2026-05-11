@@ -31,6 +31,7 @@ import Commissions from "./pages/admin/Commissions";
 import SiteSettings from "./pages/admin/SiteSettings";
 import AdminAnalytics from "./pages/admin/Analytics";
 import AdminAboutContent from "./pages/admin/AboutContent";
+import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -83,6 +84,7 @@ const App = () => (
 
               {/* Admin routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/admin/artworks" element={<ProtectedRoute><AdminArtworks /></ProtectedRoute>} />
               <Route path="/admin/artworks/new" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
