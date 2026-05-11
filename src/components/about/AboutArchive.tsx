@@ -239,8 +239,6 @@ const AboutArchive = () => {
   const tabs: { key: TabKey; label: string; count?: string }[] = [
     { key: "solo", label: t.aboutPage.archiveSolo, count: "106" },
     { key: "group", label: t.aboutPage.archiveGroup, count: "70" },
-    { key: "collections", label: t.aboutPage.archiveCollections },
-    { key: "bibliography", label: t.aboutPage.archiveBibliography },
   ];
 
   const renderEntries = (entries: Entry[]) => {
