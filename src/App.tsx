@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes, useParams } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -43,6 +44,66 @@ const LegacyArtworkRedirect = () => {
   return <Navigate to={`/obra/${slug ?? ''}`} replace />;
 };
 
+const AppContent = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash.includes('type=recovery')) {
+      // Preserve the hash so ResetPassword.tsx can read the token
+      navigate('/reset-password' + hash, { replace: true });
+    }
+  }, [navigate]);
+
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+
+      {/* Public routes (PT-PT) */}
+      <Route path="/sobre" element={<About />} />
+      <Route path="/cv" element={<About />} />
+      <Route path="/contacto" element={<Contact />} />
+      <Route path="/obras" element={<AllWorks />} />
+      <Route path="/obra/:slug" element={<ArtworkDetail />} />
+      <Route path="/colecoes" element={<Collections />} />
+      <Route path="/checkout/success" element={<CheckoutSuccess />} />
+      <Route path="/checkout/cancel" element={<CheckoutCancel />} />
+
+      {/* Legacy English URL redirects (preserve external links) */}
+      <Route path="/about" element={<Navigate to="/sobre" replace />} />
+      <Route path="/contact" element={<Navigate to="/contacto" replace />} />
+      <Route path="/works" element={<Navigate to="/obras" replace />} />
+      <Route path="/artwork/:slug" element={<LegacyArtworkRedirect />} />
+      <Route path="/collections" element={<Navigate to="/colecoes" replace />} />
+      <Route path="/selected-works" element={<Navigate to="/obras" replace />} />
+      <Route path="/studio" element={<Navigate to="/" replace />} />
+
+      {/* Legal pages */}
+      <Route path="/legal/privacy" element={<PrivacyPolicy />} />
+      <Route path="/legal/cookies" element={<CookiePolicy />} />
+      <Route path="/legal/terms" element={<TermsConditions />} />
+      <Route path="/legal/disputes" element={<DisputeResolution />} />
+      <Route path="/legal/complaints" element={<LegalPage titleKey="complaintsTitle" />} />
+
+      {/* Admin routes */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/admin/artworks" element={<ProtectedRoute><AdminArtworks /></ProtectedRoute>} />
+      <Route path="/admin/artworks/new" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
+      <Route path="/admin/artworks/:id" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
+      <Route path="/admin/sobre" element={<ProtectedRoute><AdminAboutContent /></ProtectedRoute>} />
+      <Route path="/admin/inquiries" element={<ProtectedRoute><Inquiries /></ProtectedRoute>} />
+      <Route path="/admin/commissions" element={<ProtectedRoute><Commissions /></ProtectedRoute>} />
+      <Route path="/admin/analytics" element={<ProtectedRoute><AdminAnalytics /></ProtectedRoute>} />
+      <Route path="/admin/settings" element={<ProtectedRoute><SiteSettings /></ProtectedRoute>} />
+
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -53,51 +114,7 @@ const App = () => (
           <BrowserRouter>
             <ScrollToTop />
             <AnalyticsProvider />
-            <Routes>
-              <Route path="/" element={<Index />} />
-
-              {/* Public routes (PT-PT) */}
-              <Route path="/sobre" element={<About />} />
-              <Route path="/cv" element={<About />} />
-              <Route path="/contacto" element={<Contact />} />
-              <Route path="/obras" element={<AllWorks />} />
-              <Route path="/obra/:slug" element={<ArtworkDetail />} />
-              <Route path="/colecoes" element={<Collections />} />
-              <Route path="/checkout/success" element={<CheckoutSuccess />} />
-              <Route path="/checkout/cancel" element={<CheckoutCancel />} />
-
-              {/* Legacy English URL redirects (preserve external links) */}
-              <Route path="/about" element={<Navigate to="/sobre" replace />} />
-              <Route path="/contact" element={<Navigate to="/contacto" replace />} />
-              <Route path="/works" element={<Navigate to="/obras" replace />} />
-              <Route path="/artwork/:slug" element={<LegacyArtworkRedirect />} />
-              <Route path="/collections" element={<Navigate to="/colecoes" replace />} />
-              <Route path="/selected-works" element={<Navigate to="/obras" replace />} />
-              <Route path="/studio" element={<Navigate to="/" replace />} />
-
-              {/* Legal pages */}
-              <Route path="/legal/privacy" element={<PrivacyPolicy />} />
-              <Route path="/legal/cookies" element={<CookiePolicy />} />
-              <Route path="/legal/terms" element={<TermsConditions />} />
-              <Route path="/legal/disputes" element={<DisputeResolution />} />
-              <Route path="/legal/complaints" element={<LegalPage titleKey="complaintsTitle" />} />
-
-              {/* Admin routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/admin" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/admin/artworks" element={<ProtectedRoute><AdminArtworks /></ProtectedRoute>} />
-              <Route path="/admin/artworks/new" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
-              <Route path="/admin/artworks/:id" element={<ProtectedRoute><ArtworkForm /></ProtectedRoute>} />
-              <Route path="/admin/sobre" element={<ProtectedRoute><AdminAboutContent /></ProtectedRoute>} />
-              <Route path="/admin/inquiries" element={<ProtectedRoute><Inquiries /></ProtectedRoute>} />
-              <Route path="/admin/commissions" element={<ProtectedRoute><Commissions /></ProtectedRoute>} />
-              <Route path="/admin/analytics" element={<ProtectedRoute><AdminAnalytics /></ProtectedRoute>} />
-              <Route path="/admin/settings" element={<ProtectedRoute><SiteSettings /></ProtectedRoute>} />
-
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AppContent />
           </BrowserRouter>
         </AuthProvider>
       </I18nProvider>
