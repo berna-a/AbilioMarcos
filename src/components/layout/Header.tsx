@@ -68,7 +68,7 @@ const Header = () => {
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
         className="flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 text-brand-brown/75 hover:text-brand-brown"
       >
-        <span className="text-sm leading-none">{localeFlags[locale]}</span>
+        <Flag locale={locale} />
         <span>{localeLabels[locale]}</span>
         <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`} />
       </button>
