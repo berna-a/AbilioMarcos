@@ -7,12 +7,23 @@ import { useI18n, localeLabels, localeNames } from "@/i18n";
 import { Locale } from "@/i18n/types";
 import { track } from "@/lib/analytics";
 
-const localeFlags: Record<Locale, string> = {
-  pt: "🇵🇹",
-  en: "🇬🇧",
-  fr: "🇫🇷",
-  de: "🇩🇪",
-  es: "🇪🇸",
+const localeFlagCodes: Record<Locale, { code: string; alt: string }> = {
+  pt: { code: "pt", alt: "PT" },
+  en: { code: "gb", alt: "EN" },
+  fr: { code: "fr", alt: "FR" },
+  de: { code: "de", alt: "DE" },
+  es: { code: "es", alt: "ES" },
+};
+
+const Flag = ({ locale }: { locale: Locale }) => {
+  const f = localeFlagCodes[locale];
+  return (
+    <img
+      src={`https://flagcdn.com/${f.code}.svg`}
+      alt={f.alt}
+      className="w-5 h-4 object-cover rounded-sm"
+    />
+  );
 };
 
 const localeOrder: Locale[] = ["pt", "en", "fr", "de", "es"];
