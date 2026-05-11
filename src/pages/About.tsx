@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AboutSection, getAboutSections } from "@/lib/about-content";
 
+const HIDDEN_SECTIONS = new Set(["representacao"]);
+
 const About = () => {
   const [sections, setSections] = useState<AboutSection[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getAboutSections().then((data) => {
-      setSections(data);
+      setSections(data.filter((s) => !HIDDEN_SECTIONS.has(s.section)));
       setLoading(false);
     });
   }, []);
@@ -22,9 +24,9 @@ const About = () => {
           <AboutHero />
 
           {loading ? (
-            <p className="text-[13px] text-foreground/60 py-12">A carregar…</p>
+            <p className="text-[13px] text-foreground py-12">A carregar…</p>
           ) : (
-            <div className="space-y-14 md:space-y-18">
+            <div className="space-y-14 md:space-y-18 mt-14 md:mt-18">
               {sections.map((s) => (
                 <motion.section
                   key={s.id}
