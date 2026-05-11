@@ -342,40 +342,6 @@ const AboutArchive = () => {
               </>
             )}
 
-            {tab === "collections" && (
-              <div className="space-y-10">
-                {COLLECTIONS.map((g) => (
-                  <div key={g.label}>
-                    <p className="text-[13px] tracking-[0.22em] uppercase text-brand-red/85 mb-4">
-                      {g.label}
-                    </p>
-                    <ul className="space-y-2">
-                      {g.items.map((it) => (
-                        <li key={it} className="text-[14px] text-foreground leading-[1.75]">
-                          {it}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {tab === "bibliography" && (
-              <ul className="space-y-4">
-                {BIBLIO.map((b, i) => (
-                  <li
-                    key={b}
-                    className="flex items-baseline gap-5 border-b border-gallery-border pb-4 last:border-b-0"
-                  >
-                    <span className="font-serif text-sm text-foreground/35 w-6 shrink-0">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <p className="font-serif text-lg md:text-xl text-foreground">{b}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
           </motion.div>
         </div>
       </div>
