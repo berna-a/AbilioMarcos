@@ -92,7 +92,7 @@ const Header = () => {
                     : "text-foreground/40 hover:text-foreground hover:bg-muted/40"
                 }`}
               >
-                <span className="text-base leading-none">{localeFlags[l]}</span>
+                <Flag locale={l} />
                 <span>{localeNames[l]}</span>
               </button>
             ))}
