@@ -193,42 +193,6 @@ const GROUP: Entry[] = [
   { year: "2022", venue: "Galerias São Rafael – Artbox – Centro Comercial Colombo", city: "Lisboa" },
 ];
 
-const COLLECTIONS: { label: string; items: string[] }[] = [
-  {
-    label: "Museus & Instituições",
-    items: [
-      "Casa-Museu Anjos Teixeira, Sintra",
-      "Acervos municipais — Câmara Municipal de Sintra",
-      "Acervos municipais — Câmara Municipal de Mafra",
-      "Acervos municipais — Câmara Municipal de Loures",
-    ],
-  },
-  {
-    label: "Juntas de Freguesia",
-    items: [
-      "Junta de Freguesia de Sintra (Santa Maria e São Miguel)",
-      "Junta de Freguesia de São Pedro de Penaferrim",
-      "Junta de Freguesia da Ericeira",
-    ],
-  },
-  {
-    label: "Colecções Privadas",
-    items: [
-      "Portugal — Lisboa, Sintra, Cascais, Mafra, Porto",
-      "Espanha — Madrid, Barcelona",
-      "França — Paris, Lyon",
-      "Bélgica — Bruxelas",
-      "Estados Unidos — Nova Iorque, Boston",
-    ],
-  },
-];
-
-const BIBLIO: string[] = [
-  "Guia d'Arte",
-  "Anuário das Artes Plásticas — Estar Editora",
-  "50 Anos de Pintura e Escultura em Portugal — Universitária Editora",
-  "Pintura Contemporânea Portuguesa, 100 Pintores — Chancela Real",
-];
 
 type TabKey = "solo" | "group";
 
