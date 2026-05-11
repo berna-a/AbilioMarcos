@@ -85,25 +85,25 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle }: Props) => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-[12px] tracking-[0.2em] uppercase text-foreground mb-1.5">{t.inquiry.name} *</label>
-                <input type="text" value={form.name} onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.namePlaceholder} />
+                <input type="text" value={form.name} onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.namePlaceholder} />
               </div>
               <div>
                 <label className="block text-[12px] tracking-[0.2em] uppercase text-foreground mb-1.5">{t.inquiry.email} *</label>
-                <input type="email" value={form.email} onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.emailPlaceholder} />
+                <input type="email" value={form.email} onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.emailPlaceholder} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[12px] tracking-[0.2em] uppercase text-foreground mb-1.5">{t.inquiry.phone}</label>
-                  <input type="tel" value={form.phone} onChange={(e) => setForm(p => ({ ...p, phone: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.phonePlaceholder} />
+                  <input type="tel" value={form.phone} onChange={(e) => setForm(p => ({ ...p, phone: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.phonePlaceholder} />
                 </div>
                 <div>
                   <label className="block text-[12px] tracking-[0.2em] uppercase text-foreground mb-1.5">{t.inquiry.budgetRange}</label>
-                  <input type="text" value={form.budget_range} onChange={(e) => setForm(p => ({ ...p, budget_range: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.phonePlaceholder} />
+                  <input type="text" value={form.budget_range} onChange={(e) => setForm(p => ({ ...p, budget_range: e.target.value }))} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors" placeholder={t.inquiry.phonePlaceholder} />
                 </div>
               </div>
               <div>
                 <label className="block text-[12px] tracking-[0.2em] uppercase text-foreground mb-1.5">{t.inquiry.message} *</label>
-                <textarea value={form.message} onChange={(e) => setForm(p => ({ ...p, message: e.target.value }))} rows={4} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-foreground focus:outline-none focus:border-foreground transition-colors resize-none" placeholder={t.inquiry.messagePlaceholder} />
+                <textarea value={form.message} onChange={(e) => setForm(p => ({ ...p, message: e.target.value }))} rows={4} className="w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors resize-none" placeholder={t.inquiry.messagePlaceholder} />
               </div>
               <button type="submit" disabled={submitting} className="w-full py-3.5 text-[13px] tracking-[0.22em] uppercase font-medium bg-brand-red text-primary-foreground hover:bg-brand-red-soft transition-colors disabled:opacity-50">
                 {submitting ? t.inquiry.sending : t.inquiry.send}
