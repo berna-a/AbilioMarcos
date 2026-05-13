@@ -132,6 +132,9 @@ const Footer = () => {
             <a href="https://ardo.media/" target="_blank" rel="noopener noreferrer" className="font-medium text-white/70 hover:text-white transition-colors duration-300">Ardo Media</a>
           </p>
           <p className="text-[13px] text-white/45">
+            NIF 187556237
+          </p>
+          <p className="text-[13px] text-white/45">
             {t.footer.artworksCopyright}
           </p>
         </div>
