@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getArtworkBySlug, getRelatedArtworks } from "@/lib/artworks";
 import { Artwork, getRealDimensions, formatPrice, getSalesMode, getTechnique } from "@/lib/types";
-import { techniqueLabel } from "@/i18n";
+import { techniqueLabel, useTField } from "@/i18n";
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
@@ -21,6 +21,7 @@ const ArtworkDetail = () => {
   const [notFound, setNotFound] = useState(false);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const t = useT();
+  const tf = useTField();
 
   useEffect(() => {
     if (!slug) return;
