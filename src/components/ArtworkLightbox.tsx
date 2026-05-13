@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { useT } from "@/i18n";
 
 interface ArtworkLightboxProps {
   src: string;
@@ -9,6 +10,7 @@ interface ArtworkLightboxProps {
 }
 
 const ArtworkLightbox = ({ src, alt, children }: ArtworkLightboxProps) => {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
   const [origin, setOrigin] = useState("50% 50%");
