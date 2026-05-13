@@ -52,7 +52,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         <header className="h-14 bg-white border-b border-[hsl(0_0%_90%)] flex items-center px-5 sticky top-0 z-30">
           <button className="lg:hidden mr-4 text-[hsl(0_0%_40%)]" onClick={() => setSidebarOpen(true)}><Menu className="w-5 h-5" /></button>
           <div className="flex-1" />
-          <Link to="/" target="_blank" className="text-[11px] tracking-wide text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)] transition-colors">{admin.sidebar.viewSite}</Link>
+          <a href="https://abiliomarcos.com" target="_blank" rel="noopener noreferrer" className="text-[11px] tracking-wide text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)] transition-colors">{admin.sidebar.viewSite}</a>
         </header>
         <main className="flex-1 p-6 lg:p-8">{children}</main>
       </div>
