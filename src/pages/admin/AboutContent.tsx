@@ -191,6 +191,14 @@ const AboutContentAdmin = () => {
                   </span>
                   <div className="ml-auto flex items-center gap-2">
                     <button
+                      onClick={() => handleRetranslate(s.id)}
+                      disabled={savingId === s.id}
+                      className="p-1.5 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_15%)] transition-colors disabled:opacity-40"
+                      title="Regenerar traduções (EN/FR/DE/ES)"
+                    >
+                      <Languages className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={() => handleDelete(s.id, s.title)}
                       className="p-1.5 text-[hsl(0_0%_50%)] hover:text-red-600 transition-colors"
                       title="Eliminar"
