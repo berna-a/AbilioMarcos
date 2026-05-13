@@ -112,7 +112,8 @@ const FeaturedWorks = () => {
               </div>
             </Link>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <motion.div
