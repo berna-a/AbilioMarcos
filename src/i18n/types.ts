@@ -104,6 +104,12 @@ export interface Translations {
     available: string;
     soldStatus: string;
   };
+  // Lightbox
+  lightbox: {
+    close: string;
+    scrollToZoom: string;
+    scrollToZoomClickOutside: string;
+  };
   // Commerce CTA
   commerce: {
     sold: string;
