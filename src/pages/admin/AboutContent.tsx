@@ -8,7 +8,8 @@ import {
   reorderAboutSections,
   updateAboutSection,
 } from '@/lib/about-content';
-import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
+import { translateContent } from '@/lib/translate';
+import { ArrowDown, ArrowUp, Languages, Plus, Trash2 } from 'lucide-react';
 
 const slugify = (s: string) =>
   s
@@ -41,15 +42,52 @@ const AboutContentAdmin = () => {
   const handleSave = async (id: string) => {
     const draft = drafts[id];
     if (!draft) return;
+    const current = sections.find((s) => s.id === id);
     setSavingId(id);
-    const ok = await updateAboutSection(id, draft);
+
+    const titleChanged = !current || draft.title !== current.title;
+    const contentChanged = !current || draft.content !== current.content;
+
+    const patch: Parameters<typeof updateAboutSection>[1] = { ...draft };
+    if (titleChanged) {
+      const t = await translateContent(draft.title, 'about_title');
+      if (t) patch.title_translations = t as Record<string, string>;
+    }
+    if (contentChanged) {
+      const t = await translateContent(draft.content, 'about_section');
+      if (t) patch.content_translations = t as Record<string, string>;
+    }
+
+    const ok = await updateAboutSection(id, patch);
     setSavingId(null);
     if (ok) {
       setSections((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, ...draft } : s)),
+        prev.map((s) => (s.id === id ? { ...s, ...patch } as AboutSection : s)),
       );
     } else {
       alert('Falha ao guardar.');
+    }
+  };
+
+  const handleRetranslate = async (id: string) => {
+    const current = sections.find((s) => s.id === id);
+    if (!current) return;
+    setSavingId(id);
+    const [titleT, contentT] = await Promise.all([
+      translateContent(current.title, 'about_title'),
+      translateContent(current.content, 'about_section'),
+    ]);
+    const patch: Parameters<typeof updateAboutSection>[1] = {};
+    if (titleT) patch.title_translations = titleT as Record<string, string>;
+    if (contentT) patch.content_translations = contentT as Record<string, string>;
+    const ok = await updateAboutSection(id, patch);
+    setSavingId(null);
+    if (ok) {
+      setSections((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, ...patch } as AboutSection : s)),
+      );
+    } else {
+      alert('Falha a regenerar traduções.');
     }
   };
 
