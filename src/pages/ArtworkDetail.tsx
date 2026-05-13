@@ -60,10 +60,12 @@ const ArtworkDetail = () => {
       originalValues[s] = document.head.querySelector(s)?.getAttribute("content") ?? null;
     });
 
-    const title = `${artwork.title} — Abílio Marcos`;
+    const localizedTitle = tf(artwork.title, artwork.title_translations);
+    const localizedDescription = tf(artwork.description, artwork.description_translations);
+    const title = `${localizedTitle} — Abílio Marcos`;
     const description =
-      artwork.description?.trim() ||
-      `${artwork.title} — obra original de Abílio Marcos, pintor expressionista abstrato português.`;
+      localizedDescription.trim() ||
+      `${localizedTitle} — obra original de Abílio Marcos, pintor expressionista abstrato português.`;
     const image = artwork.primary_image_url || originalValues['meta[property="og:image"]'] || "";
     const url = `https://abiliomarcos.com/obra/${artwork.slug}`;
 
@@ -115,6 +117,8 @@ const ArtworkDetail = () => {
   const salesMode = getSalesMode(artwork.price);
   const displayPrice = formatPrice(artwork.price);
   const techniqueText = techniqueLabel(t, getTechnique(artwork));
+  const localizedTitle = tf(artwork.title, artwork.title_translations);
+  const localizedDescription = tf(artwork.description, artwork.description_translations);
 
   // Natural aspect ratio from real dimensions, when available
   const { width, height } = (() => {
