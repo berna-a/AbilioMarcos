@@ -6,6 +6,7 @@ import { ArrowLeft, Upload, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getSalesMode, getSizeBucket, getFormat, TECHNIQUE_VALUES, DEFAULT_TECHNIQUE } from '@/lib/types';
 import { useAdmin } from '@/i18n';
+import { translateContent } from '@/lib/translate';
 
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
@@ -13,22 +14,33 @@ const slugify = (text: string) =>
 const isMissingColumnError = (message: string, column: string) =>
   message.includes(`'${column}' column`) && message.includes('schema cache');
 
-type ArtworkPayloadValue = string | number | boolean | string[] | null;
+type ArtworkPayloadValue = string | number | boolean | string[] | Record<string, string> | null;
 
-const saveArtwork = async (isNew: boolean, payload: Record<string, ArtworkPayloadValue>, id?: string) => {
-  const query = isNew
-    ? supabase.from('artworks').insert([payload])
-    : supabase.from('artworks').update(payload).eq('id', id);
+/** Strip optional columns one by one if Postgrest reports them missing. */
+const TRY_DROP_COLUMNS = ['technique', 'title_translations', 'description_translations'] as const;
 
-  const { error } = await query;
-  if (!error || !isMissingColumnError(error.message, 'technique')) return { error };
+const saveArtwork = async (
+  isNew: boolean,
+  payload: Record<string, ArtworkPayloadValue>,
+  id?: string,
+) => {
+  const attempt = (p: Record<string, ArtworkPayloadValue>) =>
+    isNew
+      ? supabase.from('artworks').insert([p])
+      : supabase.from('artworks').update(p).eq('id', id);
 
-  const fallbackPayload = { ...payload };
-  delete fallbackPayload.technique;
-
-  return isNew
-    ? supabase.from('artworks').insert([fallbackPayload])
-    : supabase.from('artworks').update(fallbackPayload).eq('id', id);
+  let current = { ...payload };
+  // Try up to N times, dropping a missing column each time.
+  for (let i = 0; i <= TRY_DROP_COLUMNS.length; i++) {
+    const { error } = await attempt(current);
+    if (!error) return { error: null };
+    const dropped = TRY_DROP_COLUMNS.find(
+      (col) => col in current && isMissingColumnError(error.message, col),
+    );
+    if (!dropped) return { error };
+    delete current[dropped];
+  }
+  return { error: null };
 };
 
 const initialForm = {
