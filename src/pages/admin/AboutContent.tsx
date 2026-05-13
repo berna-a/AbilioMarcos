@@ -174,13 +174,24 @@ const AboutContentAdmin = () => {
             Gerir as secções editoriais da página pública /sobre.
           </p>
         </div>
-        <button
-          onClick={handleAdd}
-          className="inline-flex items-center gap-2 px-3 py-2 text-[13px] bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_25%)] transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Adicionar secção
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleBackfillTranslations}
+            disabled={!!backfilling}
+            className="inline-flex items-center gap-2 px-3 py-2 text-[12px] tracking-wider uppercase border border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)] hover:border-[hsl(0_0%_50%)] transition-colors disabled:opacity-50"
+            title="Traduzir conteúdo em falta para EN/FR/DE/ES"
+          >
+            <Languages className="w-3.5 h-3.5" />
+            {backfilling ? `A traduzir ${backfilling.done}/${backfilling.total}` : 'Traduzir tudo'}
+          </button>
+          <button
+            onClick={handleAdd}
+            className="inline-flex items-center gap-2 px-3 py-2 text-[13px] bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_25%)] transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Adicionar secção
+          </button>
+        </div>
       </div>
 
       {loading ? (
