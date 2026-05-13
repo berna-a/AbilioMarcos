@@ -202,7 +202,7 @@ const ArtworkDetail = () => {
             </motion.section>
           )}
 
-          {artwork.description && (
+          {(localizedDescription && localizedDescription.trim()) && (
             <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.7 }}>
               <div className="max-w-2xl">
                 <SectionLabel className="mb-10 md:mb-12">{t.artwork.artistNote}</SectionLabel>
@@ -216,17 +216,20 @@ const ArtworkDetail = () => {
               <div className="h-px bg-border mb-20 md:mb-24" />
               <SectionLabel className="mb-14 md:mb-16">{t.artwork.furtherViewing}</SectionLabel>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
-                {related.slice(0, 3).map((rel) => (
+                {related.slice(0, 3).map((rel) => {
+                  const relTitle = tf(rel.title, rel.title_translations);
+                  return (
                   <Link key={rel.id} to={`/obra/${rel.slug}`} className="group">
                     {rel.primary_image_url ? (
-                      <img src={rel.primary_image_url} alt={rel.title} className="aspect-[4/5] w-full object-cover mb-5 group-hover:opacity-85 transition-opacity duration-700" />
+                      <img src={rel.primary_image_url} alt={relTitle} className="aspect-[4/5] w-full object-cover mb-5 group-hover:opacity-85 transition-opacity duration-700" />
                     ) : (
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
-                    <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{rel.title}</p>
+                    <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{relTitle}</p>
                     <p className="text-[12px] tracking-[0.2em] uppercase text-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             </motion.section>
           )}
