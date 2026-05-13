@@ -60,6 +60,8 @@ const AboutContentAdmin = () => {
       section: slugify(title) + '_' + Date.now(),
       title,
       content: '',
+      title_translations: null,
+      content_translations: null,
       display_order: order,
     });
     if (created) {
