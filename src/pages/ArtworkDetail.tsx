@@ -150,11 +150,11 @@ const ArtworkDetail = () => {
                   ? { ...(naturalRatio ? { aspectRatio: naturalRatio } : {}) }
                   : { ...(naturalRatio ? { aspectRatio: naturalRatio } : {}), maxHeight: "min(82vh, 880px)" };
                 return artwork.primary_image_url ? (
-                  <ArtworkLightbox src={artwork.primary_image_url} alt={artwork.title}>
+                  <ArtworkLightbox src={artwork.primary_image_url} alt={localizedTitle}>
                     <div className="w-full flex justify-center">
                       <img
                         src={artwork.primary_image_url}
-                        alt={artwork.title}
+                        alt={localizedTitle}
                         className={imgClass}
                         style={imgStyle}
                       />
@@ -172,7 +172,7 @@ const ArtworkDetail = () => {
             </motion.div>
 
             <motion.div className="lg:col-span-5 flex flex-col lg:py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
-              <h1 className="font-serif text-[1.875rem] md:text-[2.25rem] lg:text-[2.5rem] font-light text-foreground leading-[1.1] mb-14 lg:mb-16">{artwork.title}</h1>
+              <h1 className="font-serif text-[1.875rem] md:text-[2.25rem] lg:text-[2.5rem] font-light text-foreground leading-[1.1] mb-14 lg:mb-16">{localizedTitle}</h1>
 
               <div className="space-y-6 mb-14 lg:mb-16">
                 <MetadataLine label={t.artwork.medium} value={techniqueText} />
@@ -196,7 +196,7 @@ const ArtworkDetail = () => {
               <SectionLabel>{t.artwork.detailViews}</SectionLabel>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {additionalImages.map((url, i) => (
-                  <img key={i} src={url} alt={`${artwork.title} detail ${i + 1}`} className="w-full aspect-[5/4] object-cover" />
+                  <img key={i} src={url} alt={`${localizedTitle} detail ${i + 1}`} className="w-full aspect-[5/4] object-cover" />
                 ))}
               </div>
             </motion.section>
@@ -206,7 +206,7 @@ const ArtworkDetail = () => {
             <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.7 }}>
               <div className="max-w-2xl">
                 <SectionLabel className="mb-10 md:mb-12">{t.artwork.artistNote}</SectionLabel>
-                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground tracking-[-0.005em]">{artwork.description}</p>
+                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground tracking-[-0.005em]">{localizedDescription}</p>
               </div>
             </motion.section>
           )}
@@ -233,7 +233,7 @@ const ArtworkDetail = () => {
         </div>
       </div>
 
-      <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} artworkId={artwork.id} artworkTitle={artwork.title} />
+      <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} artworkId={artwork.id} artworkTitle={localizedTitle} />
     </Layout>
   );
 };
