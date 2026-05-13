@@ -24,6 +24,39 @@ const AboutContentAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, { title: string; content: string }>>({});
+  const [backfilling, setBackfilling] = useState<{ done: number; total: number } | null>(null);
+
+  const handleBackfillTranslations = async () => {
+    if (!confirm('Traduzir todas as secções "Sobre" sem traduções? Pode demorar alguns minutos.')) return;
+    const jobs = sections.filter(
+      (s) => !s.title_translations || (s.content && !s.content_translations),
+    );
+    if (jobs.length === 0) {
+      alert('Tudo já traduzido.');
+      return;
+    }
+    let done = 0;
+    setBackfilling({ done, total: jobs.length });
+    for (const s of jobs) {
+      const patch: Parameters<typeof updateAboutSection>[1] = {};
+      if (!s.title_translations && s.title) {
+        const t = await translateContent(s.title, 'about_title');
+        if (t) patch.title_translations = t as Record<string, string>;
+      }
+      if (!s.content_translations && s.content) {
+        const t = await translateContent(s.content, 'about_section');
+        if (t) patch.content_translations = t as Record<string, string>;
+      }
+      if (Object.keys(patch).length) {
+        await updateAboutSection(s.id, patch);
+      }
+      done += 1;
+      setBackfilling({ done, total: jobs.length });
+    }
+    setBackfilling(null);
+    await load();
+    alert(`Traduções concluídas: ${jobs.length} secção(ões).`);
+  };
 
   const load = async () => {
     setLoading(true);
