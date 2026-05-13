@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getRecentArtworks } from "@/lib/artworks";
-import { useT, techniqueLabel } from "@/i18n";
+import { useT, techniqueLabel, useTField } from "@/i18n";
 import { Artwork, formatPrice } from "@/lib/types";
 
 const placeholderWorks: Partial<Artwork>[] = [
@@ -26,6 +26,7 @@ const FeaturedWorks = () => {
   const [works, setWorks] = useState<Partial<Artwork>[]>(placeholderWorks);
   const [hasReal, setHasReal] = useState(false);
   const t = useT();
+  const tf = useTField();
 
   useEffect(() => {
     getRecentArtworks(6).then((data) => {
@@ -68,7 +69,9 @@ const FeaturedWorks = () => {
         className="columns-1 md:columns-2 lg:columns-3 gap-6 lg:gap-8"
         style={{ columnFill: "balance" }}
       >
-        {works.map((work, i) => (
+        {works.map((work, i) => {
+          const workTitle = tf(work.title || "", (work as Artwork).title_translations);
+          return (
           <div
             key={String(work.id ?? i)}
             className="break-inside-avoid mb-10 inline-block w-full transition-transform duration-500 ease-out hover:scale-[1.015]"
@@ -77,7 +80,7 @@ const FeaturedWorks = () => {
               {hasReal && work.primary_image_url ? (
                 <img
                   src={work.primary_image_url}
-                  alt={work.title || ""}
+                  alt={workTitle}
                   loading="lazy"
                   className="w-full h-auto block"
                 />
@@ -93,7 +96,7 @@ const FeaturedWorks = () => {
               <div className="mt-3">
                 <div className="flex items-baseline justify-between gap-3">
                   <p className="font-serif text-[17px] font-semibold text-brand-red truncate">
-                    {work.title}
+                    {workTitle}
                   </p>
                   {hasReal && formatPrice((work as Artwork).price) && (
                     <p className="text-[12px] text-foreground tabular-nums whitespace-nowrap">
