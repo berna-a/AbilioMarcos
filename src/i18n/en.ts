@@ -95,6 +95,11 @@ export const en: Translations = {
     available: 'Available',
     soldStatus: 'Sold',
   },
+  lightbox: {
+    close: 'Close',
+    scrollToZoom: 'Scroll to zoom',
+    scrollToZoomClickOutside: "Scroll to zoom · Click outside to close",
+  },
   commerce: {
     sold: 'This work has been sold',
     inquireSimilar: 'Inquire About Similar Works',
