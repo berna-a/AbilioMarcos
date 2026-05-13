@@ -166,11 +166,33 @@ const ArtworkForm = () => {
 
     setSaving(true);
     const priceNum = form.price ? parseFloat(form.price) : null;
+    const cleanTitle = form.title.trim();
+    const cleanDescription = form.description.trim();
+
+    // Translate title/description to EN/FR/DE/ES whenever they changed
+    // (or on first creation). Failures are non-fatal — PT remains the fallback.
+    const titleChanged = cleanTitle !== originalText.title.trim();
+    const descChanged = cleanDescription !== originalText.description.trim();
+    let titleTranslations: Record<string, string> | null = null;
+    let descTranslations: Record<string, string> | null = null;
+    if (titleChanged || descChanged) {
+      setTranslating(true);
+      const [tt, dt] = await Promise.all([
+        titleChanged ? translateContent(cleanTitle, 'artwork_title') : Promise.resolve(null),
+        descChanged && cleanDescription
+          ? translateContent(cleanDescription, 'artwork_description')
+          : Promise.resolve(null),
+      ]);
+      if (tt) titleTranslations = tt as Record<string, string>;
+      if (dt) descTranslations = dt as Record<string, string>;
+      setTranslating(false);
+    }
+
     const payload: Record<string, ArtworkPayloadValue> = {
-      title: form.title.trim(),
+      title: cleanTitle,
       slug: form.slug.trim(),
       year: form.year,
-      description: form.description.trim() || null,
+      description: cleanDescription || null,
       status: form.status,
       availability: form.availability,
       price: priceNum,
@@ -183,6 +205,9 @@ const ArtworkForm = () => {
       additional_images: form.additional_images.length > 0 ? form.additional_images : null,
       updated_at: new Date().toISOString(),
     };
+    if (titleTranslations) payload.title_translations = titleTranslations;
+    if (descTranslations) payload.description_translations = descTranslations;
+    else if (descChanged && !cleanDescription) payload.description_translations = null;
 
     const { error } = await saveArtwork(isNew, payload, id);
     if (error) { setError(error.message); setSaving(false); return; }
