@@ -379,7 +379,7 @@ const ArtworkForm = () => {
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t border-[hsl(0_0%_90%)]">
             <button type="submit" disabled={saving} className="px-6 py-2.5 text-[12px] tracking-wider uppercase bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_20%)] transition-colors disabled:opacity-50">
-              {saving ? t.saving : isNew ? t.createArtwork : t.saveChanges}
+              {translating ? 'A traduzir…' : saving ? t.saving : isNew ? t.createArtwork : t.saveChanges}
             </button>
             <Link to="/admin/artworks" className="px-6 py-2.5 text-[12px] tracking-wider uppercase border border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] hover:border-[hsl(0_0%_60%)] transition-colors">
               {t.cancel}
