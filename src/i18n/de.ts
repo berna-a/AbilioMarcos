@@ -95,6 +95,11 @@ export const de: Translations = {
     available: 'Verfügbar',
     soldStatus: 'Verkauft',
   },
+  lightbox: {
+    close: 'Schließen',
+    scrollToZoom: 'Scrollen zum Zoomen',
+    scrollToZoomClickOutside: "Scrollen zum Zoomen · Außerhalb klicken zum Schließen",
+  },
   commerce: {
     sold: 'Dieses Werk wurde verkauft',
     inquireSimilar: 'Anfrage zu ähnlichen Werken',

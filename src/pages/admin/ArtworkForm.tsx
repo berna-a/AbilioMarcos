@@ -6,6 +6,7 @@ import { ArrowLeft, Upload, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getSalesMode, getSizeBucket, getFormat, TECHNIQUE_VALUES, DEFAULT_TECHNIQUE } from '@/lib/types';
 import { useAdmin } from '@/i18n';
+import { translateContent } from '@/lib/translate';
 
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
@@ -13,22 +14,33 @@ const slugify = (text: string) =>
 const isMissingColumnError = (message: string, column: string) =>
   message.includes(`'${column}' column`) && message.includes('schema cache');
 
-type ArtworkPayloadValue = string | number | boolean | string[] | null;
+type ArtworkPayloadValue = string | number | boolean | string[] | Record<string, string> | null;
 
-const saveArtwork = async (isNew: boolean, payload: Record<string, ArtworkPayloadValue>, id?: string) => {
-  const query = isNew
-    ? supabase.from('artworks').insert([payload])
-    : supabase.from('artworks').update(payload).eq('id', id);
+/** Strip optional columns one by one if Postgrest reports them missing. */
+const TRY_DROP_COLUMNS = ['technique', 'title_translations', 'description_translations'] as const;
 
-  const { error } = await query;
-  if (!error || !isMissingColumnError(error.message, 'technique')) return { error };
+const saveArtwork = async (
+  isNew: boolean,
+  payload: Record<string, ArtworkPayloadValue>,
+  id?: string,
+) => {
+  const attempt = (p: Record<string, ArtworkPayloadValue>) =>
+    isNew
+      ? supabase.from('artworks').insert([p])
+      : supabase.from('artworks').update(p).eq('id', id);
 
-  const fallbackPayload = { ...payload };
-  delete fallbackPayload.technique;
-
-  return isNew
-    ? supabase.from('artworks').insert([fallbackPayload])
-    : supabase.from('artworks').update(fallbackPayload).eq('id', id);
+  let current = { ...payload };
+  // Try up to N times, dropping a missing column each time.
+  for (let i = 0; i <= TRY_DROP_COLUMNS.length; i++) {
+    const { error } = await attempt(current);
+    if (!error) return { error: null };
+    const dropped = TRY_DROP_COLUMNS.find(
+      (col) => col in current && isMissingColumnError(error.message, col),
+    );
+    if (!dropped) return { error };
+    delete current[dropped];
+  }
+  return { error: null };
 };
 
 const initialForm = {
@@ -61,6 +73,8 @@ const ArtworkForm = () => {
   const [error, setError] = useState('');
   const [slugManual, setSlugManual] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [originalText, setOriginalText] = useState({ title: '', description: '' });
 
   useEffect(() => {
     if (isNew) return;
@@ -94,6 +108,7 @@ const ArtworkForm = () => {
         additional_images: data.additional_images || [],
       });
       setSlugManual(true);
+      setOriginalText({ title: data.title || '', description: data.description || '' });
       setLoading(false);
     };
     fetch();
@@ -151,11 +166,33 @@ const ArtworkForm = () => {
 
     setSaving(true);
     const priceNum = form.price ? parseFloat(form.price) : null;
+    const cleanTitle = form.title.trim();
+    const cleanDescription = form.description.trim();
+
+    // Translate title/description to EN/FR/DE/ES whenever they changed
+    // (or on first creation). Failures are non-fatal — PT remains the fallback.
+    const titleChanged = cleanTitle !== originalText.title.trim();
+    const descChanged = cleanDescription !== originalText.description.trim();
+    let titleTranslations: Record<string, string> | null = null;
+    let descTranslations: Record<string, string> | null = null;
+    if (titleChanged || descChanged) {
+      setTranslating(true);
+      const [tt, dt] = await Promise.all([
+        titleChanged ? translateContent(cleanTitle, 'artwork_title') : Promise.resolve(null),
+        descChanged && cleanDescription
+          ? translateContent(cleanDescription, 'artwork_description')
+          : Promise.resolve(null),
+      ]);
+      if (tt) titleTranslations = tt as Record<string, string>;
+      if (dt) descTranslations = dt as Record<string, string>;
+      setTranslating(false);
+    }
+
     const payload: Record<string, ArtworkPayloadValue> = {
-      title: form.title.trim(),
+      title: cleanTitle,
       slug: form.slug.trim(),
       year: form.year,
-      description: form.description.trim() || null,
+      description: cleanDescription || null,
       status: form.status,
       availability: form.availability,
       price: priceNum,
@@ -168,6 +205,9 @@ const ArtworkForm = () => {
       additional_images: form.additional_images.length > 0 ? form.additional_images : null,
       updated_at: new Date().toISOString(),
     };
+    if (titleTranslations) payload.title_translations = titleTranslations;
+    if (descTranslations) payload.description_translations = descTranslations;
+    else if (descChanged && !cleanDescription) payload.description_translations = null;
 
     const { error } = await saveArtwork(isNew, payload, id);
     if (error) { setError(error.message); setSaving(false); return; }
@@ -339,7 +379,7 @@ const ArtworkForm = () => {
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t border-[hsl(0_0%_90%)]">
             <button type="submit" disabled={saving} className="px-6 py-2.5 text-[12px] tracking-wider uppercase bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_20%)] transition-colors disabled:opacity-50">
-              {saving ? t.saving : isNew ? t.createArtwork : t.saveChanges}
+              {translating ? 'A traduzir…' : saving ? t.saving : isNew ? t.createArtwork : t.saveChanges}
             </button>
             <Link to="/admin/artworks" className="px-6 py-2.5 text-[12px] tracking-wider uppercase border border-[hsl(0_0%_85%)] text-[hsl(0_0%_40%)] hover:border-[hsl(0_0%_60%)] transition-colors">
               {t.cancel}

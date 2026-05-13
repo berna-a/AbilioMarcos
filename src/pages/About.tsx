@@ -3,12 +3,15 @@ import AboutHero from "@/components/about/AboutHero";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AboutSection, getAboutSections } from "@/lib/about-content";
+import { useT, useTField } from "@/i18n";
 
 const HIDDEN_SECTIONS = new Set(["representacao"]);
 
 const About = () => {
   const [sections, setSections] = useState<AboutSection[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useT();
+  const tf = useTField();
 
   useEffect(() => {
     getAboutSections().then((data) => {
@@ -24,7 +27,7 @@ const About = () => {
           <AboutHero />
 
           {loading ? (
-            <p className="text-[13px] text-foreground py-12">A carregar…</p>
+            <p className="text-[13px] text-foreground py-12">{t.artwork.loading}</p>
           ) : (
             <div className="space-y-14 md:space-y-18 mt-14 md:mt-18">
               {sections.map((s) => (
@@ -38,12 +41,12 @@ const About = () => {
                 >
                   <div className="md:col-span-3">
                     <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red md:sticky md:top-32">
-                      {s.title}
+                      {tf(s.title, s.title_translations)}
                     </p>
                   </div>
                   <div className="md:col-span-9 max-w-3xl">
                     <div className="text-[17px] text-foreground leading-[1.85] whitespace-pre-line">
-                      {s.content}
+                      {tf(s.content, s.content_translations)}
                     </div>
                   </div>
                 </motion.section>

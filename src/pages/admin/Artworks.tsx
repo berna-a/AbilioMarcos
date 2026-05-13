@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { Artwork } from '@/lib/types';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { Plus, Search, Pencil, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, ChevronUp, ChevronDown, Languages } from 'lucide-react';
 import { useAdmin } from '@/i18n';
+import { translateContent } from '@/lib/translate';
 
 const statusColors: Record<string, string> = { published: 'bg-emerald-100 text-emerald-700', draft: 'bg-amber-100 text-amber-700', archived: 'bg-gray-100 text-gray-500' };
 
@@ -19,6 +20,7 @@ const AdminArtworks = () => {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('year');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
+  const [backfilling, setBackfilling] = useState<{ done: number; total: number } | null>(null);
   const admin = useAdmin();
 
   const fetchArtworks = async () => {
@@ -64,6 +66,64 @@ const AdminArtworks = () => {
     setDeleting(null);
   };
 
+  const handleBackfillTranslations = async () => {
+    if (!confirm('Traduzir todas as obras sem traduções e todas as secções "Sobre"? Pode demorar alguns minutos.')) return;
+    type Row = { id: string; title?: string | null; description?: string | null; content?: string | null; title_translations?: unknown; description_translations?: unknown; content_translations?: unknown };
+
+    const { data: artRows } = await supabase
+      .from('artworks')
+      .select('id, title, description, title_translations, description_translations');
+    const { data: aboutRows } = await supabase
+      .from('about_content')
+      .select('id, title, content, title_translations, content_translations');
+
+    const artworkJobs = (artRows ?? []).filter((r: Row) => !r.title_translations || (r.description && !r.description_translations));
+    const aboutJobs = (aboutRows ?? []).filter((r: Row) => !r.title_translations || (r.content && !r.content_translations));
+    const total = artworkJobs.length + aboutJobs.length;
+    if (total === 0) {
+      alert('Tudo já traduzido.');
+      return;
+    }
+    let done = 0;
+    setBackfilling({ done, total });
+
+    for (const r of artworkJobs as Row[]) {
+      const patch: Record<string, unknown> = {};
+      if (!r.title_translations && r.title) {
+        const t = await translateContent(r.title, 'artwork_title');
+        if (t) patch.title_translations = t;
+      }
+      if (!r.description_translations && r.description) {
+        const t = await translateContent(r.description, 'artwork_description');
+        if (t) patch.description_translations = t;
+      }
+      if (Object.keys(patch).length) {
+        await supabase.from('artworks').update(patch).eq('id', r.id);
+      }
+      done += 1;
+      setBackfilling({ done, total });
+    }
+    for (const r of aboutJobs as Row[]) {
+      const patch: Record<string, unknown> = {};
+      if (!r.title_translations && r.title) {
+        const t = await translateContent(r.title, 'about_title');
+        if (t) patch.title_translations = t;
+      }
+      if (!r.content_translations && r.content) {
+        const t = await translateContent(r.content, 'about_section');
+        if (t) patch.content_translations = t;
+      }
+      if (Object.keys(patch).length) {
+        await supabase.from('about_content').update(patch).eq('id', r.id);
+      }
+      done += 1;
+      setBackfilling({ done, total });
+    }
+    setBackfilling(null);
+    await fetchArtworks();
+    alert(`Traduções concluídas: ${total} item(s).`);
+  };
+
   const statusLabels: Record<string, string> = { draft: admin.artworks.draft, published: admin.artworks.published, archived: admin.artworks.archived };
 
   const SortIcon = ({ col }: { col: SortKey }) => {
@@ -89,9 +149,20 @@ const AdminArtworks = () => {
           <h1 className="text-xl font-medium text-[hsl(0_0%_12%)]">{admin.artworks.title}</h1>
           <p className="text-[13px] text-[hsl(0_0%_50%)] mt-1">{artworks.length} {admin.artworks.total}</p>
         </div>
-        <Link to="/admin/artworks/new" className="flex items-center gap-2 px-4 py-2 text-[12px] tracking-wider uppercase bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_20%)] transition-colors">
-          <Plus className="w-3.5 h-3.5" />{admin.artworks.newArtwork}
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleBackfillTranslations}
+            disabled={!!backfilling}
+            className="inline-flex items-center gap-2 px-3 py-2 text-[12px] tracking-wider uppercase border border-[hsl(0_0%_85%)] text-[hsl(0_0%_30%)] hover:border-[hsl(0_0%_50%)] transition-colors disabled:opacity-50"
+            title="Traduzir conteúdo em falta para EN/FR/DE/ES"
+          >
+            <Languages className="w-3.5 h-3.5" />
+            {backfilling ? `A traduzir ${backfilling.done}/${backfilling.total}` : 'Traduzir tudo'}
+          </button>
+          <Link to="/admin/artworks/new" className="flex items-center gap-2 px-4 py-2 text-[12px] tracking-wider uppercase bg-[hsl(0_0%_12%)] text-white hover:bg-[hsl(0_0%_20%)] transition-colors">
+            <Plus className="w-3.5 h-3.5" />{admin.artworks.newArtwork}
+          </Link>
+        </div>
       </div>
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1 max-w-sm">

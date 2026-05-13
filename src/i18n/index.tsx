@@ -92,3 +92,31 @@ export const techniqueLabel = (
     default: return value;
   }
 };
+
+/** Translation map persisted in DB columns: { en, fr, de, es }. */
+export type TranslationMap = Partial<Record<Exclude<Locale, 'pt'>, string>> | null | undefined;
+
+/**
+ * Resolve a translated field for the active locale. Falls back to the
+ * original (Portuguese) value when no translation is available, so the UI
+ * never breaks if a row hasn't been translated yet.
+ */
+export const tField = (
+  original: string | null | undefined,
+  translations: TranslationMap | unknown,
+  locale: Locale,
+): string => {
+  const fallback = (original ?? '').toString();
+  if (locale === 'pt') return fallback;
+  if (!translations || typeof translations !== 'object') return fallback;
+  const value = (translations as Record<string, unknown>)[locale];
+  if (typeof value === 'string' && value.trim()) return value;
+  return fallback;
+};
+
+/** Hook variant that uses the active locale automatically. */
+export const useTField = () => {
+  const { locale } = useI18n();
+  return (original: string | null | undefined, translations: TranslationMap | unknown) =>
+    tField(original, translations, locale);
+};

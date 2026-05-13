@@ -8,7 +8,8 @@ import {
   reorderAboutSections,
   updateAboutSection,
 } from '@/lib/about-content';
-import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
+import { translateContent } from '@/lib/translate';
+import { ArrowDown, ArrowUp, Languages, Plus, Trash2 } from 'lucide-react';
 
 const slugify = (s: string) =>
   s
@@ -41,15 +42,52 @@ const AboutContentAdmin = () => {
   const handleSave = async (id: string) => {
     const draft = drafts[id];
     if (!draft) return;
+    const current = sections.find((s) => s.id === id);
     setSavingId(id);
-    const ok = await updateAboutSection(id, draft);
+
+    const titleChanged = !current || draft.title !== current.title;
+    const contentChanged = !current || draft.content !== current.content;
+
+    const patch: Parameters<typeof updateAboutSection>[1] = { ...draft };
+    if (titleChanged) {
+      const t = await translateContent(draft.title, 'about_title');
+      if (t) patch.title_translations = t as Record<string, string>;
+    }
+    if (contentChanged) {
+      const t = await translateContent(draft.content, 'about_section');
+      if (t) patch.content_translations = t as Record<string, string>;
+    }
+
+    const ok = await updateAboutSection(id, patch);
     setSavingId(null);
     if (ok) {
       setSections((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, ...draft } : s)),
+        prev.map((s) => (s.id === id ? { ...s, ...patch } as AboutSection : s)),
       );
     } else {
       alert('Falha ao guardar.');
+    }
+  };
+
+  const handleRetranslate = async (id: string) => {
+    const current = sections.find((s) => s.id === id);
+    if (!current) return;
+    setSavingId(id);
+    const [titleT, contentT] = await Promise.all([
+      translateContent(current.title, 'about_title'),
+      translateContent(current.content, 'about_section'),
+    ]);
+    const patch: Parameters<typeof updateAboutSection>[1] = {};
+    if (titleT) patch.title_translations = titleT as Record<string, string>;
+    if (contentT) patch.content_translations = contentT as Record<string, string>;
+    const ok = await updateAboutSection(id, patch);
+    setSavingId(null);
+    if (ok) {
+      setSections((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, ...patch } as AboutSection : s)),
+      );
+    } else {
+      alert('Falha a regenerar traduções.');
     }
   };
 
@@ -60,6 +98,8 @@ const AboutContentAdmin = () => {
       section: slugify(title) + '_' + Date.now(),
       title,
       content: '',
+      title_translations: null,
+      content_translations: null,
       display_order: order,
     });
     if (created) {
@@ -150,6 +190,14 @@ const AboutContentAdmin = () => {
                     Ordem {s.display_order} · {s.section}
                   </span>
                   <div className="ml-auto flex items-center gap-2">
+                    <button
+                      onClick={() => handleRetranslate(s.id)}
+                      disabled={savingId === s.id}
+                      className="p-1.5 text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_15%)] transition-colors disabled:opacity-40"
+                      title="Regenerar traduções (EN/FR/DE/ES)"
+                    >
+                      <Languages className="w-4 h-4" />
+                    </button>
                     <button
                       onClick={() => handleDelete(s.id, s.title)}
                       className="p-1.5 text-[hsl(0_0%_50%)] hover:text-red-600 transition-colors"

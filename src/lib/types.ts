@@ -31,6 +31,10 @@ export interface Artwork {
   is_featured: boolean;
   primary_image_url: string | null;
   additional_images: string[] | null;
+  /** Localised title — { en, fr, de, es }. PT lives in `title`. */
+  title_translations: Record<string, string> | null;
+  /** Localised description — { en, fr, de, es }. PT lives in `description`. */
+  description_translations: Record<string, string> | null;
   created_at: string;
   updated_at: string;
 }

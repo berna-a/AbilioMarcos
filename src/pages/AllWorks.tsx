@@ -5,7 +5,7 @@ import { useState, useMemo, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
-import { useT, techniqueLabel } from "@/i18n";
+import { useT, techniqueLabel, useTField } from "@/i18n";
 import { track, trackArtwork } from "@/lib/analytics";
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
@@ -49,6 +49,7 @@ const AllWorks = () => {
   const [sort, setSort] = useState<SortOption>('newest');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const t = useT();
+  const tf = useTField();
   
 
   useEffect(() => {
@@ -245,10 +246,13 @@ const AllWorks = () => {
                         className="block group"
                         onClick={() => trackArtwork('artwork_card_click', work)}
                       >
+                        {(() => {
+                          const workTitle = tf(work.title, work.title_translations);
+                          return (<>
                         {work.primary_image_url && (
                           <img
                             src={work.primary_image_url}
-                            alt={work.title}
+                            alt={workTitle}
                             loading="lazy"
                             className="w-full h-auto block"
                           />
@@ -256,7 +260,7 @@ const AllWorks = () => {
                         <div className="mt-3">
                           <div className="flex items-baseline justify-between gap-3">
                             <p className="font-serif text-[17px] font-semibold text-brand-red truncate">
-                              {work.title}
+                              {workTitle}
                             </p>
                             {formatPrice(work.price) && (
                               <p className="text-[12px] text-foreground tabular-nums whitespace-nowrap">
@@ -270,6 +274,8 @@ const AllWorks = () => {
                             </p>
                           )}
                         </div>
+                          </>);
+                        })()}
                       </Link>
                     </div>
                   ))}

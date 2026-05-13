@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getArtworkBySlug, getRelatedArtworks } from "@/lib/artworks";
 import { Artwork, getRealDimensions, formatPrice, getSalesMode, getTechnique } from "@/lib/types";
-import { techniqueLabel } from "@/i18n";
+import { techniqueLabel, useTField } from "@/i18n";
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
@@ -21,6 +21,7 @@ const ArtworkDetail = () => {
   const [notFound, setNotFound] = useState(false);
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const t = useT();
+  const tf = useTField();
 
   useEffect(() => {
     if (!slug) return;
@@ -59,10 +60,12 @@ const ArtworkDetail = () => {
       originalValues[s] = document.head.querySelector(s)?.getAttribute("content") ?? null;
     });
 
-    const title = `${artwork.title} — Abílio Marcos`;
+    const localizedTitle = tf(artwork.title, artwork.title_translations);
+    const localizedDescription = tf(artwork.description, artwork.description_translations);
+    const title = `${localizedTitle} — Abílio Marcos`;
     const description =
-      artwork.description?.trim() ||
-      `${artwork.title} — obra original de Abílio Marcos, pintor expressionista abstrato português.`;
+      localizedDescription.trim() ||
+      `${localizedTitle} — obra original de Abílio Marcos, pintor expressionista abstrato português.`;
     const image = artwork.primary_image_url || originalValues['meta[property="og:image"]'] || "";
     const url = `https://abiliomarcos.com/obra/${artwork.slug}`;
 
@@ -114,6 +117,8 @@ const ArtworkDetail = () => {
   const salesMode = getSalesMode(artwork.price);
   const displayPrice = formatPrice(artwork.price);
   const techniqueText = techniqueLabel(t, getTechnique(artwork));
+  const localizedTitle = tf(artwork.title, artwork.title_translations);
+  const localizedDescription = tf(artwork.description, artwork.description_translations);
 
   // Natural aspect ratio from real dimensions, when available
   const { width, height } = (() => {
@@ -145,11 +150,11 @@ const ArtworkDetail = () => {
                   ? { ...(naturalRatio ? { aspectRatio: naturalRatio } : {}) }
                   : { ...(naturalRatio ? { aspectRatio: naturalRatio } : {}), maxHeight: "min(82vh, 880px)" };
                 return artwork.primary_image_url ? (
-                  <ArtworkLightbox src={artwork.primary_image_url} alt={artwork.title}>
+                  <ArtworkLightbox src={artwork.primary_image_url} alt={localizedTitle}>
                     <div className="w-full flex justify-center">
                       <img
                         src={artwork.primary_image_url}
-                        alt={artwork.title}
+                        alt={localizedTitle}
                         className={imgClass}
                         style={imgStyle}
                       />
@@ -167,7 +172,7 @@ const ArtworkDetail = () => {
             </motion.div>
 
             <motion.div className="lg:col-span-5 flex flex-col lg:py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
-              <h1 className="font-serif text-[1.875rem] md:text-[2.25rem] lg:text-[2.5rem] font-light text-foreground leading-[1.1] mb-14 lg:mb-16">{artwork.title}</h1>
+              <h1 className="font-serif text-[1.875rem] md:text-[2.25rem] lg:text-[2.5rem] font-light text-foreground leading-[1.1] mb-14 lg:mb-16">{localizedTitle}</h1>
 
               <div className="space-y-6 mb-14 lg:mb-16">
                 <MetadataLine label={t.artwork.medium} value={techniqueText} />
@@ -191,17 +196,17 @@ const ArtworkDetail = () => {
               <SectionLabel>{t.artwork.detailViews}</SectionLabel>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {additionalImages.map((url, i) => (
-                  <img key={i} src={url} alt={`${artwork.title} detail ${i + 1}`} className="w-full aspect-[5/4] object-cover" />
+                  <img key={i} src={url} alt={`${localizedTitle} detail ${i + 1}`} className="w-full aspect-[5/4] object-cover" />
                 ))}
               </div>
             </motion.section>
           )}
 
-          {artwork.description && (
+          {(localizedDescription && localizedDescription.trim()) && (
             <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.7 }}>
               <div className="max-w-2xl">
                 <SectionLabel className="mb-10 md:mb-12">{t.artwork.artistNote}</SectionLabel>
-                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground tracking-[-0.005em]">{artwork.description}</p>
+                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground tracking-[-0.005em]">{localizedDescription}</p>
               </div>
             </motion.section>
           )}
@@ -211,24 +216,27 @@ const ArtworkDetail = () => {
               <div className="h-px bg-border mb-20 md:mb-24" />
               <SectionLabel className="mb-14 md:mb-16">{t.artwork.furtherViewing}</SectionLabel>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
-                {related.slice(0, 3).map((rel) => (
+                {related.slice(0, 3).map((rel) => {
+                  const relTitle = tf(rel.title, rel.title_translations);
+                  return (
                   <Link key={rel.id} to={`/obra/${rel.slug}`} className="group">
                     {rel.primary_image_url ? (
-                      <img src={rel.primary_image_url} alt={rel.title} className="aspect-[4/5] w-full object-cover mb-5 group-hover:opacity-85 transition-opacity duration-700" />
+                      <img src={rel.primary_image_url} alt={relTitle} className="aspect-[4/5] w-full object-cover mb-5 group-hover:opacity-85 transition-opacity duration-700" />
                     ) : (
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
-                    <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{rel.title}</p>
+                    <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{relTitle}</p>
                     <p className="text-[12px] tracking-[0.2em] uppercase text-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
                   </Link>
-                ))}
+                  );
+                })}
               </div>
             </motion.section>
           )}
         </div>
       </div>
 
-      <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} artworkId={artwork.id} artworkTitle={artwork.title} />
+      <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} artworkId={artwork.id} artworkTitle={localizedTitle} />
     </Layout>
   );
 };

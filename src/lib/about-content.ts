@@ -5,6 +5,10 @@ export type AboutSection = {
   section: string;
   title: string;
   content: string;
+  /** Localised heading — { en, fr, de, es }. PT lives in `title`. */
+  title_translations: Record<string, string> | null;
+  /** Localised body — { en, fr, de, es }. PT lives in `content`. */
+  content_translations: Record<string, string> | null;
   display_order: number;
   updated_at: string;
 };
@@ -23,7 +27,7 @@ export async function getAboutSections(): Promise<AboutSection[]> {
 
 export async function updateAboutSection(
   id: string,
-  patch: Partial<Pick<AboutSection, 'title' | 'content' | 'display_order' | 'section'>>,
+  patch: Partial<Pick<AboutSection, 'title' | 'content' | 'display_order' | 'section' | 'title_translations' | 'content_translations'>>,
 ): Promise<boolean> {
   const { error } = await supabase.from('about_content').update(patch).eq('id', id);
   if (error) console.error(error);
