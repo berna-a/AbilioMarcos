@@ -108,6 +108,7 @@ const ArtworkForm = () => {
         additional_images: data.additional_images || [],
       });
       setSlugManual(true);
+      setOriginalText({ title: data.title || '', description: data.description || '' });
       setLoading(false);
     };
     fetch();
