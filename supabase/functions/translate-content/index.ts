@@ -56,59 +56,49 @@ async function translateOnce(
   ctx: Context,
   langs: Lang[],
 ): Promise<Partial<Record<Lang, string>>> {
-  const apiKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!apiKey) throw new Error("LOVABLE_API_KEY is not configured");
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY is not configured");
 
-  const properties: Record<string, unknown> = {};
-  for (const l of langs) {
-    properties[l] = {
-      type: "string",
-      description: `Translation in ${LANG_NAMES[l]}.`,
-    };
-  }
+  const langList = langs.map((l) => `"${l}" (${LANG_NAMES[l]})`).join(", ");
 
-  const body = {
-    model: "google/gemini-2.5-flash",
-    messages: [
-      { role: "system", content: "You translate Portuguese fine-art content with fidelity to tone and meaning." },
-      { role: "user", content: buildPrompt(text, ctx, langs) },
-    ],
-    tools: [
-      {
-        type: "function",
-        function: {
-          name: "return_translations",
-          description: "Return the translations as structured fields.",
-          parameters: {
-            type: "object",
-            properties,
-            required: langs,
-            additionalProperties: false,
-          },
-        },
-      },
-    ],
-    tool_choice: { type: "function", function: { name: "return_translations" } },
-  };
+  const prompt = [
+    CONTEXT_GUIDANCE[ctx],
+    "",
+    `Translate the following Portuguese text into: ${langList}.`,
+    "Return ONLY a valid JSON object with the language codes as keys.",
+    "Preserve line breaks with \\n. Do not add any explanation.",
+    "Example format: {\"en\": \"...\", \"fr\": \"...\", \"de\": \"...\", \"es\": \"...\"}",
+    "",
+    "SOURCE TEXT:",
+    text,
+  ].join("\n");
 
-  const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 4096,
+      messages: [{ role: "user", content: prompt }],
+    }),
   });
 
   if (!resp.ok) {
     const errText = await resp.text();
-    throw new Error(`AI gateway ${resp.status}: ${errText}`);
+    throw new Error(`Anthropic API ${resp.status}: ${errText}`);
   }
+
   const data = await resp.json();
-  const call = data?.choices?.[0]?.message?.tool_calls?.[0];
-  const argsStr = call?.function?.arguments;
-  if (!argsStr) throw new Error("No tool_call returned by model");
-  const parsed = JSON.parse(argsStr);
+  const rawText = data?.content?.[0]?.text ?? "";
+
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error("No JSON found in response");
+
+  const parsed = JSON.parse(jsonMatch[0]);
   const out: Partial<Record<Lang, string>> = {};
   for (const l of langs) {
     if (typeof parsed[l] === "string") out[l] = parsed[l];
