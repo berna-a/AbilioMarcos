@@ -1,58 +1,79 @@
+## Objectivo
 
-
-# Abílio Marcos — Implementation Plan (v4.1) — Final Refinements
-
-Only two changes from v4. Everything else remains identical.
+Garantir que TODO o conteúdo público é apresentado na língua activa (PT/EN/FR/DE/ES), incluindo dados editáveis pelo cliente (títulos de obras, descrições, secções "Sobre"). Tradução feita automaticamente via Lovable AI Gateway quando o cliente grava no admin — sem precisar de preencher 5 idiomas à mão.
 
 ---
 
-## Change 1: Primary Collection Support
+## 1. Tradução automática de conteúdo do CRM
 
-**Architecture choice:** Add an `is_primary` boolean flag to the `artwork_collections` join table.
+### Schema (migrações)
 
-This is preferred over a `primary_collection_id` FK on artworks because:
-- It keeps all collection relationships in one place
-- It avoids denormalization
-- It works naturally with the many-to-many model
-- A database constraint can enforce at most one primary per artwork
+Adicionar colunas `jsonb` para guardar traduções, formato `{ en, fr, de, es }`. PT é sempre o original.
 
-### artwork_collections (updated)
+- `artworks.title_translations jsonb`
+- `artworks.description_translations jsonb`
+- `about_content.title_translations jsonb`
+- `about_content.content_translations jsonb`
 
-| Field | Type | Notes |
-|---|---|---|
-| artwork_id | uuid | FK → artworks |
-| collection_id | uuid | FK → collections |
-| sort_order | integer | Order within collection |
-| **is_primary** | **boolean** | **Default false. At most one true per artwork.** |
-| PK: (artwork_id, collection_id) | | |
+### Edge Function `translate-content`
 
-A partial unique index enforces the constraint: only one row per `artwork_id` where `is_primary = true`.
+Nova função em `supabase/functions/translate-content/`. Recebe `{ text, sourceLang: 'pt', targetLangs: ['en','fr','de','es'], context?: 'artwork_title'|'artwork_description'|'about_section' }`. Chama o Lovable AI Gateway (modelo `google/gemini-2.5-flash`) com prompt que preserva nomes próprios, datas, anos e formatação. Devolve `{ en, fr, de, es }`.
 
-**Frontend usage of primary collection:**
-- Artwork detail page breadcrumbs: Home → [Primary Collection] → [Artwork Title]
-- Related works: prioritize works from the same primary collection
-- Default collection context when navigating to detail from non-collection routes
-- If no primary collection is set, breadcrumbs fall back to "All Works"
+### Hooks no admin
 
-**Admin:** When assigning collections, one can be toggled as primary. Optional — not required.
+- `ArtworkForm.tsx`: ao gravar, se `title` ou `description` mudou, chamar a função e popular as colunas `*_translations`. Mostrar pequeno indicador "A traduzir…" e botão "Regenerar traduções" para forçar.
+- `AboutContent.tsx` (admin): mesmo padrão para `title` + `content`.
+
+### UI pública
+
+- Helper `tField(row, field, locale)` que devolve `row[field+'_translations']?.[locale] ?? row[field]` (fallback PT).
+- Aplicar em `ArtworkDetail`, `AllWorks`, `FeaturedWorks`, `Index`, `About` e qualquer outro sítio que mostre `artwork.title`, `artwork.description`, `about_content.title`, `about_content.content`.
 
 ---
 
-## Change 2: Archived Visibility Behavior
+## 2. Auditoria i18n completa
 
-Clarified `publication_status` logic:
+Percorrer todas as páginas/componentes públicos e identificar strings hardcoded ainda em PT (ou inglês). Áreas conhecidas a verificar:
 
-| Status | Frontend | Admin |
-|---|---|---|
-| **draft** | Hidden | Visible in default listing |
-| **published** | Visible (subject to `availability` for commerce) | Visible in default listing |
-| **archived** | Hidden | **Hidden from default listing, but accessible via status filter or search** |
+- `CV.tsx` — exposições e educação têm placeholders em inglês ("Solo Exhibition — Gallery Name")
+- `Contact.tsx` — endereço do atelier hardcoded em PT (provavelmente OK, mas confirmar labels)
+- `WhatsAppFloat.tsx`, `CookieConsent.tsx`, `InquiryModal.tsx`, `CollectorSignup.tsx`
+- `ArtworkCommerceCTA.tsx`, `ArtworkTrustInfo.tsx` (mensagem de certificado)
+- Footer: descrição, copyright, NIF (NIF mantém-se igual)
+- Mensagens de erro/sucesso em formulários
+- Páginas legais (`legal/*.tsx`) — hoje em PT; decidir se mantêm-se só em PT (geralmente prática aceitável) ou traduzem
 
-**Admin behavior:** The artwork list defaults to showing `draft` + `published` works. Archived works are excluded from the default view but can be found by selecting "Archived" in the status filter dropdown or by searching. This prevents clutter while keeping archived works fully accessible.
-
-**No data is lost** — archived is a soft-hide, not a delete.
+Corrigir adicionando chaves novas em `src/i18n/types.ts` e nos 5 ficheiros (`pt.ts`, `en.ts`, `fr.ts`, `de.ts`, `es.ts`).
 
 ---
 
-All other sections (sitemap, hero, intro animation, component system, remaining data model, commerce logic, phases, checkpoints, risks) remain exactly as defined in v4.
+## 3. Backfill das obras existentes
 
+Script único (admin → botão "Traduzir todas as obras existentes" ou one-shot via SQL+function) que percorre `artworks` e `about_content` sem traduções e popula. Permite ter o site multilingue sem o cliente abrir cada obra.
+
+---
+
+## Detalhes técnicos
+
+- Modelo AI: `google/gemini-2.5-flash` (rápido, barato, óptimo para tradução curta).
+- Prompt: instrução para tradutor profissional de arte, manter títulos poéticos/abstractos como tal, não traduzir nomes próprios.
+- Em caso de falha do gateway, mantém-se o original em PT (fallback nunca quebra a UI).
+- Páginas legais: proponho mantê-las só em PT (jurisdição PT) com nota de "Documentos legais em português" — confirma se concordas.
+
+---
+
+## Ordem de execução
+
+1. Migração SQL (4 colunas jsonb)
+2. Edge function `translate-content` + deploy
+3. Helper `tField` + atualizar todas as views públicas
+4. Hooks de tradução automática nos formulários admin (artworks + about)
+5. Botão "Backfill traduções" no admin
+6. Auditoria + correcção de strings hardcoded restantes
+7. QA manual em PT/EN/FR/DE/ES nas páginas principais
+
+---
+
+## Pergunta antes de começar
+
+Confirmas que posso usar o **Lovable AI Gateway** (Gemini Flash) para a tradução automática? Tem custo por chamada mas é o mais simples — alternativa seria DeepL/Google Translate API com chave própria.
