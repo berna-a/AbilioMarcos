@@ -73,6 +73,8 @@ const ArtworkForm = () => {
   const [error, setError] = useState('');
   const [slugManual, setSlugManual] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [originalText, setOriginalText] = useState({ title: '', description: '' });
 
   useEffect(() => {
     if (isNew) return;
