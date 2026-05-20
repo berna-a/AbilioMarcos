@@ -29,16 +29,16 @@ const Contact = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
             {/* Left column — info */}
             <motion.div className="md:col-span-5" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <p className="text-xs tracking-[0.2em] uppercase text-foreground mb-4">{t.contact.getInTouch}</p>
+              <p className="text-xs tracking-[0.2em] uppercase text-brand-red mb-4">{t.contact.getInTouch}</p>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light mb-8">{t.contact.title}</h1>
               <div className="space-y-7 text-sm text-foreground leading-relaxed">
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-foreground">{t.contact.inquiriesLabel}</p>
+                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-brand-red">{t.contact.inquiriesLabel}</p>
                   <p>{t.contact.inquiriesText}</p>
                 </div>
 
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-foreground">{t.contact.studioLabel}</p>
+                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-brand-red">{t.contact.studioLabel}</p>
                   <p className="whitespace-pre-line">{SOCIALS.address}</p>
                   <a
                     href={SOCIALS.maps}
@@ -52,21 +52,21 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-foreground">{t.contact.emailLabel}</p>
+                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-brand-red">{t.contact.emailLabel}</p>
                   <a href={`mailto:${SOCIALS.email}`} className="inline-flex items-center gap-2 hover:text-foreground transition-colors">
                     <Mail className="w-3.5 h-3.5" /> {SOCIALS.email}
                   </a>
                 </div>
 
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-foreground">{t.contact.phoneLabel}</p>
+                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-brand-red">{t.contact.phoneLabel}</p>
                   <a href={`tel:${SOCIALS.phoneTel}`} className="inline-flex items-center gap-2 hover:text-foreground transition-colors">
                     <Phone className="w-3.5 h-3.5" /> {SOCIALS.phone}
                   </a>
                 </div>
 
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-foreground">{t.contact.whatsappLabel}</p>
+                  <p className="text-xs tracking-[0.15em] uppercase mb-2 text-brand-red">{t.contact.whatsappLabel}</p>
                   <a
                     href={SOCIALS.whatsapp}
                     target="_blank"
@@ -78,16 +78,16 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <p className="text-xs tracking-[0.15em] uppercase mb-3 text-foreground">{t.contact.socialsLabel}</p>
+                  <p className="text-xs tracking-[0.15em] uppercase mb-3 text-brand-red">{t.contact.socialsLabel}</p>
                   <div className="flex items-center gap-5">
-                    <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-foreground hover:text-social-instagram transition-colors duration-300">
-                      <Instagram className="w-4 h-4" />
+                    <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="transition-opacity duration-300 hover:opacity-80">
+                      <Instagram className="w-4 h-4" style={{ color: "#E1306C" }} />
                     </a>
-                    <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-foreground hover:text-social-facebook transition-colors duration-300">
-                      <Facebook className="w-4 h-4" />
+                    <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="transition-opacity duration-300 hover:opacity-80">
+                      <Facebook className="w-4 h-4" style={{ color: "#1877F2" }} />
                     </a>
-                    <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-foreground hover:text-social-whatsapp transition-colors duration-300">
-                      <MessageCircle className="w-4 h-4" />
+                    <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="transition-opacity duration-300 hover:opacity-80">
+                      <MessageCircle className="w-4 h-4" style={{ color: "#25D366" }} />
                     </a>
                   </div>
                 </div>
