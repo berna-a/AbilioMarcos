@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getArtworkBySlug, getRelatedArtworks } from "@/lib/artworks";
 import { Artwork, getRealDimensions, formatPrice, getSalesMode, getTechnique } from "@/lib/types";
-import { techniqueLabel, useTField } from "@/i18n";
+import { techniqueLabel, useTField, useTechniqueLabel } from "@/i18n";
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
@@ -22,6 +22,7 @@ const ArtworkDetail = () => {
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const t = useT();
   const tf = useTField();
+  const tTechnique = useTechniqueLabel();
 
   useEffect(() => {
     if (!slug) return;
@@ -116,7 +117,7 @@ const ArtworkDetail = () => {
   const dimensions = getRealDimensions(artwork);
   const salesMode = getSalesMode(artwork.price);
   const displayPrice = formatPrice(artwork.price);
-  const techniqueText = techniqueLabel(t, getTechnique(artwork));
+  const techniqueText = tTechnique(getTechnique(artwork));
   const localizedTitle = tf(artwork.title, artwork.title_translations);
   const localizedDescription = tf(artwork.description, artwork.description_translations);
 
@@ -226,7 +227,7 @@ const ArtworkDetail = () => {
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
                     <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{relTitle}</p>
-                    <p className="text-[12px] tracking-[0.2em] uppercase text-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
+                    <p className="text-[12px] tracking-[0.2em] uppercase text-foreground mt-2">{tTechnique(rel.technique)}</p>
                   </Link>
                   );
                 })}
