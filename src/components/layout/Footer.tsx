@@ -45,14 +45,14 @@ const Footer = () => {
             </p>
             {/* Social */}
             <div className="flex items-center gap-2 mt-5">
-              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 inline-flex items-center justify-center border border-white/15 hover:border-[#E1306C] hover:bg-[#E1306C]/15 transition-all duration-300">
-                <Instagram className="w-3.5 h-3.5" style={{ color: "#E1306C" }} />
+              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-8 h-8 inline-flex items-center justify-center transition-opacity duration-300 hover:opacity-80">
+                <Instagram className="w-4 h-4" style={{ color: "#E1306C" }} />
               </a>
-              <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 inline-flex items-center justify-center border border-white/15 hover:border-[#1877F2] hover:bg-[#1877F2]/15 transition-all duration-300">
-                <Facebook className="w-3.5 h-3.5" style={{ color: "#1877F2" }} />
+              <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-8 h-8 inline-flex items-center justify-center transition-opacity duration-300 hover:opacity-80">
+                <Facebook className="w-4 h-4" style={{ color: "#1877F2" }} />
               </a>
-              <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-8 h-8 inline-flex items-center justify-center border border-white/15 hover:border-[#25D366] hover:bg-[#25D366]/15 transition-all duration-300">
-                <MessageCircle className="w-3.5 h-3.5" style={{ color: "#25D366" }} />
+              <a href={SOCIALS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-8 h-8 inline-flex items-center justify-center transition-opacity duration-300 hover:opacity-80">
+                <MessageCircle className="w-4 h-4" style={{ color: "#25D366" }} />
               </a>
             </div>
           </div>

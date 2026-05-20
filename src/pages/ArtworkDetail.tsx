@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getArtworkBySlug, getRelatedArtworks } from "@/lib/artworks";
 import { Artwork, getRealDimensions, formatPrice, getSalesMode, getTechnique } from "@/lib/types";
-import { techniqueLabel, useTField } from "@/i18n";
+import { techniqueLabel, useTField, useTechniqueLabel } from "@/i18n";
 import InquiryModal from "@/components/InquiryModal";
 import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
@@ -22,6 +22,7 @@ const ArtworkDetail = () => {
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const t = useT();
   const tf = useTField();
+  const tTechnique = useTechniqueLabel();
 
   useEffect(() => {
     if (!slug) return;
@@ -116,7 +117,7 @@ const ArtworkDetail = () => {
   const dimensions = getRealDimensions(artwork);
   const salesMode = getSalesMode(artwork.price);
   const displayPrice = formatPrice(artwork.price);
-  const techniqueText = techniqueLabel(t, getTechnique(artwork));
+  const techniqueText = tTechnique(getTechnique(artwork));
   const localizedTitle = tf(artwork.title, artwork.title_translations);
   const localizedDescription = tf(artwork.description, artwork.description_translations);
 
@@ -130,7 +131,7 @@ const ArtworkDetail = () => {
 
   return (
     <Layout>
-      <div className="pt-6 md:pt-10 pb-24 md:pb-40">
+      <div className="pt-24 md:pt-28 pb-24 md:pb-40">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-4 md:mb-6">
@@ -169,6 +170,21 @@ const ArtworkDetail = () => {
                   />
                 );
               })()}
+
+              {(localizedDescription && localizedDescription.trim()) && (
+                <motion.section
+                  className="mt-12 md:mt-16"
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.7 }}
+                >
+                  <div className="max-w-2xl">
+                    <SectionLabel className="mb-10 md:mb-12">{t.artwork.artistNote}</SectionLabel>
+                    <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground tracking-[-0.005em]">{localizedDescription}</p>
+                  </div>
+                </motion.section>
+              )}
             </motion.div>
 
             <motion.div className="lg:col-span-5 flex flex-col lg:py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
@@ -202,14 +218,7 @@ const ArtworkDetail = () => {
             </motion.section>
           )}
 
-          {(localizedDescription && localizedDescription.trim()) && (
-            <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.7 }}>
-              <div className="max-w-2xl">
-                <SectionLabel className="mb-10 md:mb-12">{t.artwork.artistNote}</SectionLabel>
-                <p className="font-serif text-2xl md:text-[1.75rem] leading-[1.7] text-foreground tracking-[-0.005em]">{localizedDescription}</p>
-              </div>
-            </motion.section>
-          )}
+          {/* artist note moved into the image column above */}
 
           {related.length > 0 && (
             <motion.section initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
@@ -226,7 +235,7 @@ const ArtworkDetail = () => {
                       <div className="aspect-[4/5] mb-5 bg-muted group-hover:opacity-85 transition-opacity duration-700" />
                     )}
                     <p className="font-serif text-lg md:text-xl text-brand-brown group-hover:text-brand-red transition-colors duration-500 leading-tight">{relTitle}</p>
-                    <p className="text-[12px] tracking-[0.2em] uppercase text-foreground mt-2">{techniqueLabel(t, rel.technique)}</p>
+                    <p className="text-[12px] tracking-[0.2em] uppercase text-foreground mt-2">{tTechnique(rel.technique)}</p>
                   </Link>
                   );
                 })}
@@ -247,8 +256,8 @@ const SectionLabel = ({ children, className = "mb-8 md:mb-10" }: { children: Rea
 
 const MetadataLine = ({ label, value, valueClassName = "text-foreground" }: { label: string; value: string; valueClassName?: string }) => (
   <div className="flex justify-between items-baseline">
-    <span className="text-[13px] tracking-[0.2em] uppercase text-foreground">{label}</span>
-    <span className={`text-sm md:text-[1.075rem] tracking-wide ${valueClassName}`}>{value}</span>
+    <span className="text-xs tracking-[0.2em] uppercase text-foreground">{label}</span>
+    <span className={`text-sm tracking-wide ${valueClassName}`}>{value}</span>
   </div>
 );
 

@@ -5,7 +5,7 @@ import { useState, useMemo, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
-import { useT, techniqueLabel, useTField } from "@/i18n";
+import { useT, useTField, useTechniqueLabel } from "@/i18n";
 import { track, trackArtwork } from "@/lib/analytics";
 
 type SortOption = 'newest' | 'price_asc' | 'price_desc';
@@ -50,6 +50,7 @@ const AllWorks = () => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const t = useT();
   const tf = useTField();
+  const tTechnique = useTechniqueLabel();
   
 
   useEffect(() => {
@@ -270,7 +271,7 @@ const AllWorks = () => {
                           </div>
                           {work.technique && (
                             <p className="text-[12px] text-foreground mt-0.5 truncate">
-                              {techniqueLabel(t, work.technique)}
+                              {tTechnique(work.technique)}
                             </p>
                           )}
                         </div>

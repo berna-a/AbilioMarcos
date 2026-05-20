@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getRecentArtworks } from "@/lib/artworks";
-import { useT, techniqueLabel, useTField } from "@/i18n";
+import { useT, useTField, useTechniqueLabel } from "@/i18n";
 import { Artwork, formatPrice } from "@/lib/types";
 
 const placeholderWorks: Partial<Artwork>[] = [
@@ -27,6 +27,7 @@ const FeaturedWorks = () => {
   const [hasReal, setHasReal] = useState(false);
   const t = useT();
   const tf = useTField();
+  const tTechnique = useTechniqueLabel();
 
   useEffect(() => {
     getRecentArtworks(6).then((data) => {
@@ -106,7 +107,7 @@ const FeaturedWorks = () => {
                 </div>
                 {hasReal && work.technique && (
                   <p className="text-[12px] text-foreground mt-0.5 truncate">
-                    {techniqueLabel(t, work.technique)}
+                    {tTechnique(work.technique)}
                   </p>
                 )}
               </div>

@@ -77,20 +77,34 @@ export const localeNames: Record<Locale, string> = {
   es: 'Español',
 };
 
+import { techniqueTranslations } from './techniques';
+
 /** Map a stored technique value to its localized label using current translations. */
 export const techniqueLabel = (
   t: Translations,
-  technique: string | null | undefined
+  technique: string | null | undefined,
+  locale: Locale = 'pt',
 ): string => {
   const value = (technique || '').trim();
   if (!value) return t.allWorks.techniqueOil;
-  // Match against canonical PT-stored values
+  // For non-PT locales, consult the technique translation map first.
+  if (locale !== 'pt') {
+    const map = techniqueTranslations[value];
+    if (map && map[locale]) return map[locale];
+  }
+  // Match against canonical PT-stored values for the built-in i18n labels
   switch (value) {
     case 'Óleo sobre tela': return t.allWorks.techniqueOil;
     case 'Acrílico sobre tela': return t.allWorks.techniqueAcrylic;
     case 'Técnica mista': return t.allWorks.techniqueMixed;
     default: return value;
   }
+};
+
+/** Hook variant that picks up the current locale automatically. */
+export const useTechniqueLabel = () => {
+  const { t, locale } = useI18n();
+  return (technique: string | null | undefined) => techniqueLabel(t, technique, locale);
 };
 
 /** Translation map persisted in DB columns: { en, fr, de, es }. */
