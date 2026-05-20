@@ -66,7 +66,7 @@ const Header = () => {
     <div className="relative">
       <button
         onClick={(e) => { e.stopPropagation(); setLangOpen(!langOpen); }}
-        className="flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase transition-colors duration-500 px-2 py-1 text-brand-brown/75 hover:text-brand-brown"
+        className="flex items-center gap-1.5 text-[13px] tracking-[0.12em] uppercase px-2 py-1 text-black"
       >
         <Flag locale={locale} />
         <span>{localeLabels[locale]}</span>
@@ -129,13 +129,11 @@ const Header = () => {
                   <Link
                     key={item.href}
                     to={item.href}
-                    className={`text-[13px] tracking-[0.18em] uppercase transition-colors duration-500 relative ${
-                      isActive ? "text-brand-brown" : "text-brand-brown/70 hover:text-brand-brown"
-                    }`}
+                    className="text-[13px] tracking-[0.18em] uppercase relative text-black"
                   >
                     {item.label}
                     {isActive && (
-                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-brand-brown/40" />
+                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-black/40" />
                     )}
                   </Link>
                 );
@@ -182,9 +180,7 @@ const Header = () => {
                   >
                     <Link
                       to={item.href}
-                      className={`font-serif text-2xl tracking-wide transition-colors ${
-                        isActive ? "text-foreground" : "text-foreground/40 hover:text-foreground"
-                      }`}
+                      className="font-serif text-2xl tracking-wide text-black"
                     >
                       {item.label}
                     </Link>
