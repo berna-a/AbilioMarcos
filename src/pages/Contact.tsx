@@ -102,34 +102,36 @@ const Contact = () => {
                   <p className="text-sm text-foreground">{t.contact.thankYouMessage}</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.nameLabel}</label>
-                      <input type="text" required value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors" />
+                <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.nameLabel}</label>
+                        <input type="text" required value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors" />
+                      </div>
+                      <div>
+                        <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.emailFieldLabel}</label>
+                        <input type="email" required value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors" />
+                      </div>
                     </div>
                     <div>
-                      <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.emailFieldLabel}</label>
-                      <input type="email" required value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors" />
+                      <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.subjectLabel}</label>
+                      <select value={formData.subject} onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors appearance-none">
+                        <option value="">{t.contact.selectSubject}</option>
+                        <option value="acquisition">{t.contact.acquisition}</option>
+                        <option value="inquiry">{t.contact.generalInquiry}</option>
+                        <option value="commission">{t.contact.commissionRequest}</option>
+                        <option value="exhibition">{t.contact.exhibition}</option>
+                        <option value="press">{t.contact.pressMedia}</option>
+                      </select>
                     </div>
-                  </div>
-                  <div>
-                    <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.subjectLabel}</label>
-                    <select value={formData.subject} onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors appearance-none">
-                      <option value="">{t.contact.selectSubject}</option>
-                      <option value="acquisition">{t.contact.acquisition}</option>
-                      <option value="inquiry">{t.contact.generalInquiry}</option>
-                      <option value="commission">{t.contact.commissionRequest}</option>
-                      <option value="exhibition">{t.contact.exhibition}</option>
-                      <option value="press">{t.contact.pressMedia}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.messageLabel}</label>
-                    <textarea required rows={5} value={formData.message} onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors resize-none" />
-                  </div>
-                  <button type="submit" className="px-8 py-3.5 bg-brand-red text-primary-foreground text-xs tracking-[0.18em] uppercase font-medium hover:bg-brand-red-soft transition-colors">{t.contact.sendMessage}</button>
-                </form>
+                    <div>
+                      <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.messageLabel}</label>
+                      <textarea required rows={5} value={formData.message} onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors resize-none" />
+                    </div>
+                    <button type="submit" className="px-8 py-3.5 bg-brand-red text-primary-foreground text-xs tracking-[0.18em] uppercase font-medium hover:bg-brand-red-soft transition-colors">{t.contact.sendMessage}</button>
+                  </form>
+                </div>
               )}
 
               {/* Google Maps embed */}
