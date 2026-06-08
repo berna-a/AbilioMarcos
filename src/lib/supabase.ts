@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://hbrvappgklorjxojyvqz.supabase.co';
-const supabaseAnonKey = 'sb_publishable_eb2twQ9qN6w3tFXWfjWTWA_D6S-cG3y';
+// AOS (SSOT) — gaveta do cliente 021. Migrado de abiliomarcos.com em 06/2026.
+const supabaseUrl = 'https://hwpixsuovwxgilyfoszw.supabase.co';
+const supabaseAnonKey = 'sb_publishable_4zfZ95cWvrhy0nWmqjEzqQ_kKh3jGAa';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  db: { schema: 'cliente_021' },
+});

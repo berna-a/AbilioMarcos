@@ -42,7 +42,7 @@ const FeaturedWorks = () => {
     work.slug ? `/obra/${work.slug}` : `/obra/${work.id}`;
 
   return (
-    <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1400px] mx-auto">
+    <section className="py-16 md:py-24 px-6 md:px-10 max-w-[1400px] mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}

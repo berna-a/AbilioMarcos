@@ -5,14 +5,14 @@ const StatementSection = () => {
   const t = useT();
 
   return (
-    <section className="py-28 md:py-36 px-6 md:px-10 border-t border-gallery-border">
+    <section className="py-16 md:py-24 px-6 md:px-10 border-t border-gallery-border">
       <div className="max-w-2xl mx-auto text-center">
-        <motion.div className="mb-10 md:mb-12 flex justify-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8 }}>
+        <motion.div className="mb-8 md:mb-10 flex justify-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8 }}>
           <div className="w-8 h-px bg-foreground/15" />
         </motion.div>
 
         <motion.blockquote
-          className="font-serif text-[1.65rem] md:text-[2rem] lg:text-[2.4rem] font-light leading-[1.5] italic text-foreground"
+          className="font-serif text-[1.5rem] md:text-[1.75rem] lg:text-[2rem] font-light leading-[1.5] italic text-foreground"
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}

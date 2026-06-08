@@ -20,7 +20,7 @@ export async function translateContent(
   const trimmed = (text ?? '').trim();
   if (!trimmed) return {};
   try {
-    const { data, error } = await supabase.functions.invoke('translate-content', {
+    const { data, error } = await supabase.functions.invoke('translate-content-021', {
       body: { text: trimmed, context, targetLangs: ['en', 'fr', 'de', 'es'] },
     });
     if (error) {

@@ -79,8 +79,8 @@
 
   html {
     scroll-behavior: smooth;
-    /* Root font size scaled +15% from previous 132%. */
-    font-size: 152%;
+    /* Base tipográfica profissional (16px). Era 152% — inflava tudo 1.5x. */
+    font-size: 100%;
     overflow-x: hidden;
   }
 

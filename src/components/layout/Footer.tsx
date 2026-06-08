@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import footerLogo from "@/assets/footer-logo.png";
+import ardoLogo from "@/assets/ardo-logo.svg";
 import { useT } from "@/i18n";
 import { Instagram, Facebook, MessageCircle } from "lucide-react";
 import ComplaintsBookBadge from "@/components/ComplaintsBookBadge";
@@ -36,7 +37,7 @@ const Footer = () => {
               <img
                 src={footerLogo}
                 alt="Abílio Marcos"
-                className="h-12 md:h-14 w-auto object-contain"
+                className="h-12 md:h-14 w-auto object-contain [filter:brightness(0)_invert(1)]"
                 draggable={false}
               />
             </Link>
@@ -129,7 +130,22 @@ const Footer = () => {
         <div className="py-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-[13px] text-white/45">
             {t.footer.copyright} {t.footer.madeBy}{" "}
-            <a href="https://ardo.media/" target="_blank" rel="noopener noreferrer" className="font-medium text-white/70 hover:text-white transition-colors duration-300">Ardo Media</a>
+            <a href="https://ardo.media" target="_blank" rel="noopener noreferrer" aria-label="ARDO" className="group inline-flex items-center align-middle ml-1 -mt-[2px]">
+              <span
+                aria-hidden
+                className="inline-block h-[2.6em] w-[2.6em] bg-[#1A56DB] group-hover:bg-[#3B82F6] transition-colors"
+                style={{
+                  WebkitMaskImage: `url(${ardoLogo})`,
+                  maskImage: `url(${ardoLogo})`,
+                  WebkitMaskRepeat: "no-repeat",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskPosition: "center",
+                  WebkitMaskSize: "contain",
+                  maskSize: "contain",
+                }}
+              />
+            </a>
           </p>
           <p className="text-[13px] text-white/45">
             NIF 187556237

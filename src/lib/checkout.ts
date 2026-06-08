@@ -9,7 +9,7 @@ export interface CheckoutResult {
  *  a useful error reason surfaced from the backend. */
 export const createCheckoutSession = async (artworkId: string): Promise<CheckoutResult> => {
   try {
-    const { data, error } = await supabase.functions.invoke('create-checkout', {
+    const { data, error } = await supabase.functions.invoke('create-checkout-021', {
       body: { artwork_id: artworkId },
     });
 
