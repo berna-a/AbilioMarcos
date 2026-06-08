@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import footerLogo from "@/assets/footer-logo.png";
+import footerLogo from "@/assets/footer-logo-white.png";
 import ardoLogo from "@/assets/ardo-logo.svg";
 import { useT } from "@/i18n";
 import { Instagram, Facebook, MessageCircle } from "lucide-react";
@@ -37,7 +37,7 @@ const Footer = () => {
               <img
                 src={footerLogo}
                 alt="Abílio Marcos"
-                className="h-12 md:h-14 w-auto object-contain [filter:brightness(0)_invert(1)]"
+                className="h-11 md:h-12 w-auto object-contain"
                 draggable={false}
               />
             </Link>
