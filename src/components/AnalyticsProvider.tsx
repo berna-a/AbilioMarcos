@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { track, setAnalyticsLocale, trackMetaContact } from '@/lib/analytics';
+import { loadMetaPixel } from '@/lib/metaPixel';
+import { getCookieConsent } from '@/components/CookieConsent';
 import { useI18n } from '@/i18n';
 
 /**
@@ -27,6 +29,16 @@ const AnalyticsProvider = () => {
     };
     document.addEventListener('click', onDocClick, true);
     return () => document.removeEventListener('click', onDocClick, true);
+  }, []);
+
+  // Meta Pixel (RGPD): carregar só APÓS consentimento de marketing
+  useEffect(() => {
+    if (getCookieConsent()?.marketing) loadMetaPixel();
+    const onConsent = (e: Event) => {
+      if ((e as CustomEvent).detail?.marketing) loadMetaPixel();
+    };
+    window.addEventListener('am:cookie-consent', onConsent as EventListener);
+    return () => window.removeEventListener('am:cookie-consent', onConsent as EventListener);
   }, []);
 
   // Page views

@@ -19,7 +19,7 @@ import Collections from "./pages/Collections";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import NotFound from "./pages/NotFound";
-import LegalPage from "./pages/legal/LegalPage";
+import ComplaintsPage from "./pages/legal/ComplaintsPage";
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import CookiePolicy from "./pages/legal/CookiePolicy";
 import DisputeResolution from "./pages/legal/DisputeResolution";
@@ -85,7 +85,7 @@ const AppContent = () => {
       <Route path="/legal/cookies" element={<CookiePolicy />} />
       <Route path="/legal/terms" element={<TermsConditions />} />
       <Route path="/legal/disputes" element={<DisputeResolution />} />
-      <Route path="/legal/complaints" element={<LegalPage titleKey="complaintsTitle" />} />
+      <Route path="/legal/complaints" element={<ComplaintsPage />} />
 
       {/* Admin routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
