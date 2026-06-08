@@ -118,7 +118,7 @@ const Header = () => {
               aria-label="Abílio Marcos"
               className="transition-all duration-700 opacity-100 translate-y-0"
             >
-              <SignatureLogo className="h-9 w-auto md:h-11" />
+              <SignatureLogo className="h-12 w-auto md:h-16 py-1" />
             </Link>
 
             {/* Desktop nav */}

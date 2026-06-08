@@ -245,7 +245,14 @@ const ArtworkDetail = () => {
         </div>
       </div>
 
-      <InquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} artworkId={artwork.id} artworkTitle={localizedTitle} />
+      <InquiryModal
+        open={inquiryOpen}
+        onClose={() => setInquiryOpen(false)}
+        artworkId={artwork.id}
+        artworkTitle={localizedTitle}
+        artworkImage={artwork.primary_image_url}
+        artworkDetails={[techniqueText, dimensions, artwork.year].filter(Boolean).join(' · ')}
+      />
     </Layout>
   );
 };

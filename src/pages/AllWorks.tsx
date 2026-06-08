@@ -166,9 +166,9 @@ const AllWorks = () => {
 
   return (
     <Layout>
-      <div className="pt-24 md:pt-28 pb-24 md:pb-28 px-6 md:px-10">
+      <div className="pt-20 md:pt-24 pb-24 md:pb-28 px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-12 md:mb-10">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-8">
             <p className="text-[12px] tracking-[0.3em] uppercase text-foreground mb-5">{t.allWorks.label}</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light">{t.allWorks.title}</h1>
             <p className="mt-4 text-[13px] md:text-xs tracking-[0.04em] text-foreground max-w-md">{t.allWorks.description}</p>
