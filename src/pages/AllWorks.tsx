@@ -166,9 +166,9 @@ const AllWorks = () => {
 
   return (
     <Layout>
-      <div className="pt-28 md:pt-36 pb-24 md:pb-36 px-6 md:px-10">
+      <div className="pt-24 md:pt-28 pb-24 md:pb-28 px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-12 md:mb-16">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-12 md:mb-10">
             <p className="text-[12px] tracking-[0.3em] uppercase text-foreground mb-5">{t.allWorks.label}</p>
             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light">{t.allWorks.title}</h1>
             <p className="mt-4 text-[13px] md:text-xs tracking-[0.04em] text-foreground max-w-md">{t.allWorks.description}</p>
@@ -201,8 +201,8 @@ const AllWorks = () => {
             )}
           </AnimatePresence>
 
-          <div className="flex gap-12 lg:gap-16">
-            <aside className="hidden md:block w-[200px] lg:w-[220px] flex-shrink-0 sticky top-36 self-start max-h-[calc(100vh-10rem)] overflow-y-auto pr-4">
+          <div className="flex gap-12 lg:gap-12">
+            <aside className="hidden md:block w-[200px] lg:w-[220px] flex-shrink-0 sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto pr-4">
               {filterContent}
             </aside>
 

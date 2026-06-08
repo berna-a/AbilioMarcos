@@ -22,14 +22,14 @@ const About = () => {
 
   return (
     <Layout>
-      <div className="pt-28 md:pt-36 pb-24 md:pb-36 px-6 md:px-10">
+      <div className="pt-24 md:pt-28 pb-24 md:pb-28 px-6 md:px-10">
         <div className="max-w-[1400px] mx-auto">
           <AboutHero />
 
           {loading ? (
             <p className="text-[13px] text-foreground py-12">{t.artwork.loading}</p>
           ) : (
-            <div className="space-y-14 md:space-y-18 mt-14 md:mt-18">
+            <div className="space-y-14 md:space-y-18 mt-8 md:mt-18">
               {sections.map((s) => (
                 <motion.section
                   key={s.id}
@@ -37,7 +37,7 @@ const About = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.7 }}
-                  className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16"
+                  className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12"
                 >
                   <div className="md:col-span-3">
                     <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red md:sticky md:top-32">

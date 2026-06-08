@@ -21,7 +21,7 @@ const AboutCollections = () => {
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7 }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
         <div className="md:col-span-3">
           <p className="text-[12px] tracking-[0.3em] uppercase text-foreground md:sticky md:top-32">
             {t.aboutPage.collectionsTitle}
@@ -33,7 +33,7 @@ const AboutCollections = () => {
             {t.aboutPage.collectionsHeadline}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-14 gap-y-10 mb-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-14 gap-y-10 mb-8">
             {groups.map((g) => (
               <div key={g.label} className="border-t border-gallery-border pt-5">
                 <p className="text-[13px] tracking-[0.22em] uppercase text-brand-red/85 mb-3">

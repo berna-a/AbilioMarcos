@@ -92,13 +92,13 @@ const ArtworkDetail = () => {
   }, [artwork]);
 
   if (loading) {
-    return <Layout><div className="pt-40 pb-40 text-center"><p className="text-[15px] text-foreground">{t.artwork.loading}</p></div></Layout>;
+    return <Layout><div className="pt-28 pb-28 text-center"><p className="text-[15px] text-foreground">{t.artwork.loading}</p></div></Layout>;
   }
 
   if (notFound || !artwork) {
     return (
       <Layout>
-        <div className="pt-40 pb-40 text-center">
+        <div className="pt-28 pb-28 text-center">
           <p className="text-foreground mb-4">{t.artwork.notFound}</p>
           <Link to="/obras" className="text-[13px] tracking-[0.2em] uppercase text-foreground hover:text-foreground transition-colors">{t.artwork.backToWorks}</Link>
         </div>
@@ -131,7 +131,7 @@ const ArtworkDetail = () => {
 
   return (
     <Layout>
-      <div className="pt-24 md:pt-28 pb-24 md:pb-40">
+      <div className="pt-24 md:pt-28 pb-24 md:pb-28">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10">
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="mb-4 md:mb-6">
@@ -140,7 +140,7 @@ const ArtworkDetail = () => {
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 mb-32 md:mb-48">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-12 xl:gap-12 mb-20 md:mb-24">
             <motion.div className="lg:col-span-7" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
               {(() => {
                 const isHorizontal = !!(width && height && width > height);
@@ -173,7 +173,7 @@ const ArtworkDetail = () => {
 
               {(localizedDescription && localizedDescription.trim()) && (
                 <motion.section
-                  className="mt-12 md:mt-16"
+                  className="mt-12 md:mt-10"
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
@@ -188,9 +188,9 @@ const ArtworkDetail = () => {
             </motion.div>
 
             <motion.div className="lg:col-span-5 flex flex-col lg:py-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.15 }}>
-              <h1 className="font-serif text-[1.875rem] md:text-[2.25rem] lg:text-[2.5rem] font-light text-foreground leading-[1.1] mb-14 lg:mb-16">{localizedTitle}</h1>
+              <h1 className="font-serif text-[1.875rem] md:text-[2.25rem] lg:text-[2.5rem] font-light text-foreground leading-[1.1] mb-8 lg:mb-10">{localizedTitle}</h1>
 
-              <div className="space-y-6 mb-14 lg:mb-16">
+              <div className="space-y-6 mb-8 lg:mb-10">
                 <MetadataLine label={t.artwork.medium} value={techniqueText} />
                 {dimensions && <MetadataLine label={t.artwork.dimensions} value={dimensions} />}
                 {artwork.reference && <MetadataLine label={t.artwork.reference} value={artwork.reference} />}
@@ -200,7 +200,7 @@ const ArtworkDetail = () => {
                 )}
               </div>
 
-              <div className="h-px bg-border mb-14 lg:mb-16" />
+              <div className="h-px bg-border mb-8 lg:mb-10" />
 
               <ArtworkCommerceCTA artwork={artwork} onInquiryClick={() => setInquiryOpen(true)} />
               <ArtworkTrustInfo />
@@ -208,7 +208,7 @@ const ArtworkDetail = () => {
           </div>
 
           {additionalImages.length > 0 && (
-            <motion.section className="mb-32 md:mb-48" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
+            <motion.section className="mb-20 md:mb-24" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
               <SectionLabel>{t.artwork.detailViews}</SectionLabel>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
                 {additionalImages.map((url, i) => (
@@ -222,8 +222,8 @@ const ArtworkDetail = () => {
 
           {related.length > 0 && (
             <motion.section initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }}>
-              <div className="h-px bg-border mb-20 md:mb-24" />
-              <SectionLabel className="mb-14 md:mb-16">{t.artwork.furtherViewing}</SectionLabel>
+              <div className="h-px bg-border mb-12 md:mb-16" />
+              <SectionLabel className="mb-8 md:mb-10">{t.artwork.furtherViewing}</SectionLabel>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
                 {related.slice(0, 3).map((rel) => {
                   const relTitle = tf(rel.title, rel.title_translations);

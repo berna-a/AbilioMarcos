@@ -11,13 +11,13 @@ const AboutPractice = () => {
 
   return (
     <motion.section
-      className="mb-14 md:mb-18 bg-muted/30 -mx-6 md:-mx-10 px-6 md:px-10 py-10 md:py-14"
+      className="mb-8 md:mb-18 bg-muted/30 -mx-6 md:-mx-10 px-6 md:px-10 py-10 md:py-14"
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7 }}
     >
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
         <div className="md:col-span-3">
           <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red md:sticky md:top-32">
             {t.aboutPage.practiceTitle}

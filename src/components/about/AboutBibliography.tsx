@@ -30,7 +30,7 @@ const AboutBibliography = () => {
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7 }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
         <div className="md:col-span-3">
           <p className="text-[12px] tracking-[0.3em] uppercase text-foreground md:sticky md:top-32">
             {t.aboutPage.bibliographyTitle}

@@ -5,13 +5,13 @@ const AboutBiography = () => {
   const t = useT();
   return (
     <motion.section
-      className="mb-14 md:mb-18"
+      className="mb-8 md:mb-18"
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7 }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
         <div className="md:col-span-3">
           <p className="text-[12px] tracking-[0.3em] uppercase text-brand-red md:sticky md:top-32">
             {t.aboutPage.biography}
