@@ -13,6 +13,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 // SelectedWorks page intentionally not imported in V1 — `/selected-works` redirects to `/works`
 import AllWorks from "./pages/AllWorks";
+import LinksPage from "./pages/LinksPage";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import Collections from "./pages/Collections";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
@@ -64,6 +65,7 @@ const AppContent = () => {
       <Route path="/cv" element={<About />} />
       <Route path="/contacto" element={<Contact />} />
       <Route path="/obras" element={<AllWorks />} />
+      <Route path="/links" element={<LinksPage />} />
       <Route path="/obra/:slug" element={<ArtworkDetail />} />
       <Route path="/colecoes" element={<Collections />} />
       <Route path="/checkout/success" element={<CheckoutSuccess />} />
