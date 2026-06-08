@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useT } from "@/i18n";
 import { Instagram, Facebook, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
 import { createInquiry } from "@/lib/inquiries";
+import { trackMetaLead } from "@/lib/analytics";
 import { toast } from "sonner";
 
 const SOCIALS = {
@@ -39,6 +40,7 @@ const Contact = () => {
     }, "form_contacto");
     setSending(false);
     if (!ok) { toast.error("Não foi possível enviar. Tente novamente."); return; }
+    trackMetaLead(formData.email.trim());
     setSubmitted(true);
   };
 

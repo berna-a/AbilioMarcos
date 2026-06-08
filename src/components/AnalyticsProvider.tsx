@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { track, setAnalyticsLocale } from '@/lib/analytics';
+import { track, setAnalyticsLocale, trackMetaContact } from '@/lib/analytics';
 import { useI18n } from '@/i18n';
 
 /**
@@ -19,10 +19,22 @@ const AnalyticsProvider = () => {
     setAnalyticsLocale(locale);
   }, [locale]);
 
+  // Meta Pixel "Contact" em qualquer clique num link de WhatsApp (global, cobre todo o site)
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement)?.closest?.('a[href*="wa.me"], a[href*="whatsapp"], a[href*="api.whatsapp"]');
+      if (el) trackMetaContact();
+    };
+    document.addEventListener('click', onDocClick, true);
+    return () => document.removeEventListener('click', onDocClick, true);
+  }, []);
+
   // Page views
   useEffect(() => {
     const pageType = getPageType(location.pathname);
     track('page_view', { page_type: pageType });
+    // Meta Pixel: PageView padrão em cada navegação SPA (o base só dispara no 1.º load)
+    if ((window as any).fbq) (window as any).fbq('track', 'PageView');
     prevPath.current = location.pathname;
   }, [location.pathname]);
 

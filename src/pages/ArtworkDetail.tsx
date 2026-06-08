@@ -11,7 +11,7 @@ import ArtworkTrustInfo from "@/components/ArtworkTrustInfo";
 import ArtworkCommerceCTA from "@/components/ArtworkCommerceCTA";
 import ArtworkLightbox from "@/components/ArtworkLightbox";
 import { useT } from "@/i18n";
-import { trackArtwork } from "@/lib/analytics";
+import { trackArtwork, trackMetaViewContent } from "@/lib/analytics";
 
 const ArtworkDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -32,6 +32,7 @@ const ArtworkDetail = () => {
       setArtwork(data);
       setLoading(false);
       trackArtwork('artwork_view', data);
+      trackMetaViewContent({ reference: data.reference, title: data.title, price: data.price });
       getRelatedArtworks(data.id).then(setRelated);
     });
   }, [slug]);

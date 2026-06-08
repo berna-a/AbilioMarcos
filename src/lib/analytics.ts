@@ -165,3 +165,20 @@ export function trackMetaInitiateCheckout(value?: number) {
     (window as any).fbq('track', 'InitiateCheckout', value != null ? { value, currency: 'EUR' } : {});
   }
 }
+
+export function trackMetaViewContent(a: { reference?: string | null; title?: string; price?: number | null }) {
+  if ((window as any).fbq) {
+    (window as any).fbq('track', 'ViewContent', {
+      content_type: 'product',
+      ...(a.reference ? { content_ids: [a.reference] } : {}),
+      ...(a.title ? { content_name: a.title } : {}),
+      ...(a.price != null ? { value: a.price, currency: 'EUR' } : {}),
+    });
+  }
+}
+
+export function trackMetaContact() {
+  if ((window as any).fbq) {
+    (window as any).fbq('track', 'Contact');
+  }
+}
