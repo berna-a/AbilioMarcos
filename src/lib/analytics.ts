@@ -120,6 +120,10 @@ export function track(eventName: string, properties: EventProperties = {}) {
   }]).then(() => {});
 }
 
+// Exportados para carimbar leads com a origem (atribuição/CRM/comissões)
+export function getAttribution() { return captureAttribution(); }
+export function getAnalyticsSessionId(): string { return getSessionId(); }
+
 // ── Session ID ─────────────────────────────────────────────
 function getSessionId(): string {
   let sid = sessionStorage.getItem('am_session_id');

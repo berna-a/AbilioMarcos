@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { useT } from "@/i18n";
 import { Instagram, Facebook, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
+import { createInquiry } from "@/lib/inquiries";
+import { toast } from "sonner";
 
 const SOCIALS = {
   instagram: "https://www.instagram.com/abilio.marcos.arte/",
@@ -18,9 +20,27 @@ const SOCIALS = {
 const Contact = () => {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
   const t = useT();
 
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    const subjectTag = formData.subject ? `[${formData.subject}] ` : "";
+    const ok = await createInquiry({
+      artwork_id: null,
+      artwork_title: null,
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: null,
+      message: `${subjectTag}${formData.message.trim()}`,
+      budget_range: null,
+    }, "form_contacto");
+    setSending(false);
+    if (!ok) { toast.error("Não foi possível enviar. Tente novamente."); return; }
+    setSubmitted(true);
+  };
 
   return (
     <Layout>
@@ -129,7 +149,7 @@ const Contact = () => {
                       <label className="text-xs tracking-[0.1em] uppercase text-foreground mb-2 block">{t.contact.messageLabel}</label>
                       <textarea required rows={5} value={formData.message} onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))} className="w-full border-b border-gallery-border bg-transparent py-3 text-sm focus:outline-none focus:border-foreground transition-colors resize-none" />
                     </div>
-                    <button type="submit" className="px-8 py-3.5 bg-brand-red text-primary-foreground text-xs tracking-[0.18em] uppercase font-medium hover:bg-brand-red-soft transition-colors">{t.contact.sendMessage}</button>
+                    <button type="submit" disabled={sending} className="px-8 py-3.5 bg-brand-red text-primary-foreground text-xs tracking-[0.18em] uppercase font-medium hover:bg-brand-red-soft transition-colors disabled:opacity-50">{sending ? "…" : t.contact.sendMessage}</button>
                   </form>
                 </div>
               )}

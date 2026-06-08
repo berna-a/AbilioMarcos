@@ -1,8 +1,18 @@
 import { supabase } from '@/lib/supabase';
 import { Inquiry } from '@/lib/types';
+import { getAttribution, getAnalyticsSessionId } from '@/lib/analytics';
 
-export const createInquiry = async (inquiry: Omit<Inquiry, 'id' | 'created_at' | 'status'>): Promise<boolean> => {
-  const { error } = await supabase.from('inquiries').insert([inquiry]);
+export const createInquiry = async (
+  inquiry: Omit<Inquiry, 'id' | 'created_at' | 'status'>,
+  source = 'inquiry',
+): Promise<boolean> => {
+  // Carimbar a lead com a origem (UTM/referrer/landing) para atribuição no CRM.
+  const { error } = await supabase.from('inquiries').insert([{
+    ...inquiry,
+    attribution: getAttribution(),
+    session_id: getAnalyticsSessionId(),
+    source,
+  }]);
   if (error) {
     console.error('Error creating inquiry:', error);
     return false;

@@ -44,7 +44,7 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle, artworkImage, ar
       phone: form.phone.trim() || null,
       message: form.message.trim(),
       budget_range: form.budget_range.trim() || null,
-    });
+    }, artworkId ? 'inquiry_obra' : 'inquiry');
     if (success) {
       setSubmitted(true);
       track('inquiry_submitted', { artwork_id: artworkId, title: artworkTitle || undefined, email: form.email.trim() });
