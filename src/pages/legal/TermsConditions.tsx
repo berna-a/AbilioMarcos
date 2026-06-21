@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -27,7 +28,7 @@ const sections: Section[] = [
         type: "kv",
         items: [
           { label: "Nome", value: "Abílio António Roussado Marcos" },
-          { label: "NIF", value: "[CONFIRMAR — o número indicado anteriormente parece incompleto]" },
+          { label: "NIF", value: "187556237" },
           { label: "Morada", value: "Rua dos Serrados, 32 A – Maceira, 2715-654 Montelavar" },
           { label: "Email", value: "marcos4011@gmail.com" },
           { label: "Website", value: "https://abiliomarcos.com" },
@@ -367,6 +368,11 @@ const sections: Section[] = [
 ];
 
 const TermsConditions = () => {
+  usePageMeta({
+    title: "Termos e Condições — Abílio Marcos",
+    description: "Termos e condições de utilização e de venda do site de Abílio Marcos.",
+    path: "/legal/terms",
+  });
   return (
     <Layout>
       <div className="pt-24 md:pt-32 pb-20 md:pb-32 px-6 md:px-10">
