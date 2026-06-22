@@ -1,10 +1,16 @@
 import Layout from "@/components/layout/Layout";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { useT } from "@/i18n";
 
 const ComplaintsPage = () => {
+  usePageMeta({
+    title: "Livro de Reclamações — Abílio Marcos",
+    description: "Livro de reclamações eletrónico e informação ao consumidor — Abílio Marcos.",
+    path: "/legal/complaints",
+  });
   const t = useT();
   return (
     <Layout>

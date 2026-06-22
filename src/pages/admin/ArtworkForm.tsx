@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { getSalesMode, getSizeBucket, getFormat, TECHNIQUE_VALUES, DEFAULT_TECHNIQUE } from '@/lib/types';
 import { useAdmin } from '@/i18n';
 import { translateContent } from '@/lib/translate';
+import { toast } from 'sonner';
+import imageCompression from 'browser-image-compression';
 
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
@@ -17,7 +19,7 @@ const isMissingColumnError = (message: string, column: string) =>
 type ArtworkPayloadValue = string | number | boolean | string[] | Record<string, string> | null;
 
 /** Strip optional columns one by one if Postgrest reports them missing. */
-const TRY_DROP_COLUMNS = ['technique', 'title_translations', 'description_translations'] as const;
+const TRY_DROP_COLUMNS = ['technique', 'title_translations', 'description_translations', 'theme', 'dominant_color', 'art_style'] as const;
 
 const saveArtwork = async (
   isNew: boolean,
@@ -58,6 +60,10 @@ const initialForm = {
   is_featured: false,
   primary_image_url: '',
   additional_images: [] as string[],
+  exhibition_name: '',
+  theme: '',
+  dominant_color: '',
+  art_style: '',
 };
 
 const ArtworkForm = () => {
@@ -73,6 +79,8 @@ const ArtworkForm = () => {
   const [error, setError] = useState('');
   const [slugManual, setSlugManual] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [primaryPreviewLocal, setPrimaryPreviewLocal] = useState('');
   const [translating, setTranslating] = useState(false);
   const [originalText, setOriginalText] = useState({ title: '', description: '' });
 
@@ -106,6 +114,10 @@ const ArtworkForm = () => {
         is_featured: data.is_featured || false,
         primary_image_url: data.primary_image_url || '',
         additional_images: data.additional_images || [],
+        exhibition_name: data.exhibition_name || '',
+        theme: data.theme || '',
+        dominant_color: data.dominant_color || '',
+        art_style: data.art_style || '',
       });
       setSlugManual(true);
       setOriginalText({ title: data.title || '', description: data.description || '' });
@@ -123,21 +135,54 @@ const ArtworkForm = () => {
   };
 
   const handleImageUpload = async (file: File, type: 'primary' | 'additional') => {
+    // Mostrar preview local imediatamente — sem esperar pelo upload
+    const localUrl = URL.createObjectURL(file);
+    if (type === 'primary') setPrimaryPreviewLocal(localUrl);
+
     setUploading(true);
-    const ext = file.name.split('.').pop();
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error: uploadError } = await supabase.storage.from('artworks').upload(path, file, { cacheControl: '3600', upsert: false });
+    setUploadProgress(10);
+
+    // Comprimir + converter para JPEG (fotos de iPhone em HEIC passam a JPEG,
+    // que mostra em qualquer browser). Se a conversão falhar, usa o original.
+    let compressed: File = file;
+    let outExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    try {
+      compressed = await imageCompression(file, {
+        maxWidthOrHeight: 2500,
+        maxSizeMB: 2,
+        useWebWorker: true,
+        fileType: 'image/jpeg',
+        onProgress: (p) => setUploadProgress(15 + Math.round(p * 0.45)),
+      });
+      outExt = 'jpg';
+    } catch { /* se falhar, usa o original */ }
+
+    setUploadProgress(65);
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${outExt}`;
+    const { error: uploadError } = await supabase.storage.from('cliente-021').upload(path, compressed, { cacheControl: '3600', upsert: false });
+
     if (uploadError) {
       setError(t.uploadFailed);
       setUploading(false);
+      setUploadProgress(0);
+      if (type === 'primary') { setPrimaryPreviewLocal(''); URL.revokeObjectURL(localUrl); }
       return;
     }
-    const { data: { publicUrl } } = supabase.storage.from('artworks').getPublicUrl(path);
+
+    setUploadProgress(95);
+    const { data: { publicUrl } } = supabase.storage.from('cliente-021').getPublicUrl(path);
+
     if (type === 'primary') {
       setForm((prev) => ({ ...prev, primary_image_url: publicUrl }));
+      setPrimaryPreviewLocal('');
+      URL.revokeObjectURL(localUrl);
     } else {
       setForm((prev) => ({ ...prev, additional_images: [...prev.additional_images, publicUrl] }));
+      URL.revokeObjectURL(localUrl);
     }
+
+    setUploadProgress(100);
+    setTimeout(() => setUploadProgress(0), 600);
     setUploading(false);
   };
 
@@ -195,6 +240,7 @@ const ArtworkForm = () => {
       description: cleanDescription || null,
       status: form.status,
       availability: form.availability,
+      exhibition_name: form.availability === 'exhibition' ? (form.exhibition_name.trim() || null) : null,
       price: priceNum,
       technique: form.technique || DEFAULT_TECHNIQUE,
       custom_width_cm: widthNum,
@@ -203,6 +249,9 @@ const ArtworkForm = () => {
       is_featured: form.is_featured,
       primary_image_url: form.primary_image_url || null,
       additional_images: form.additional_images.length > 0 ? form.additional_images : null,
+      theme: form.theme || null,
+      dominant_color: form.dominant_color || null,
+      art_style: form.art_style || null,
       updated_at: new Date().toISOString(),
     };
     if (titleTranslations) payload.title_translations = titleTranslations;
@@ -211,6 +260,7 @@ const ArtworkForm = () => {
 
     const { error } = await saveArtwork(isNew, payload, id);
     if (error) { setError(error.message); setSaving(false); return; }
+    toast.success(isNew ? 'Obra criada ✓' : 'Guardado ✓');
     navigate('/admin/artworks');
   };
 
@@ -314,8 +364,20 @@ const ArtworkForm = () => {
                 <option value="available">{t.available}</option>
                 <option value="sold">{t.sold}</option>
                 <option value="not_for_sale">{t.notForSale}</option>
+                <option value="exhibition">Em exposição</option>
               </select>
             </Field>
+            {form.availability === 'exhibition' && (
+              <Field label="Nome da exposição">
+                <input
+                  type="text"
+                  value={form.exhibition_name}
+                  onChange={(e) => updateField('exhibition_name', e.target.value)}
+                  placeholder="Ex.: Galeria Municipal de Lisboa — Mar 2026"
+                  className="admin-input"
+                />
+              </Field>
+            )}
           </div>
 
           {/* Pricing */}
@@ -341,17 +403,28 @@ const ArtworkForm = () => {
 
           {/* Primary Image */}
           <Field label={t.primaryImage}>
-            {form.primary_image_url ? (
+            {(primaryPreviewLocal || form.primary_image_url) ? (
               <div className="relative inline-block">
-                <img src={form.primary_image_url} alt="" className="w-48 h-48 object-cover" />
-                <button type="button" onClick={() => setForm((prev) => ({ ...prev, primary_image_url: '' }))} className="absolute top-1 right-1 bg-white/90 p-1 hover:bg-white transition-colors">
-                  <X className="w-3 h-3" />
-                </button>
+                <img src={primaryPreviewLocal || form.primary_image_url} alt="" className="w-48 h-48 object-cover" />
+                {uploading && (
+                  <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-2">
+                    <Loader2 className="w-6 h-6 text-white animate-spin" />
+                    <div className="w-32 h-1 bg-white/30 rounded-full overflow-hidden">
+                      <div className="h-full bg-white rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
+                    </div>
+                    <span className="text-[11px] text-white">{uploadProgress < 60 ? 'A optimizar…' : 'A carregar…'}</span>
+                  </div>
+                )}
+                {!uploading && (
+                  <button type="button" onClick={() => { setForm((prev) => ({ ...prev, primary_image_url: '' })); setPrimaryPreviewLocal(''); }} className="absolute top-1 right-1 bg-white/90 p-1 hover:bg-white transition-colors">
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
               </div>
             ) : (
               <label className="flex items-center gap-2 px-4 py-3 border border-dashed border-[hsl(0_0%_80%)] cursor-pointer hover:border-[hsl(0_0%_60%)] transition-colors text-[13px] text-[hsl(0_0%_50%)]">
-                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                {uploading ? t.uploading : t.uploadPrimary}
+                <Upload className="w-4 h-4" />
+                {t.uploadPrimary}
                 <input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, 'primary'); }} />
               </label>
             )}

@@ -1,9 +1,10 @@
 import { Artwork, getSalesMode, formatPrice, isOnlineCheckoutEligible } from '@/lib/types';
 import { createCheckoutSession } from '@/lib/checkout';
 import { useState } from 'react';
-import { useT } from '@/i18n';
+import { useT, useI18n } from '@/i18n';
 import { trackArtwork, trackMetaInitiateCheckout } from '@/lib/analytics';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface Props {
   artwork: Artwork;
@@ -17,12 +18,16 @@ const ArtworkCommerceCTA = ({ artwork, onInquiryClick }: Props) => {
   const canCheckout = isOnlineCheckoutEligible(artwork);
   const [checkingOut, setCheckingOut] = useState(false);
   const t = useT();
+  const { locale } = useI18n();
 
   const handleAcquire = async () => {
     setCheckingOut(true);
-    trackArtwork('acquire_online_clicked', artwork);
-    trackMetaInitiateCheckout(artwork.price ?? undefined);
-    const { url, error } = await createCheckoutSession(artwork.id);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      trackArtwork('acquire_online_clicked', artwork);
+      trackMetaInitiateCheckout(artwork.price ?? undefined);
+    }
+    const { url, error } = await createCheckoutSession(artwork.id, locale);
     if (url) {
       trackArtwork('checkout_started', artwork);
       window.location.href = url;

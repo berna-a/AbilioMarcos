@@ -7,10 +7,10 @@ export interface CheckoutResult {
 
 /** Invoke the create-checkout edge function and return either a Stripe URL or
  *  a useful error reason surfaced from the backend. */
-export const createCheckoutSession = async (artworkId: string): Promise<CheckoutResult> => {
+export const createCheckoutSession = async (artworkId: string, lang?: string): Promise<CheckoutResult> => {
   try {
     const { data, error } = await supabase.functions.invoke('create-checkout-021', {
-      body: { artwork_id: artworkId },
+      body: { artwork_id: artworkId, lang: lang ?? 'pt' },
     });
 
     if (error) {

@@ -6,7 +6,7 @@ export const getPublishedArtworks = async (): Promise<Artwork[]> => {
     .from('artworks')
     .select('*')
     .eq('status', 'published')
-    .eq('availability', 'available')
+    .in('availability', ['available', 'exhibition'])
     .not('primary_image_url', 'is', null)
     .order('year', { ascending: false });
 
@@ -42,7 +42,7 @@ export const getRecentArtworks = async (limit = 6): Promise<Artwork[]> => {
     .from('artworks')
     .select('*')
     .eq('status', 'published')
-    .eq('availability', 'available')
+    .in('availability', ['available', 'exhibition'])
     .not('primary_image_url', 'is', null)
     .order('created_at', { ascending: false })
     .limit(limit);

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getRecentArtworks } from "@/lib/artworks";
+import { thumbUrl } from "@/lib/images";
 import { useT, useTField, useTechniqueLabel } from "@/i18n";
 import { Artwork, formatPrice } from "@/lib/types";
 
@@ -80,10 +81,11 @@ const FeaturedWorks = () => {
             <Link to={getLink(work)} className="block group">
               {hasReal && work.primary_image_url ? (
                 <img
-                  src={work.primary_image_url}
+                  src={thumbUrl(work.primary_image_url, 1000)}
                   alt={workTitle}
                   loading="lazy"
                   className="w-full h-auto block"
+                  onError={(e) => { const img = e.currentTarget; if (work.primary_image_url && img.src !== work.primary_image_url) img.src = work.primary_image_url; }}
                 />
               ) : (
                 <div

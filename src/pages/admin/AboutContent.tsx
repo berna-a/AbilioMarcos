@@ -10,6 +10,7 @@ import {
 } from '@/lib/about-content';
 import { translateContent } from '@/lib/translate';
 import { ArrowDown, ArrowUp, Languages, Plus, Trash2 } from 'lucide-react';
+import AboutExhibitionsManager from '@/components/admin/AboutExhibitionsManager';
 
 const slugify = (s: string) =>
   s
@@ -25,6 +26,7 @@ const AboutContentAdmin = () => {
   const [savingId, setSavingId] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, { title: string; content: string }>>({});
   const [backfilling, setBackfilling] = useState<{ done: number; total: number } | null>(null);
+  const [view, setView] = useState<'bio' | 'exhibitions'>('bio');
 
   const handleBackfillTranslations = async () => {
     if (!confirm('Traduzir todas as secções "Sobre" sem traduções? Pode demorar alguns minutos.')) return;
@@ -60,7 +62,7 @@ const AboutContentAdmin = () => {
 
   const load = async () => {
     setLoading(true);
-    const data = await getAboutSections();
+    const data = (await getAboutSections()).filter((s) => ['biografia', 'pratica'].includes(s.section));
     setSections(data);
     setDrafts(
       Object.fromEntries(data.map((s) => [s.id, { title: s.title, content: s.content }])),
@@ -174,6 +176,7 @@ const AboutContentAdmin = () => {
             Gerir as secções editoriais da página pública /sobre.
           </p>
         </div>
+        {view === 'bio' && (
         <div className="flex items-center gap-2">
           <button
             onClick={handleBackfillTranslations}
@@ -192,8 +195,24 @@ const AboutContentAdmin = () => {
             Adicionar secção
           </button>
         </div>
+        )}
       </div>
 
+      <div className="flex items-center gap-1 mb-6 border-b border-[hsl(0_0%_90%)]">
+        {([['bio', 'Biografia'], ['exhibitions', 'Exposições']] as const).map(([v, label]) => (
+          <button
+            key={v}
+            onClick={() => setView(v)}
+            className={`px-4 py-2 text-[13px] -mb-px border-b-2 transition-colors ${view === v ? 'border-[hsl(0_0%_12%)] text-[hsl(0_0%_12%)] font-medium' : 'border-transparent text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]'}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {view === 'exhibitions' && <AboutExhibitionsManager />}
+
+      {view === 'bio' && (<>
       {loading ? (
         <p className="text-[13px] text-[hsl(0_0%_50%)] py-12 text-center">A carregar…</p>
       ) : sections.length === 0 ? (
@@ -301,6 +320,7 @@ const AboutContentAdmin = () => {
           })}
         </div>
       )}
+      </>)}
     </AdminLayout>
   );
 };

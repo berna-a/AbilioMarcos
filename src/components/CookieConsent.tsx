@@ -14,10 +14,16 @@ type Consent = {
 
 const defaultConsent: Consent = { essential: true, analytics: false, marketing: false, ts: "" };
 
+// O consentimento dura 12 meses; depois disso volta a perguntar (RGPD).
+const CONSENT_TTL_MS = 365 * 24 * 60 * 60 * 1000;
+
 export function getCookieConsent(): Consent | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Consent) : null;
+    if (!raw) return null;
+    const c = JSON.parse(raw) as Consent;
+    if (c.ts && Date.now() - new Date(c.ts).getTime() > CONSENT_TTL_MS) return null; // expirou
+    return c;
   } catch {
     return null;
   }

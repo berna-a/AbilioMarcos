@@ -7,8 +7,10 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const SITE = "https://abiliomarcos.com";
-const SUPABASE_URL = "https://hbrvappgklorjxojyvqz.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_eb2twQ9qN6w3tFXWfjWTWA_D6S-cG3y";
+// Projeto Supabase do AOS; as obras vivem no schema `cliente_021` (não `public`).
+const SUPABASE_URL = "https://hwpixsuovwxgilyfoszw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_4zfZ95cWvrhy0nWmqjEzqQ_kKh3jGAa";
+const SUPABASE_SCHEMA = "cliente_021";
 
 const STATIC_PATHS = ["/", "/obras", "/sobre", "/contacto"];
 
@@ -19,6 +21,8 @@ async function fetchPublishedSlugs() {
       headers: {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        // As obras estão num schema dedicado — PostgREST precisa do Accept-Profile.
+        "Accept-Profile": SUPABASE_SCHEMA,
       },
     });
     if (!res.ok) {
@@ -52,6 +56,12 @@ function urlEntry(loc, lastmod) {
 async function main() {
   const today = new Date().toISOString().slice(0, 10);
   const slugs = await fetchPublishedSlugs();
+
+  // Falhar ALTO: um sitemap sem obras é uma regressão de SEO silenciosa (já aconteceu).
+  if (slugs.length === 0) {
+    console.error("[sitemap] ERRO: 0 obras obtidas do Supabase — a abortar build para não publicar um sitemap vazio.");
+    process.exit(1);
+  }
 
   const urls = [
     ...STATIC_PATHS.map((p) => `${SITE}${p}`),

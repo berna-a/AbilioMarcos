@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useT } from "@/i18n";
@@ -19,6 +20,11 @@ const SOCIALS = {
 };
 
 const Contact = () => {
+  usePageMeta({
+    title: "Contacto — Abílio Marcos",
+    description: "Contacte Abílio Marcos para adquirir obras, encomendas personalizadas ou informações. Atelier em Mafra, Portugal.",
+    path: "/contacto",
+  });
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);

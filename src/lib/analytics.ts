@@ -34,9 +34,27 @@ interface Attribution {
 
 const ATTR_KEY = 'am_attribution';
 
+// Acessos seguros — in-app browsers (Instagram/Facebook) e modo privado podem
+// não ter crypto.randomUUID nem deixar usar sessionStorage. Sem isto, um TypeError
+// rebentava o track() em ~5% das sessões (sobretudo tráfego mobile de anúncios).
+function safeUUID(): string {
+  try {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  } catch { /* contexto não-seguro */ }
+  return `sid-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+function safeSessionGet(key: string): string | null {
+  try { return sessionStorage.getItem(key); } catch { return null; }
+}
+function safeSessionSet(key: string, value: string): void {
+  try { sessionStorage.setItem(key, value); } catch { /* storage bloqueado */ }
+}
+
 function captureAttribution(): Attribution {
-  const stored = sessionStorage.getItem(ATTR_KEY);
-  if (stored) return JSON.parse(stored);
+  const stored = safeSessionGet(ATTR_KEY);
+  if (stored) {
+    try { return JSON.parse(stored); } catch { /* corrompido — recalcula */ }
+  }
 
   const params = new URLSearchParams(window.location.search);
   const attr: Attribution = {
@@ -49,7 +67,7 @@ function captureAttribution(): Attribution {
     referrer: document.referrer || '',
   };
 
-  sessionStorage.setItem(ATTR_KEY, JSON.stringify(attr));
+  safeSessionSet(ATTR_KEY, JSON.stringify(attr));
   return attr;
 }
 
@@ -108,7 +126,7 @@ export function track(eventName: string, properties: EventProperties = {}) {
   }
 
   // 2. Meta Pixel
-  if (typeof window !== 'undefined' && (window as any).fbq) {
+  if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
     (window as any).fbq('trackCustom', eventName, enriched);
   }
 
@@ -126,10 +144,10 @@ export function getAnalyticsSessionId(): string { return getSessionId(); }
 
 // ── Session ID ─────────────────────────────────────────────
 function getSessionId(): string {
-  let sid = sessionStorage.getItem('am_session_id');
+  let sid = safeSessionGet('am_session_id');
   if (!sid) {
-    sid = crypto.randomUUID();
-    sessionStorage.setItem('am_session_id', sid);
+    sid = safeUUID();
+    safeSessionSet('am_session_id', sid);
   }
   return sid;
 }
@@ -149,25 +167,27 @@ export function trackArtwork(eventName: string, artwork: { id: string; reference
 
 // ── Meta Pixel standard events ─────────────────────────────
 export function trackMetaLead(email?: string) {
-  if ((window as any).fbq) {
+  if (typeof (window as any).fbq === 'function') {
     (window as any).fbq('track', 'Lead', { content_name: 'inquiry', ...(email ? { email } : {}) });
   }
 }
 
-export function trackMetaPurchase(value: number, currency = 'EUR') {
-  if ((window as any).fbq) {
-    (window as any).fbq('track', 'Purchase', { value, currency });
+export function trackMetaPurchase(value: number, currency = 'EUR', eventId?: string) {
+  if (typeof (window as any).fbq === 'function') {
+    // eventID deve coincidir com o event_id do CAPI (servidor) para o Meta
+    // deduplicar o pixel do browser e o evento de servidor num só Purchase.
+    (window as any).fbq('track', 'Purchase', { value, currency }, eventId ? { eventID: eventId } : undefined);
   }
 }
 
 export function trackMetaInitiateCheckout(value?: number) {
-  if ((window as any).fbq) {
+  if (typeof (window as any).fbq === 'function') {
     (window as any).fbq('track', 'InitiateCheckout', value != null ? { value, currency: 'EUR' } : {});
   }
 }
 
 export function trackMetaViewContent(a: { reference?: string | null; title?: string; price?: number | null }) {
-  if ((window as any).fbq) {
+  if (typeof (window as any).fbq === 'function') {
     (window as any).fbq('track', 'ViewContent', {
       content_type: 'product',
       ...(a.reference ? { content_ids: [a.reference] } : {}),
@@ -177,8 +197,14 @@ export function trackMetaViewContent(a: { reference?: string | null; title?: str
   }
 }
 
+let lastContactTs = 0;
 export function trackMetaContact() {
-  if ((window as any).fbq) {
+  // Dedupe: o CTA da obra e o listener global de cliques wa.me podem disparar
+  // quase em simultâneo — conta-se só UM Contact por clique.
+  const now = Date.now();
+  if (now - lastContactTs < 1500) return;
+  lastContactTs = now;
+  if (typeof (window as any).fbq === 'function') {
     (window as any).fbq('track', 'Contact');
   }
 }

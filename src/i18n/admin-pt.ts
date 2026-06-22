@@ -64,6 +64,7 @@ export const adminPt = {
       available: 'Disponível',
       sold: 'Vendida',
       not_for_sale: 'Não Disponível',
+      exhibition: 'Em exposição',
     },
   },
   artworkForm: {

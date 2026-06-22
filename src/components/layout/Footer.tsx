@@ -130,10 +130,10 @@ const Footer = () => {
         <div className="py-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-[13px] text-white/45">
             {t.footer.copyright} {t.footer.madeBy}{" "}
-            <a href="https://ardo.media" target="_blank" rel="noopener noreferrer" aria-label="ARDO" className="group inline-flex items-center align-middle ml-1 -mt-[2px]">
+            <a href="https://ardo.vc" target="_blank" rel="noopener noreferrer" aria-label="ARDO" className="group inline-flex items-center align-middle ml-1 -mt-[2px]">
               <span
                 aria-hidden
-                className="inline-block h-[2.6em] w-[2.6em] bg-[#1A56DB] group-hover:bg-[#3B82F6] transition-colors"
+                className="inline-block h-[5.2em] w-[5.2em] bg-[#1A56DB] group-hover:bg-[#3B82F6] transition-colors"
                 style={{
                   WebkitMaskImage: `url(${ardoLogo})`,
                   maskImage: `url(${ardoLogo})`,

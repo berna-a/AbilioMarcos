@@ -21,7 +21,7 @@
     --secondary-foreground: 30 10% 12%;
 
     --muted: 35 8% 91%;
-    --muted-foreground: 30 6% 45%;     /* slightly stronger for legibility */
+    --muted-foreground: 30 7% 40%;     /* WCAG AA: ~5.3:1 sobre o fundo (texto pequeno) */
 
     --accent: 30 15% 88%;
     --accent-foreground: 30 10% 12%;

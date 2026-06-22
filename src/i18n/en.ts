@@ -7,6 +7,7 @@ export const en: Translations = {
     studio: 'Studio',
     about: 'About',
     contact: 'Contact',
+    skipToContent: 'Skip to content',
   },
   hero: {
     subtitle: 'ABSTRACT EXPRESSIONIST PAINTING',
@@ -94,11 +95,15 @@ export const en: Translations = {
     backToWorks: '← Back to All Works',
     available: 'Available',
     soldStatus: 'Sold',
+    viewInRoom: 'View on a wall',
+    viewInRoomCaption: 'To-scale simulation in a real interior',
   },
   lightbox: {
     close: 'Close',
-    scrollToZoom: 'Scroll to zoom',
-    scrollToZoomClickOutside: "Scroll to zoom · Click outside to close",
+    hintDesktop: 'Scroll to zoom · double-click to zoom',
+    hintDesktopZoomed: 'Drag to move · click outside to close',
+    hintTouch: 'Pinch with two fingers to zoom',
+    hintTouchZoomed: 'Drag to move · tap outside to close',
   },
   commerce: {
     sold: 'This work has been sold',
@@ -107,6 +112,7 @@ export const en: Translations = {
     acquireOnline: 'Acquire Online',
     preparing: 'Preparing…',
     askQuestion: 'Ask a Question',
+    whatsappInterest: 'Talk about this work',
     inquireAbout: 'Inquire About This Work',
     checkoutErrorTitle: 'Unable to start checkout',
     checkoutErrorBody: 'Please try again, or contact us to complete the acquisition.',

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import ArtworkHoverZoom from "@/components/ArtworkHoverZoom";
 import type { Artwork } from "@/lib/types";
+import { thumbUrl, thumbSrcSet } from "@/lib/images";
 
 interface ArtworkPreviewImageProps {
   artwork: Pick<Artwork, "title" | "primary_image_url"> & Partial<Pick<Artwork, "width_cm" | "height_cm" | "custom_width_cm" | "custom_height_cm">>;
@@ -29,6 +30,12 @@ const ArtworkPreviewImage = ({
   placeholderStyle,
 }: ArtworkPreviewImageProps) => {
   const [intrinsicRatio, setIntrinsicRatio] = useState<string | null>(null);
+  // Imagem optimizada (WebP redimensionado via CDN), com fallback para o original.
+  const [imgFailed, setImgFailed] = useState(false);
+  const previewSrc = useMemo(
+    () => (imgFailed ? artwork.primary_image_url ?? undefined : thumbUrl(artwork.primary_image_url, 1000)),
+    [artwork.primary_image_url, imgFailed]
+  );
 
   const dbRatio = useMemo<string | null>(() => {
     const w = artwork.width_cm ?? artwork.custom_width_cm;
@@ -52,7 +59,7 @@ const ArtworkPreviewImage = ({
   if (hoverZoom) {
     return (
       <ArtworkHoverZoom
-        src={artwork.primary_image_url}
+        src={previewSrc ?? artwork.primary_image_url}
         alt={artwork.title}
         ratio={ratio}
         onNaturalSize={(w, h) => {
@@ -64,11 +71,14 @@ const ArtworkPreviewImage = ({
 
   return (
     <img
-      src={artwork.primary_image_url}
+      src={previewSrc ?? artwork.primary_image_url}
+      srcSet={imgFailed ? undefined : thumbSrcSet(artwork.primary_image_url, [400, 600, 800, 1000])}
+      sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
       alt={artwork.title}
       loading="lazy"
       className="w-full h-auto block"
       style={ratio ? { aspectRatio: ratio } : undefined}
+      onError={() => { if (!imgFailed) setImgFailed(true); }}
       onLoad={(e) => {
         if (dbRatio) return;
         const img = e.currentTarget;

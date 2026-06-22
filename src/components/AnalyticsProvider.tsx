@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { track, setAnalyticsLocale, trackMetaContact } from '@/lib/analytics';
 import { loadMetaPixel } from '@/lib/metaPixel';
+import { loadClarity } from '@/lib/clarity';
 import { getCookieConsent } from '@/components/CookieConsent';
 import { useI18n } from '@/i18n';
 
@@ -41,12 +42,22 @@ const AnalyticsProvider = () => {
     return () => window.removeEventListener('am:cookie-consent', onConsent as EventListener);
   }, []);
 
+  // Microsoft Clarity (RGPD): carregar só APÓS consentimento de analytics
+  useEffect(() => {
+    if (getCookieConsent()?.analytics) loadClarity();
+    const onConsent = (e: Event) => {
+      if ((e as CustomEvent).detail?.analytics) loadClarity();
+    };
+    window.addEventListener('am:cookie-consent', onConsent as EventListener);
+    return () => window.removeEventListener('am:cookie-consent', onConsent as EventListener);
+  }, []);
+
   // Page views
   useEffect(() => {
     const pageType = getPageType(location.pathname);
     track('page_view', { page_type: pageType });
     // Meta Pixel: PageView padrão em cada navegação SPA (o base só dispara no 1.º load)
-    if ((window as any).fbq) (window as any).fbq('track', 'PageView');
+    if (typeof (window as any).fbq === 'function') (window as any).fbq('track', 'PageView');
     prevPath.current = location.pathname;
   }, [location.pathname]);
 

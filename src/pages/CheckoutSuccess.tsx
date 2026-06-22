@@ -9,7 +9,12 @@ const CheckoutSuccess = () => {
   const t = useT();
   useEffect(() => {
     track('checkout_completed');
-    trackMetaPurchase(0); // actual value from Stripe webhook
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const value = Number(params.get('value'));
+    // event_id espelha o evento CAPI do servidor → o Meta deduplica os dois Purchase.
+    const eventId = sessionId ? `purchase_${sessionId}` : undefined;
+    if (value > 0) trackMetaPurchase(value, 'EUR', eventId);
   }, []);
   return (
     <Layout>

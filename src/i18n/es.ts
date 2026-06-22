@@ -9,6 +9,7 @@ export const es: Translations = {
     studio: 'Estudio',
     about: 'Sobre',
     contact: 'Contacto',
+    skipToContent: 'Saltar al contenido',
   },
   hero: {
     subtitle: 'PINTURA EXPRESIONISTA ABSTRACTA',
@@ -96,11 +97,15 @@ export const es: Translations = {
     backToWorks: '← Volver a Todas las Obras',
     available: 'Disponible',
     soldStatus: 'Vendida',
+    viewInRoom: 'Ver en la pared',
+    viewInRoomCaption: 'Simulación a escala en un interior real',
   },
   lightbox: {
     close: 'Cerrar',
-    scrollToZoom: 'Desplaza para ampliar',
-    scrollToZoomClickOutside: "Desplaza para ampliar · Clic fuera para cerrar",
+    hintDesktop: 'Desplaza para ampliar · doble clic para ampliar',
+    hintDesktopZoomed: 'Arrastra para mover · clic fuera para cerrar',
+    hintTouch: 'Junta dos dedos para ampliar',
+    hintTouchZoomed: 'Arrastra para mover · toca fuera para cerrar',
   },
   commerce: {
     sold: 'Esta obra ha sido vendida',
@@ -109,6 +114,7 @@ export const es: Translations = {
     acquireOnline: 'Adquirir en Línea',
     preparing: 'Preparando…',
     askQuestion: 'Hacer una Pregunta',
+    whatsappInterest: 'Hablar sobre esta obra',
     inquireAbout: 'Consultar sobre Esta Obra',
     checkoutErrorTitle: 'No se pudo iniciar el pago',
     checkoutErrorBody: 'Por favor, inténtelo de nuevo o contáctenos para completar la adquisición.',

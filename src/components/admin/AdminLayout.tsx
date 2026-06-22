@@ -18,7 +18,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     { label: admin.sidebar.artworks, to: '/admin/artworks', icon: Image },
     { label: 'Sobre', to: '/admin/sobre', icon: FileText },
     { label: admin.sidebar.inquiries, to: '/admin/inquiries', icon: MessageSquare },
-    { label: admin.sidebar.commissions, to: '/admin/commissions', icon: Paintbrush },
+    { label: admin.sidebar.commissions, to: '/admin/orders', icon: Paintbrush },
     { label: admin.sidebar.analytics, to: '/admin/analytics', icon: BarChart3 },
     { label: admin.sidebar.settings, to: '/admin/settings', icon: Settings },
   ];

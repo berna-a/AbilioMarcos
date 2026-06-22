@@ -7,6 +7,7 @@ export const fr: Translations = {
     studio: 'Atelier',
     about: 'À Propos',
     contact: 'Contact',
+    skipToContent: 'Aller au contenu',
   },
   hero: {
     subtitle: 'PEINTURE EXPRESSIONNISTE ABSTRAITE',
@@ -94,11 +95,15 @@ export const fr: Translations = {
     backToWorks: '← Retour aux Œuvres',
     available: 'Disponible',
     soldStatus: 'Vendu',
+    viewInRoom: 'Voir sur un mur',
+    viewInRoomCaption: 'Simulation à l\'échelle dans un intérieur réel',
   },
   lightbox: {
     close: 'Fermer',
-    scrollToZoom: 'Faites défiler pour zoomer',
-    scrollToZoomClickOutside: "Faites défiler pour zoomer · Cliquez à l'extérieur pour fermer",
+    hintDesktop: 'Faites défiler pour zoomer · double-clic pour agrandir',
+    hintDesktopZoomed: 'Glissez pour déplacer · cliquez à l\'extérieur pour fermer',
+    hintTouch: 'Pincez avec deux doigts pour zoomer',
+    hintTouchZoomed: 'Glissez pour déplacer · touchez à l\'extérieur pour fermer',
   },
   commerce: {
     sold: 'Cette œuvre a été vendue',
@@ -107,6 +112,7 @@ export const fr: Translations = {
     acquireOnline: 'Acquérir en Ligne',
     preparing: 'Préparation…',
     askQuestion: 'Poser une Question',
+    whatsappInterest: 'Parler de cette œuvre',
     inquireAbout: 'Se Renseigner sur Cette Œuvre',
     checkoutErrorTitle: 'Impossible de démarrer le paiement',
     checkoutErrorBody: 'Veuillez réessayer ou nous contacter pour finaliser l\'acquisition.',

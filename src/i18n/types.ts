@@ -8,6 +8,7 @@ export interface Translations {
     studio: string;
     about: string;
     contact: string;
+    skipToContent: string;
   };
   // Hero
   hero: {
@@ -103,12 +104,16 @@ export interface Translations {
     backToWorks: string;
     available: string;
     soldStatus: string;
+    viewInRoom: string;
+    viewInRoomCaption: string;
   };
   // Lightbox
   lightbox: {
     close: string;
-    scrollToZoom: string;
-    scrollToZoomClickOutside: string;
+    hintDesktop: string;
+    hintDesktopZoomed: string;
+    hintTouch: string;
+    hintTouchZoomed: string;
   };
   // Commerce CTA
   commerce: {
@@ -118,6 +123,7 @@ export interface Translations {
     acquireOnline: string;
     preparing: string;
     askQuestion: string;
+    whatsappInterest: string;
     inquireAbout: string;
     checkoutErrorTitle: string;
     checkoutErrorBody: string;

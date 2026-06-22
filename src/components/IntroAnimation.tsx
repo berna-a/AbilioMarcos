@@ -16,11 +16,22 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
       return;
     }
 
-    // Auto-complete after 2.5s
+    // Tráfego de anúncios (Meta/Instagram): já viram o criativo — saltar a intro.
+    const params = new URLSearchParams(window.location.search);
+    const fromAds =
+      params.get("utm_source")?.toLowerCase() === "facebook" ||
+      params.get("utm_medium")?.toLowerCase() === "paid" ||
+      /facebook\.com|instagram\.com/i.test(document.referrer);
+    if (fromAds) {
+      onComplete();
+      return;
+    }
+
+    // Auto-complete após 800ms (mantém o fade-out de 500ms)
     const timer = setTimeout(() => {
       setPhase("fading");
       setTimeout(onComplete, 500);
-    }, 2000);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -54,7 +65,7 @@ const IntroAnimation = ({ onComplete }: IntroAnimationProps) => {
               fill="none"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
-              transition={{ duration: 2, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             />
           </motion.svg>
 

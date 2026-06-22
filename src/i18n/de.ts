@@ -7,6 +7,7 @@ export const de: Translations = {
     studio: 'Atelier',
     about: 'Über',
     contact: 'Kontakt',
+    skipToContent: 'Zum Inhalt springen',
   },
   hero: {
     subtitle: 'ABSTRAKTE EXPRESSIONISTISCHE MALEREI',
@@ -94,11 +95,15 @@ export const de: Translations = {
     backToWorks: '← Zurück zu allen Werken',
     available: 'Verfügbar',
     soldStatus: 'Verkauft',
+    viewInRoom: 'An der Wand ansehen',
+    viewInRoomCaption: 'Maßstabsgetreue Simulation in einem realen Raum',
   },
   lightbox: {
     close: 'Schließen',
-    scrollToZoom: 'Scrollen zum Zoomen',
-    scrollToZoomClickOutside: "Scrollen zum Zoomen · Außerhalb klicken zum Schließen",
+    hintDesktop: 'Scrollen zum Zoomen · Doppelklick zum Vergrößern',
+    hintDesktopZoomed: 'Ziehen zum Bewegen · außerhalb klicken zum Schließen',
+    hintTouch: 'Mit zwei Fingern zum Zoomen zusammenziehen',
+    hintTouchZoomed: 'Ziehen zum Bewegen · außerhalb tippen zum Schließen',
   },
   commerce: {
     sold: 'Dieses Werk wurde verkauft',
@@ -107,6 +112,7 @@ export const de: Translations = {
     acquireOnline: 'Online Erwerben',
     preparing: 'Wird vorbereitet…',
     askQuestion: 'Eine Frage stellen',
+    whatsappInterest: 'Über dieses Werk sprechen',
     inquireAbout: 'Anfrage zu diesem Werk',
     checkoutErrorTitle: 'Bezahlvorgang konnte nicht gestartet werden',
     checkoutErrorBody: 'Bitte versuchen Sie es erneut oder kontaktieren Sie uns, um den Erwerb abzuschließen.',

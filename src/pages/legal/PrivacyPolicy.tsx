@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -291,6 +292,11 @@ const sections: Section[] = [
 ];
 
 const PrivacyPolicy = () => {
+  usePageMeta({
+    title: "Política de Privacidade — Abílio Marcos",
+    description: "Política de privacidade do site de Abílio Marcos: como recolhemos e tratamos os seus dados.",
+    path: "/legal/privacy",
+  });
   return (
     <Layout>
       <div className="pt-24 md:pt-32 pb-20 md:pb-32 px-6 md:px-10">

@@ -2,60 +2,269 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Link } from 'react-router-dom';
-import { useAdmin } from '@/i18n';
+import { thumbUrl } from '@/lib/images';
+import { Eye, Inbox, Tag, MousePointerClick, ArrowRight } from 'lucide-react';
+import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-interface Stats { total: number; published: number; draft: number; archived: number; available: number; sold: number; inquiriesNew: number; inquiriesTotal: number; }
+interface ArtworkEngagement { slug: string; title: string; image: string | null; views: number; interests: number; rate: number; }
+interface DayVisits { day: string; visits: number; }
+interface Lead { id: string; name: string; email: string; artwork_title: string | null; status: string; created_at: string; }
+
+type ArtworkTab = 'views' | 'interest' | 'rate';
+
+const TABS: { key: ArtworkTab; label: string; hint: string }[] = [
+  { key: 'views', label: 'Mais vistas', hint: 'Obras que atraem mais visitantes' },
+  { key: 'interest', label: 'Mais interesse', hint: 'Obras com mais cliques "Adquirir"' },
+  { key: 'rate', label: 'Melhor taxa', hint: 'Maior rácio interesse ÷ visitas — obras mais eficazes' },
+];
+
+const leadStatusColors: Record<string, string> = {
+  new: 'bg-blue-100 text-blue-700', responded: 'bg-emerald-100 text-emerald-700', closed: 'bg-gray-100 text-gray-500',
+};
+const leadStatusLabels: Record<string, string> = { new: 'Nova', responded: 'Respondida', closed: 'Fechada' };
+
+const DeltaBadge = ({ delta }: { delta: number | null }) => {
+  if (delta === null) return null;
+  const pos = delta >= 0;
+  return (
+    <span className={`text-[11px] font-medium ${pos ? 'text-emerald-600' : 'text-red-500'}`}>
+      {pos ? '↑' : '↓'} {Math.abs(delta)}% vs mês anterior
+    </span>
+  );
+};
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<Stats>({ total: 0, published: 0, draft: 0, archived: 0, available: 0, sold: 0, inquiriesNew: 0, inquiriesTotal: 0 });
   const [loading, setLoading] = useState(true);
-  const admin = useAdmin();
+  const [sold, setSold] = useState(0);
+  const [acquireClicks, setAcquireClicks] = useState(0);
+  const [acquireDelta, setAcquireDelta] = useState<number | null>(null);
+  const [artworkEngagement, setArtworkEngagement] = useState<ArtworkEngagement[]>([]);
+  const [artworkTab, setArtworkTab] = useState<ArtworkTab>('views');
+  const [visits, setVisits] = useState<DayVisits[]>([]);
+  const [visitsDelta, setVisitsDelta] = useState<number | null>(null);
+  const [leads, setLeads] = useState<Lead[]>([]);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      const [artRes, inqRes] = await Promise.all([supabase.from('artworks').select('status, availability'), supabase.from('inquiries').select('status')]);
-      const rows = artRes.data || []; const inqs = inqRes.data || [];
-      setStats({ total: rows.length, published: rows.filter(r => r.status === 'published').length, draft: rows.filter(r => r.status === 'draft').length, archived: rows.filter(r => r.status === 'archived').length, available: rows.filter(r => r.availability === 'available').length, sold: rows.filter(r => r.availability === 'sold').length, inquiriesTotal: inqs.length, inquiriesNew: inqs.filter(i => i.status === 'new').length });
+    const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const since60 = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+    const load = async () => {
+      const [artRes, leadRes, engagementRes, visitRes, acquireRes, acquirePrevRes] = await Promise.all([
+        supabase.from('artworks').select('availability'),
+        supabase.from('inquiries').select('id, name, email, artwork_title, status, created_at').order('created_at', { ascending: false }).limit(6),
+        supabase.rpc('dashboard_artwork_engagement', { p_days: 30, p_limit: 20 }),
+        supabase.rpc('dashboard_daily_visits', { p_days: 60 }),
+        supabase.from('analytics_events').select('*', { count: 'exact', head: true }).eq('event_name', 'acquire_online_clicked').gte('created_at', since30),
+        supabase.from('analytics_events').select('*', { count: 'exact', head: true }).eq('event_name', 'acquire_online_clicked').gte('created_at', since60).lt('created_at', since30),
+      ]);
+
+      setSold((artRes.data || []).filter((a: { availability: string }) => a.availability === 'sold').length);
+      setLeads((leadRes.data as Lead[]) || []);
+
+      const eng = ((engagementRes.data || []) as ArtworkEngagement[]).map((e) => ({
+        ...e, views: Number(e.views), interests: Number(e.interests), rate: Number(e.rate),
+      }));
+      setArtworkEngagement(eng);
+
+      // Visits: split 60d into current (last 30) vs previous (30–60)
+      const allDays = ((visitRes.data as DayVisits[]) || []).map((d) => ({ ...d, visits: Number(d.visits) }));
+      const since30ts = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      const current30 = allDays.filter((d) => new Date(d.day + 'T00:00:00').getTime() >= since30ts);
+      const prev30 = allDays.filter((d) => new Date(d.day + 'T00:00:00').getTime() < since30ts);
+      const totalCurrent = current30.reduce((s, d) => s + d.visits, 0);
+      const totalPrev = prev30.reduce((s, d) => s + d.visits, 0);
+      setVisits(current30);
+      setVisitsDelta(totalPrev > 0 ? Math.round(((totalCurrent - totalPrev) / totalPrev) * 100) : null);
+
+      // Acquire clicks + delta
+      const curAcquire = acquireRes.count || 0;
+      const prevAcquire = acquirePrevRes.count || 0;
+      setAcquireClicks(curAcquire);
+      setAcquireDelta(prevAcquire > 0 ? Math.round(((curAcquire - prevAcquire) / prevAcquire) * 100) : null);
+
       setLoading(false);
     };
-    fetchStats();
+    load();
   }, []);
 
-  const cards = [
-    { label: admin.dashboard.totalArtworks, value: stats.total },
-    { label: admin.dashboard.published, value: stats.published },
-    { label: admin.dashboard.drafts, value: stats.draft },
-    { label: admin.dashboard.available, value: stats.available },
-    { label: admin.dashboard.sold, value: stats.sold },
-    { label: admin.dashboard.newInquiries, value: stats.inquiriesNew },
-  ];
+  const totalVisits = visits.reduce((s, d) => s + d.visits, 0);
+  const newLeads = leads.filter((l) => l.status === 'new').length;
+  const chartData = visits.map((d) => ({
+    label: new Date(d.day + 'T00:00:00').toLocaleDateString('pt-PT', { day: 'numeric', month: 'short' }),
+    visits: d.visits,
+  }));
+
+  // Tab data: sort by the active dimension, take top 5
+  const sortedArtworks = (tab: ArtworkTab) => {
+    const sorted = [...artworkEngagement].sort((a, b) =>
+      tab === 'views' ? b.views - a.views : tab === 'interest' ? b.interests - a.interests : b.rate - a.rate
+    );
+    return tab === 'views' ? sorted.slice(0, 5) : sorted.filter((a) => (tab === 'interest' ? a.interests > 0 : a.rate > 0)).slice(0, 5);
+  };
+  const tabItems = sortedArtworks(artworkTab);
+  const maxValue = Math.max(1, ...tabItems.map((a) => artworkTab === 'views' ? a.views : artworkTab === 'interest' ? a.interests : a.rate));
+  const getValue = (a: ArtworkEngagement) => artworkTab === 'views' ? a.views : artworkTab === 'interest' ? a.interests : a.rate;
+  const formatValue = (a: ArtworkEngagement) =>
+    artworkTab === 'rate' ? `${a.rate}%` : String(artworkTab === 'views' ? a.views : a.interests);
+
+  const fmtDate = (d: string) => new Date(d).toLocaleDateString('pt-PT', { day: 'numeric', month: 'short' });
 
   return (
     <AdminLayout>
       <div className="mb-8">
-        <h1 className="text-xl font-medium text-[hsl(0_0%_12%)]">{admin.dashboard.title}</h1>
-        <p className="text-[13px] text-[hsl(0_0%_50%)] mt-1">{admin.dashboard.subtitle}</p>
+        <h1 className="text-xl font-medium text-[hsl(0_0%_12%)]">Painel</h1>
+        <p className="text-[13px] text-[hsl(0_0%_50%)] mt-1">Visão geral do negócio do Abílio — últimos 30 dias.</p>
       </div>
-      {loading ? <p className="text-[13px] text-[hsl(0_0%_50%)]">{admin.dashboard.loading}</p> : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {cards.map((card) => (
-            <div key={card.label} className="bg-white border border-[hsl(0_0%_90%)] p-5">
-              <p className="text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)] mb-2">{card.label}</p>
-              <p className="text-2xl font-medium text-[hsl(0_0%_12%)]">{card.value}</p>
+
+      {loading ? (
+        <p className="text-[13px] text-[hsl(0_0%_50%)] py-12 text-center">A carregar…</p>
+      ) : (
+        <>
+          {/* Métricas-chave */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Visitas */}
+            <div className="bg-white border border-[hsl(0_0%_90%)] p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)]">Visitas (30 dias)</p>
+                <Eye className="w-4 h-4 text-[hsl(0_0%_65%)]" />
+              </div>
+              <p className="text-3xl font-medium text-[hsl(0_0%_12%)] leading-none">{totalVisits.toLocaleString('pt-PT')}</p>
+              <div className="flex flex-col gap-0.5">
+                <p className="text-[11px] text-[hsl(0_0%_55%)]">páginas vistas</p>
+                <DeltaBadge delta={visitsDelta} />
+              </div>
             </div>
-          ))}
-        </div>
+
+            {/* Leads */}
+            <div className="bg-white border border-[hsl(0_0%_90%)] p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)]">Leads ativas</p>
+                <Inbox className="w-4 h-4 text-[hsl(0_0%_65%)]" />
+              </div>
+              <p className="text-3xl font-medium text-[hsl(0_0%_12%)] leading-none">{newLeads}</p>
+              <p className="text-[11px] text-[hsl(0_0%_55%)]">{leads.length} no total</p>
+            </div>
+
+            {/* Obras vendidas */}
+            <div className="bg-white border border-[hsl(0_0%_90%)] p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)]">Obras vendidas</p>
+                <Tag className="w-4 h-4 text-[hsl(0_0%_65%)]" />
+              </div>
+              <p className="text-3xl font-medium text-[hsl(0_0%_12%)] leading-none">{sold}</p>
+              <p className="text-[11px] text-[hsl(0_0%_55%)]">até hoje</p>
+            </div>
+
+            {/* Interesse de compra */}
+            <div className="bg-white border border-[hsl(0_0%_90%)] p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] tracking-wide uppercase text-[hsl(0_0%_50%)]">Interesse de compra</p>
+                <MousePointerClick className="w-4 h-4 text-[hsl(0_0%_65%)]" />
+              </div>
+              <p className="text-3xl font-medium text-[hsl(0_0%_12%)] leading-none">{acquireClicks}</p>
+              <div className="flex flex-col gap-0.5">
+                <p className="text-[11px] text-[hsl(0_0%_55%)]">cliques "Adquirir" (30d)</p>
+                <DeltaBadge delta={acquireDelta} />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Obras — com tabs */}
+            <div className="bg-white border border-[hsl(0_0%_90%)] p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex gap-1">
+                  {TABS.map((tab) => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setArtworkTab(tab.key)}
+                      title={tab.hint}
+                      className={`px-2.5 py-1 text-[11px] transition-colors ${artworkTab === tab.key ? 'bg-[hsl(0_0%_12%)] text-white' : 'text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]'}`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[11px] text-[hsl(0_0%_55%)]">30 dias</span>
+              </div>
+
+              {tabItems.length === 0 ? (
+                <p className="text-[12px] text-[hsl(0_0%_55%)] py-8 text-center">Ainda sem dados suficientes.</p>
+              ) : (
+                <div className="space-y-4">
+                  {tabItems.map((a, i) => (
+                    <Link key={a.slug} to={`/obra/${a.slug}`} target="_blank" className="flex items-center gap-3 group">
+                      <span className="text-[12px] text-[hsl(0_0%_60%)] w-4 tabular-nums">{i + 1}</span>
+                      {a.image ? (
+                        <img src={thumbUrl(a.image, 96) || a.image} alt="" className="w-11 h-11 object-cover flex-shrink-0 bg-[hsl(0_0%_95%)]" />
+                      ) : <div className="w-11 h-11 bg-[hsl(0_0%_93%)] flex-shrink-0" />}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-[hsl(0_0%_20%)] truncate group-hover:text-[hsl(0_0%_5%)] transition-colors">{a.title}</p>
+                        <div className="mt-1.5 h-1.5 bg-[hsl(0_0%_94%)] rounded-full overflow-hidden">
+                          <div className="h-full bg-[hsl(0_0%_35%)] rounded-full" style={{ width: `${(getValue(a) / maxValue) * 100}%` }} />
+                        </div>
+                      </div>
+                      <span className="text-[13px] font-medium text-[hsl(0_0%_30%)] tabular-nums w-12 text-right">{formatValue(a)}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Tendência de visitas */}
+            <div className="bg-white border border-[hsl(0_0%_90%)] p-6">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-[13px] font-medium text-[hsl(0_0%_25%)]">Tendência de visitas</h2>
+                <span className="text-[11px] text-[hsl(0_0%_55%)]">30 dias</span>
+              </div>
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart data={chartData} margin={{ top: 5, right: 8, left: -18, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="visitsGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(0 0% 20%)" stopOpacity={0.18} />
+                      <stop offset="100%" stopColor="hsl(0 0% 20%)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="label" tick={{ fontSize: 10, fill: 'hsl(0 0% 60%)' }} interval="preserveStartEnd" axisLine={false} tickLine={false} minTickGap={24} />
+                  <YAxis tick={{ fontSize: 10, fill: 'hsl(0 0% 60%)' }} axisLine={false} tickLine={false} width={30} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{ fontSize: 12, borderRadius: 6, border: '1px solid hsl(0 0% 90%)' }}
+                    labelStyle={{ color: 'hsl(0 0% 30%)' }}
+                    formatter={(v: number) => [`${v} visitas`, '']}
+                  />
+                  <Area type="monotone" dataKey="visits" stroke="hsl(0 0% 25%)" strokeWidth={1.5} fill="url(#visitsGradient)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Leads recentes */}
+          <div className="mt-6 bg-white border border-[hsl(0_0%_90%)] p-6">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-[13px] font-medium text-[hsl(0_0%_25%)]">Leads recentes</h2>
+              <Link to="/admin/inquiries" className="inline-flex items-center gap-1 text-[12px] text-[hsl(0_0%_45%)] hover:text-[hsl(0_0%_15%)] transition-colors">
+                Ver todas <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            {leads.length === 0 ? (
+              <p className="text-[12px] text-[hsl(0_0%_55%)] py-6 text-center">Ainda não há contactos.</p>
+            ) : (
+              <div className="divide-y divide-[hsl(0_0%_95%)]">
+                {leads.map((l) => (
+                  <div key={l.id} className="flex items-center gap-4 py-2.5">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-medium text-[hsl(0_0%_20%)] truncate">{l.name || l.email}</p>
+                      <p className="text-[12px] text-[hsl(0_0%_55%)] truncate">{l.artwork_title || l.email}</p>
+                    </div>
+                    <span className="text-[12px] text-[hsl(0_0%_55%)] whitespace-nowrap">{fmtDate(l.created_at)}</span>
+                    <span className={`inline-block px-2 py-0.5 text-[11px] font-medium ${leadStatusColors[l.status] || 'bg-gray-100 text-gray-500'}`}>{leadStatusLabels[l.status] || l.status}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
       )}
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Link to="/admin/inquiries" className="bg-white border border-[hsl(0_0%_90%)] p-6 hover:border-[hsl(0_0%_70%)] transition-colors">
-          <h2 className="text-[13px] font-medium text-[hsl(0_0%_25%)] mb-3">{admin.dashboard.recentInquiries}</h2>
-          <p className="text-[12px] text-[hsl(0_0%_55%)]">{stats.inquiriesTotal > 0 ? `${stats.inquiriesTotal} ${admin.dashboard.total} · ${stats.inquiriesNew} ${admin.dashboard.new}` : admin.dashboard.noInquiries}</p>
-        </Link>
-        <div className="bg-white border border-[hsl(0_0%_90%)] p-6">
-          <h2 className="text-[13px] font-medium text-[hsl(0_0%_25%)] mb-3">{admin.dashboard.commissionRequests}</h2>
-          <p className="text-[12px] text-[hsl(0_0%_55%)]">{admin.dashboard.noCommissions}</p>
-        </div>
-      </div>
     </AdminLayout>
   );
 };

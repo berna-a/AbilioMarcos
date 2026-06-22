@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -214,6 +215,11 @@ const sections: Section[] = [
 ];
 
 const CookiePolicy = () => {
+  usePageMeta({
+    title: "Política de Cookies — Abílio Marcos",
+    description: "Política de cookies do site de Abílio Marcos: que cookies usamos e como geri-los.",
+    path: "/legal/cookies",
+  });
   return (
     <Layout>
       <div className="pt-24 md:pt-32 pb-20 md:pb-32 px-6 md:px-10">

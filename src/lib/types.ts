@@ -16,7 +16,7 @@ export interface Artwork {
   year: number;
   description: string | null;
   status: 'draft' | 'published' | 'archived';
-  availability: 'available' | 'sold' | 'not_for_sale';
+  availability: 'available' | 'sold' | 'not_for_sale' | 'exhibition';
   price: number | null;
   /** Real artwork dimensions in cm (preferred). */
   width_cm: number | null;
@@ -29,6 +29,12 @@ export interface Artwork {
   custom_height_cm: number | null;
   reference: string | null;
   is_featured: boolean;
+  /** Nome/local da exposição quando availability === 'exhibition'. */
+  exhibition_name: string | null;
+  /** Tags para análise estratégica — não aparecem no site público. */
+  theme: string | null;
+  dominant_color: string | null;
+  art_style: string | null;
   primary_image_url: string | null;
   additional_images: string[] | null;
   /** Localised title — { en, fr, de, es }. PT lives in `title`. */
@@ -41,6 +47,13 @@ export interface Artwork {
 
 export type ArtworkInsert = Omit<Artwork, 'id' | 'created_at' | 'updated_at'>;
 export type ArtworkUpdate = Partial<ArtworkInsert>;
+
+/** MASTER SWITCH — checkout online (Stripe) globalmente ativo?
+ *  Mantém `false` enquanto o Stripe não estiver live (sem STRIPE_SECRET_KEY_021).
+ *  Com `false`, o CTA "Adquirir Online" cai automaticamente para o fluxo de
+ *  contacto/lead, em vez de mostrar um erro de pagamento.
+ *  Quando o Stripe estiver ativado: muda para `true` + redeploy. */
+export const CHECKOUT_ENABLED: boolean = true;
 
 /** Derive sales mode from price.
  *  All artworks with a valid positive price are eligible for direct online
@@ -62,6 +75,7 @@ export const getSalesMode = (price: number | null): 'direct_purchase' | 'hybrid'
 export const isOnlineCheckoutEligible = (
   artwork: Pick<Artwork, 'status' | 'availability' | 'price'>
 ): boolean => {
+  if (!CHECKOUT_ENABLED) return false;
   if (artwork.status !== 'published') return false;
   if (artwork.availability !== 'available') return false;
   const p = artwork.price;

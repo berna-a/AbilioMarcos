@@ -6,6 +6,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { Plus, Search, Pencil, Trash2, ChevronUp, ChevronDown, Languages } from 'lucide-react';
 import { useAdmin } from '@/i18n';
 import { translateContent } from '@/lib/translate';
+import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = { published: 'bg-emerald-100 text-emerald-700', draft: 'bg-amber-100 text-amber-700', archived: 'bg-gray-100 text-gray-500' };
 
@@ -18,6 +19,7 @@ const AdminArtworks = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [updating, setUpdating] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('year');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [backfilling, setBackfilling] = useState<{ done: number; total: number } | null>(null);
@@ -64,6 +66,24 @@ const AdminArtworks = () => {
     if (error) { console.error('Delete error:', error); alert(admin.artworks.deleteError); }
     else setArtworks((prev) => prev.filter((a) => a.id !== id));
     setDeleting(null);
+  };
+
+  // Edição rápida na lista (disponibilidade / destaque) — sem abrir o formulário.
+  const updateField = async (id: string, patch: Partial<Artwork>) => {
+    setUpdating(id);
+    setArtworks((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)));
+    const { error } = await supabase
+      .from('artworks')
+      .update({ ...patch, updated_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) {
+      console.error('Update error:', error);
+      toast.error('Não foi possível guardar. Tenta de novo.');
+      await fetchArtworks();
+    } else {
+      toast.success('Atualizado ✓');
+    }
+    setUpdating(null);
   };
 
   const handleBackfillTranslations = async () => {
@@ -216,9 +236,30 @@ const AdminArtworks = () => {
                   <td className="px-4 py-3">
                     <span className={`inline-block px-2 py-0.5 text-[11px] font-medium ${statusColors[artwork.status] || ''}`}>{statusLabels[artwork.status] || artwork.status}</span>
                   </td>
-                  <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">{admin.artworks.availabilityLabels[artwork.availability as keyof typeof admin.artworks.availabilityLabels] || artwork.availability}</td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={artwork.availability}
+                      onChange={(e) => updateField(artwork.id, { availability: e.target.value as Artwork['availability'] })}
+                      disabled={updating === artwork.id}
+                      className="text-[13px] text-[hsl(0_0%_40%)] bg-transparent border border-transparent hover:border-[hsl(0_0%_85%)] focus:border-[hsl(0_0%_50%)] rounded px-1.5 py-0.5 focus:outline-none cursor-pointer disabled:opacity-50 transition-colors"
+                    >
+                      <option value="available">{admin.artworks.availabilityLabels.available}</option>
+                      <option value="sold">{admin.artworks.availabilityLabels.sold}</option>
+                      <option value="not_for_sale">{admin.artworks.availabilityLabels.not_for_sale}</option>
+                      <option value="exhibition">{admin.artworks.availabilityLabels.exhibition || 'Em exposição'}</option>
+                    </select>
+                  </td>
                   <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">{artwork.price != null ? `€${artwork.price.toLocaleString()}` : '—'}</td>
-                  <td className="px-4 py-3 text-[13px] text-[hsl(0_0%_40%)]">{artwork.is_featured && <span className="text-[11px] text-amber-600">★</span>}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => updateField(artwork.id, { is_featured: !artwork.is_featured })}
+                      disabled={updating === artwork.id}
+                      title={admin.artworks.selected}
+                      className="text-[15px] leading-none transition-transform hover:scale-110 disabled:opacity-50"
+                    >
+                      <span className={artwork.is_featured ? 'text-amber-500' : 'text-[hsl(0_0%_80%)]'}>★</span>
+                    </button>
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2 justify-end">
                       <Link to={`/admin/artworks/${artwork.id}`} className="p-1.5 text-[hsl(0_0%_55%)] hover:text-[hsl(0_0%_20%)] transition-colors" title={admin.artworks.edit}><Pencil className="w-3.5 h-3.5" /></Link>

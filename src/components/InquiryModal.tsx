@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { createInquiry } from '@/lib/inquiries';
 import { useT } from '@/i18n';
@@ -19,12 +19,38 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle, artworkImage, ar
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const t = useT();
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = () => {
+    setForm({ name: '', email: '', phone: '', message: '', budget_range: '' });
+    setSubmitted(false);
+    setError('');
+    onClose();
+  };
 
   useEffect(() => {
     if (open) {
       track('inquiry_opened', { artwork_id: artworkId, title: artworkTitle || undefined });
     }
   }, [open, artworkId, artworkTitle]);
+
+  // Acessibilidade: bloqueia o scroll de fundo, fecha com Escape, leva o foco para dentro.
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose(); };
+    window.addEventListener('keydown', onKey);
+    const focusTimer = window.setTimeout(() => {
+      panelRef.current?.querySelector<HTMLElement>('input, textarea, button')?.focus();
+    }, 50);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+      clearTimeout(focusTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   if (!open) return null;
 
@@ -53,20 +79,19 @@ const InquiryModal = ({ open, onClose, artworkId, artworkTitle, artworkImage, ar
     setSubmitting(false);
   };
 
-  const handleClose = () => {
-    setForm({ name: '', email: '', phone: '', message: '', budget_range: '' });
-    setSubmitted(false);
-    setError('');
-    onClose();
-  };
-
   const inputCls = "w-full px-3 py-2.5 text-sm bg-transparent border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors";
   const labelCls = "block text-[12px] tracking-[0.2em] uppercase text-foreground mb-1.5";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-foreground/40 backdrop-blur-[2px]" onClick={handleClose} />
-      <div className={`relative w-full ${artworkImage ? 'max-w-3xl' : 'max-w-lg'} max-h-[90vh] overflow-y-auto bg-background border border-border`}>
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.inquiry.title}
+        className={`relative w-full ${artworkImage ? 'max-w-3xl' : 'max-w-lg'} max-h-[90vh] overflow-y-auto bg-background border border-border`}
+      >
         <button onClick={handleClose} className="absolute top-4 right-4 z-10 text-foreground/70 hover:text-foreground transition-colors">
           <X className="w-4 h-4" />
         </button>

@@ -1,7 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { BarChart3, Eye, MousePointer, MessageSquare, ShoppingCart, CheckCircle, Mail } from 'lucide-react';
+import { BarChart3, Eye, MousePointer, MessageSquare, ShoppingCart, CheckCircle, Mail, Flame, ExternalLink } from 'lucide-react';
+
+// Microsoft Clarity não permite embed (X-Frame-Options: SAMEORIGIN) → deep-link ao dashboard.
+const CLARITY_URL = 'https://clarity.microsoft.com/projects/view/x9kv43muxr/dashboard';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 // ── Types ──────────────────────────────────────────────────
@@ -164,6 +167,27 @@ const AdminAnalytics = () => {
           ))}
         </div>
       </div>
+
+      {/* Microsoft Clarity — heatmaps & gravações (abre no Clarity; não permite embed) */}
+      <a
+        href={CLARITY_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group flex items-center justify-between gap-4 bg-white border border-[hsl(0_0%_90%)] p-5 mb-10 hover:border-[hsl(0_0%_55%)] transition-colors"
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-[hsl(245_70%_97%)] flex items-center justify-center shrink-0">
+            <Flame className="w-5 h-5 text-[hsl(245_58%_51%)]" />
+          </div>
+          <div>
+            <p className="text-[13px] font-medium text-[hsl(0_0%_20%)]">Microsoft Clarity — mapas de calor & gravações</p>
+            <p className="text-[12px] text-[hsl(0_0%_50%)] mt-0.5">Vê como os visitantes navegam: heatmaps, scroll e gravações de sessão. Abre no Clarity.</p>
+          </div>
+        </div>
+        <span className="inline-flex items-center gap-1.5 text-[12px] tracking-wide uppercase text-[hsl(0_0%_30%)] group-hover:text-[hsl(245_58%_51%)] transition-colors shrink-0">
+          Abrir <ExternalLink className="w-3.5 h-3.5" />
+        </span>
+      </a>
 
       {loading ? (
         <p className="text-[13px] text-[hsl(0_0%_50%)]">A carregar…</p>

@@ -1,9 +1,11 @@
 import Layout from "@/components/layout/Layout";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState, useMemo, useEffect } from "react";
 import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { getPublishedArtworks } from "@/lib/artworks";
+import { thumbUrl } from "@/lib/images";
 import { Artwork, formatPrice, getSizeBucket, getFormat } from "@/lib/types";
 import { useT, useTField, useTechniqueLabel } from "@/i18n";
 import { track, trackArtwork } from "@/lib/analytics";
@@ -43,6 +45,11 @@ const FilterSection = ({
 };
 
 const AllWorks = () => {
+  usePageMeta({
+    title: "Obras Originais à Venda — Abílio Marcos",
+    description: "Pinturas originais de Abílio Marcos: obras expressionistas abstratas disponíveis para aquisição.",
+    path: "/obras",
+  });
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<Record<string, string[]>>({ technique: [], format: [], size: [], price: [] });
@@ -252,10 +259,11 @@ const AllWorks = () => {
                           return (<>
                         {work.primary_image_url && (
                           <img
-                            src={work.primary_image_url}
+                            src={thumbUrl(work.primary_image_url, 1000)}
                             alt={workTitle}
                             loading="lazy"
                             className="w-full h-auto block"
+                            onError={(e) => { const img = e.currentTarget; if (work.primary_image_url && img.src !== work.primary_image_url) img.src = work.primary_image_url; }}
                           />
                         )}
                         <div className="mt-3">

@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -9,6 +10,11 @@ const RAL_LIST_URL =
 const PORTAL_URL = "https://www.consumidor.gov.pt";
 
 const DisputeResolution = () => {
+  usePageMeta({
+    title: "Resolução de Litígios — Abílio Marcos",
+    description: "Resolução alternativa de litígios de consumo — informação ao consumidor, Abílio Marcos.",
+    path: "/legal/disputes",
+  });
   const t = useT();
 
   return (
