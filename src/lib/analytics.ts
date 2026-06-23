@@ -153,7 +153,7 @@ function getSessionId(): string {
 }
 
 // ── Convenience helpers ────────────────────────────────────
-export function trackArtwork(eventName: string, artwork: { id: string; reference?: string | null; slug: string; title: string; price?: number | null; is_featured?: boolean }) {
+export function trackArtwork(eventName: string, artwork: { id: string; reference?: string | null; slug: string; title: string; price?: number | null; is_featured?: boolean; theme?: string | null; dominant_color?: string | null; art_style?: string | null }) {
   track(eventName, {
     artwork_id: artwork.id,
     reference: artwork.reference || undefined,
@@ -162,6 +162,10 @@ export function trackArtwork(eventName: string, artwork: { id: string; reference
     price: artwork.price,
     price_tier: getPriceTier(artwork.price ?? null),
     selected_work: artwork.is_featured,
+    // tags de classificação — para analisar que tipo de obra atrai/converte
+    theme: artwork.theme || undefined,
+    dominant_color: artwork.dominant_color || undefined,
+    art_style: artwork.art_style || undefined,
   });
 }
 

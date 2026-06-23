@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { ArrowLeft, Upload, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getSalesMode, getSizeBucket, getFormat, TECHNIQUE_VALUES, DEFAULT_TECHNIQUE } from '@/lib/types';
+import { getSalesMode, getSizeBucket, getFormat, TECHNIQUE_VALUES, DEFAULT_TECHNIQUE, THEME_VALUES, COLOR_VALUES, STYLE_VALUES } from '@/lib/types';
 import { useAdmin } from '@/i18n';
 import { translateContent } from '@/lib/translate';
 import { toast } from 'sonner';
@@ -342,6 +342,32 @@ const ArtworkForm = () => {
               <p className="text-[11px] text-[hsl(0_0%_55%)] py-2 px-3 bg-[hsl(0_0%_97%)] border border-[hsl(0_0%_92%)]">
                 {t.formatAuto}: <span className="font-medium text-[hsl(0_0%_30%)]">{formatLabel}</span>
               </p>
+            </div>
+          </div>
+
+          {/* Classificação (tags para análise de campanhas) */}
+          <div>
+            <h3 className="text-[12px] tracking-wider uppercase text-[hsl(0_0%_40%)] mb-1">Classificação</h3>
+            <p className="text-[11px] text-[hsl(0_0%_60%)] mb-4">Opcional — ajuda a perceber que tipo de obra atrai e converte nas campanhas.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Field label="Tema">
+                <select value={form.theme} onChange={(e) => updateField('theme', e.target.value)} className="admin-input">
+                  <option value="">—</option>
+                  {THEME_VALUES.map((v) => (<option key={v} value={v}>{v}</option>))}
+                </select>
+              </Field>
+              <Field label="Cor dominante">
+                <select value={form.dominant_color} onChange={(e) => updateField('dominant_color', e.target.value)} className="admin-input">
+                  <option value="">—</option>
+                  {COLOR_VALUES.map((v) => (<option key={v} value={v}>{v}</option>))}
+                </select>
+              </Field>
+              <Field label="Estilo">
+                <select value={form.art_style} onChange={(e) => updateField('art_style', e.target.value)} className="admin-input">
+                  <option value="">—</option>
+                  {STYLE_VALUES.map((v) => (<option key={v} value={v}>{v}</option>))}
+                </select>
+              </Field>
             </div>
           </div>
 

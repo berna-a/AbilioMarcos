@@ -6,6 +6,12 @@ export type Technique = typeof TECHNIQUE_VALUES[number];
 
 export const DEFAULT_TECHNIQUE: Technique = 'Óleo sobre tela';
 
+// Tags de classificação (para análise estratégica de campanhas — que tipo de obra converte).
+// Vazio = não classificado. Listas curadas para a obra abstrata/expressionista do Abílio.
+export const THEME_VALUES = ['Abstrato', 'Paisagem', 'Mar / Costa', 'Natureza', 'Urbano', 'Figura / Humano', 'Floral', 'Outro'] as const;
+export const COLOR_VALUES = ['Tons quentes', 'Tons frios', 'Tons terra / neutros', 'Multicolor', 'Escuro / Dramático', 'Claro / Suave'] as const;
+export const STYLE_VALUES = ['Expressionista', 'Gestual', 'Texturado / Matérico', 'Abstrato lírico', 'Minimalista'] as const;
+
 export type SizeBucket = 'small' | 'medium' | 'large';
 export type Format = 'vertical' | 'square' | 'horizontal';
 
