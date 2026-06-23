@@ -128,6 +128,11 @@ serve(async (req) => {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Recuperação de carrinho abandonado: ao expirar a sessão (24h), o Stripe
+      // gera um link de recuperação e envia email ao cliente — desde que este
+      // tenha fornecido email e o toggle "Recover abandoned carts" esteja ativo
+      // no dashboard da conta Stripe do Abílio.
+      after_expiration: { recovery: { enabled: true } },
       // Sem payment_method_types nem automatic_payment_methods: o Stripe Checkout
       // mostra por defeito todos os métodos ativos no dashboard (MB WAY, Multibanco,
       // SEPA, cartão, etc.). [automatic_payment_methods é de PaymentIntents, não Checkout.]
