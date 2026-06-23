@@ -267,6 +267,7 @@ export const pt: Translations = {
     continueBrowsing: 'Continuar a Explorar',
     cancelTitle: 'Checkout Cancelado',
     cancelMessage: 'Nenhum pagamento foi processado. A obra permanece disponível.',
+    cancelRescue: 'Ficou com alguma dúvida? Fale connosco — esclarecemos tudo e, se quiser, reservamos a obra para si.',
     returnToArtwork: 'Voltar à Obra',
     browseAll: 'Ver Todas as Obras',
   },

@@ -267,6 +267,7 @@ export const en: Translations = {
     continueBrowsing: 'Continue Browsing',
     cancelTitle: 'Checkout Cancelled',
     cancelMessage: 'No payment has been processed. The artwork remains available.',
+    cancelRescue: 'Any questions? Talk to us — we\'ll clarify everything and, if you like, hold the piece for you.',
     returnToArtwork: 'Return to Artwork',
     browseAll: 'Browse All Works',
   },

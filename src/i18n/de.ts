@@ -267,6 +267,7 @@ export const de: Translations = {
     continueBrowsing: 'Weiter erkunden',
     cancelTitle: 'Bestellung Abgebrochen',
     cancelMessage: 'Es wurde keine Zahlung durchgeführt. Das Werk bleibt verfügbar.',
+    cancelRescue: 'Fragen? Sprechen Sie mit uns — wir klären alles und reservieren das Werk auf Wunsch für Sie.',
     returnToArtwork: 'Zurück zum Werk',
     browseAll: 'Alle Werke ansehen',
   },

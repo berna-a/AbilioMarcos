@@ -269,6 +269,7 @@ export const es: Translations = {
     continueBrowsing: 'Seguir Explorando',
     cancelTitle: 'Pago Cancelado',
     cancelMessage: 'No se ha procesado ningún pago. La obra permanece disponible.',
+    cancelRescue: '¿Alguna duda? Hable con nosotros — aclaramos todo y, si quiere, le reservamos la obra.',
     returnToArtwork: 'Volver a la Obra',
     browseAll: 'Ver Todas las Obras',
   },

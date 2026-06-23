@@ -269,6 +269,7 @@ export interface Translations {
     continueBrowsing: string;
     cancelTitle: string;
     cancelMessage: string;
+    cancelRescue: string;
     returnToArtwork: string;
     browseAll: string;
   };
