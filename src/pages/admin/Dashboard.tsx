@@ -9,8 +9,16 @@ import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'rec
 interface ArtworkEngagement { slug: string; title: string; image: string | null; views: number; interests: number; rate: number; }
 interface DayVisits { day: string; visits: number; }
 interface Lead { id: string; name: string; email: string; artwork_title: string | null; status: string; created_at: string; }
+interface TagRow { tag: string; views: number; interests: number; rate: number; }
 
 type ArtworkTab = 'views' | 'interest' | 'rate';
+type TagDim = 'theme' | 'dominant_color' | 'art_style';
+
+const TAG_DIMS: { key: TagDim; label: string }[] = [
+  { key: 'theme', label: 'Tema' },
+  { key: 'dominant_color', label: 'Cor' },
+  { key: 'art_style', label: 'Estilo' },
+];
 
 const TABS: { key: ArtworkTab; label: string; hint: string }[] = [
   { key: 'views', label: 'Mais vistas', hint: 'Obras que atraem mais visitantes' },
@@ -43,6 +51,14 @@ const Dashboard = () => {
   const [visits, setVisits] = useState<DayVisits[]>([]);
   const [visitsDelta, setVisitsDelta] = useState<number | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [tagDim, setTagDim] = useState<TagDim>('theme');
+  const [tagRows, setTagRows] = useState<TagRow[]>([]);
+
+  useEffect(() => {
+    supabase.rpc('dashboard_tag_breakdown', { p_days: 30, p_dimension: tagDim }).then(({ data }) => {
+      setTagRows(((data || []) as TagRow[]).map((r) => ({ ...r, views: Number(r.views), interests: Number(r.interests), rate: Number(r.rate) })));
+    });
+  }, [tagDim]);
 
   useEffect(() => {
     const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
@@ -236,6 +252,49 @@ const Dashboard = () => {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
+          </div>
+
+          {/* Conversão por classificação (tags) */}
+          <div className="mt-6 bg-white border border-[hsl(0_0%_90%)] p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[13px] font-medium text-[hsl(0_0%_25%)]">Conversão por classificação</h2>
+              <div className="flex gap-1">
+                {TAG_DIMS.map((d) => (
+                  <button
+                    key={d.key}
+                    onClick={() => setTagDim(d.key)}
+                    className={`px-2.5 py-1 text-[11px] transition-colors ${tagDim === d.key ? 'bg-[hsl(0_0%_12%)] text-white' : 'text-[hsl(0_0%_50%)] hover:text-[hsl(0_0%_20%)]'}`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {tagRows.length === 1 && tagRows[0].tag === '(sem classificação)' ? (
+              <p className="text-[12px] text-[hsl(0_0%_55%)] py-6 text-center">
+                Classifica as obras (campo <span className="font-medium">Classificação</span> na obra) para veres que tipo atrai e converte.
+              </p>
+            ) : (
+              <div>
+                <div className="grid grid-cols-[1fr_auto_auto_auto] gap-x-6 text-[11px] uppercase tracking-wide text-[hsl(0_0%_55%)] pb-2 border-b border-[hsl(0_0%_93%)]">
+                  <span>{TAG_DIMS.find((d) => d.key === tagDim)?.label}</span>
+                  <span className="text-right">Vistas</span>
+                  <span className="text-right">Interesse</span>
+                  <span className="text-right">Taxa</span>
+                </div>
+                <div className="divide-y divide-[hsl(0_0%_95%)]">
+                  {tagRows.map((r) => (
+                    <div key={r.tag} className="grid grid-cols-[1fr_auto_auto_auto] gap-x-6 items-center py-2.5 text-[13px]">
+                      <span className="text-[hsl(0_0%_20%)] truncate">{r.tag}</span>
+                      <span className="text-right tabular-nums text-[hsl(0_0%_45%)]">{r.views}</span>
+                      <span className="text-right tabular-nums text-[hsl(0_0%_45%)]">{r.interests}</span>
+                      <span className="text-right tabular-nums font-medium text-[hsl(0_0%_20%)]">{r.rate}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Leads recentes */}
