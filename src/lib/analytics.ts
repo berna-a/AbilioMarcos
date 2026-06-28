@@ -170,9 +170,10 @@ export function trackArtwork(eventName: string, artwork: { id: string; reference
 }
 
 // ── Meta Pixel standard events ─────────────────────────────
-export function trackMetaLead(email?: string) {
+export function trackMetaLead(email?: string, contentName = 'inquiry') {
+  // email aceite para compat. com InquiryModal — NÃO enviado ao Meta (PII)
   if (typeof (window as any).fbq === 'function') {
-    (window as any).fbq('track', 'Lead', { content_name: 'inquiry', ...(email ? { email } : {}) });
+    (window as any).fbq('track', 'Lead', { content_name: contentName });
   }
 }
 
@@ -211,4 +212,10 @@ export function trackMetaContact() {
   if (typeof (window as any).fbq === 'function') {
     (window as any).fbq('track', 'Contact');
   }
+}
+
+// Consome a janela de dedup sem disparar Contact. Usar quando Lead é o evento
+// primário (ex: WhatsApp CTA da obra) e se quer suprimir o Contact do listener global.
+export function touchContactDedup() {
+  lastContactTs = Date.now();
 }

@@ -1,7 +1,7 @@
 import { Artwork } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/i18n';
-import { trackArtwork, trackMetaContact } from '@/lib/analytics';
+import { trackArtwork, trackMetaLead, touchContactDedup } from '@/lib/analytics';
 
 const WHATSAPP_NUMBER = '351968181117';
 
@@ -19,10 +19,10 @@ function buildWhatsAppUrl(artwork: Artwork): string {
 const ArtworkWhatsAppCTA = ({ artwork }: Props) => {
   const t = useT();
 
-  // Dispara Contact (Meta) + evento interno. trackMetaContact() é deduplicado
-  // (analytics.ts) para não contar duas vezes com o listener global de cliques wa.me.
+  // Lead (não Contact): touchContactDedup suprime o Contact do listener global de wa.me.
   const handleClick = () => {
-    trackMetaContact();
+    trackMetaLead(undefined, 'whatsapp');
+    touchContactDedup();
     trackArtwork('whatsapp_contact_clicked', artwork);
   };
 

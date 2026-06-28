@@ -28,8 +28,8 @@ const AnalyticsProvider = () => {
       const el = (e.target as HTMLElement)?.closest?.('a[href*="wa.me"], a[href*="whatsapp"], a[href*="api.whatsapp"]');
       if (el) trackMetaContact();
     };
-    document.addEventListener('click', onDocClick, true);
-    return () => document.removeEventListener('click', onDocClick, true);
+    document.addEventListener('click', onDocClick, false);
+    return () => document.removeEventListener('click', onDocClick, false);
   }, []);
 
   // Meta Pixel (RGPD): carregar só APÓS consentimento de marketing
