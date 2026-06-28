@@ -39,6 +39,7 @@ const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
 const AdminAboutContent = lazy(() => import("./pages/admin/AboutContent"));
 const Orders = lazy(() => import("./pages/admin/Orders"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const ObrasDisponiveis = lazy(() => import("./pages/ObrasDisponiveis"));
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,7 @@ const AppContent = () => {
         <Route path="/contacto" element={<Contact />} />
         <Route path="/obras" element={<AllWorks />} />
         <Route path="/links" element={<LinksPage />} />
+        <Route path="/obras-disponiveis" element={<ObrasDisponiveis />} />
         <Route path="/obra/:slug" element={<ArtworkDetail />} />
         <Route path="/checkout/success" element={<CheckoutSuccess />} />
         <Route path="/checkout/cancel" element={<CheckoutCancel />} />

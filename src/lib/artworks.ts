@@ -88,3 +88,16 @@ export const getRelatedArtworks = async (currentId: string, limit = 3): Promise<
   }
   return data || [];
 };
+
+/** Fetch a curated set of artworks by slug, preserving the requested order. */
+export const getArtworksBySlugs = async (slugs: string[]): Promise<Artwork[]> => {
+  const { data, error } = await supabase
+    .from('artworks')
+    .select('*')
+    .in('slug', slugs)
+    .eq('status', 'published')
+    .eq('availability', 'available');
+  if (error) { console.error('Error fetching artworks by slug:', error); return []; }
+  const map = new Map((data ?? []).map(a => [a.slug, a]));
+  return slugs.map(s => map.get(s)).filter(Boolean) as Artwork[];
+};

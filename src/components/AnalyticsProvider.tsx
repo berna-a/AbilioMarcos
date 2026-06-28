@@ -71,6 +71,7 @@ function getPageType(path: string): string {
   if (path.startsWith('/obra/')) return 'artwork_detail';
   if (path === '/sobre') return 'about';
   if (path === '/contacto') return 'contact';
+  if (path === '/obras-disponiveis') return 'landing_obras';
   if (path.startsWith('/checkout')) return 'checkout';
   if (path.startsWith('/legal')) return 'legal';
   return 'other';
