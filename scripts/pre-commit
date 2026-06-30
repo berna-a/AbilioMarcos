@@ -1,0 +1,4 @@
+#!/bin/sh
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts|tsx|js|jsx)$')
+[ -z "$STAGED" ] && exit 0
+echo "$STAGED" | xargs bunx eslint
