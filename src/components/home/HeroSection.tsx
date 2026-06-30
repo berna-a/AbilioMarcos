@@ -18,9 +18,8 @@ const HeroSection = () => {
 
     const ric = (window as typeof window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
     const cic = (window as typeof window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
-    let id: number;
     const activate = () => setShowVideo(true);
-    id = ric ? ric(activate, { timeout: 3000 }) : window.setTimeout(activate, 1800);
+    const id: number = ric ? ric(activate, { timeout: 3000 }) : window.setTimeout(activate, 1800);
     return () => { if (ric && cic) cic(id); else clearTimeout(id); };
   }, []);
 

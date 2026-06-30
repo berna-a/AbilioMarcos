@@ -2,6 +2,7 @@
 const PIXEL_ID = "1789018475404986";
 
 export function loadMetaPixel() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const w = window as any;
   if (w.fbq) return; // já carregado
   /* eslint-disable */

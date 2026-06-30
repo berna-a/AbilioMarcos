@@ -31,7 +31,7 @@ const saveArtwork = async (
       ? supabase.from('artworks').insert([p])
       : supabase.from('artworks').update(p).eq('id', id);
 
-  let current = { ...payload };
+  const current = { ...payload };
   // Try up to N times, dropping a missing column each time.
   for (let i = 0; i <= TRY_DROP_COLUMNS.length; i++) {
     const { error } = await attempt(current);

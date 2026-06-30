@@ -5,6 +5,7 @@ const CLARITY_ID = (import.meta.env.VITE_CLARITY_ID as string | undefined)?.trim
 
 export function loadClarity() {
   if (!CLARITY_ID) return; // sem ID → não faz nada
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const w = window as any;
   if (typeof w.clarity === 'function') return; // já carregado (idempotente)
   /* eslint-disable */

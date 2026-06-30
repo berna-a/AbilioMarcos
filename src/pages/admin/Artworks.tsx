@@ -48,7 +48,9 @@ const AdminArtworks = () => {
 
     return [...list].sort((a, b) => {
       const dir = sortDir === 'asc' ? 1 : -1;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const valA = (a as any)[sortKey];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const valB = (b as any)[sortKey];
       if (valA == null && valB == null) return 0;
       if (valA == null) return 1;

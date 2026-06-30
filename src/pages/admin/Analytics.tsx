@@ -11,6 +11,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContai
 interface AnalyticsEvent {
   id: string;
   event_name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: Record<string, any>;
   created_at: string;
 }
@@ -129,6 +130,7 @@ const AdminAnalytics = () => {
       const [{ data: eventsData }, { data: ordersData }] = await Promise.all([eventsQuery, ordersQuery]);
       setEvents(eventsData || []);
       setOrdersCount((ordersData || []).length);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setOrdersRevenue((ordersData || []).reduce((sum, o: any) => sum + (Number(o.amount) || 0), 0));
       setLoading(false);
     };

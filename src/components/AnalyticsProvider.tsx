@@ -57,6 +57,7 @@ const AnalyticsProvider = () => {
     const pageType = getPageType(location.pathname);
     track('page_view', { page_type: pageType });
     // Meta Pixel: PageView padrão em cada navegação SPA (o base só dispara no 1.º load)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof (window as any).fbq === 'function') (window as any).fbq('track', 'PageView');
     prevPath.current = location.pathname;
   }, [location.pathname]);
