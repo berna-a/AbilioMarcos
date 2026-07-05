@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { getAnalyticsSessionId, getAttribution } from '@/lib/analytics';
 
 export interface CheckoutResult {
   url: string | null;
@@ -10,7 +11,13 @@ export interface CheckoutResult {
 export const createCheckoutSession = async (artworkId: string, lang?: string): Promise<CheckoutResult> => {
   try {
     const { data, error } = await supabase.functions.invoke('create-checkout-021', {
-      body: { artwork_id: artworkId, lang: lang ?? 'pt' },
+      body: {
+        artwork_id: artworkId,
+        lang: lang ?? 'pt',
+        // Carimba a sessão com a origem (UTM/referrer/landing) para atribuição de comissão.
+        session_id: getAnalyticsSessionId(),
+        attribution: getAttribution(),
+      },
     });
 
     if (error) {

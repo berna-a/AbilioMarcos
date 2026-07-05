@@ -216,6 +216,17 @@ serve(async (req) => {
       .maybeSingle();
 
     if (!existingOrder) {
+      // Atribuição de origem (UTM/referrer/sessão), gravada pelo create-checkout-021.
+      let attribution: unknown = null;
+      const rawAttribution = session.metadata?.attribution;
+      if (rawAttribution) {
+        try {
+          attribution = JSON.parse(rawAttribution);
+        } catch {
+          console.warn("Failed to parse order attribution metadata — storing null");
+        }
+      }
+
       const { error: orderError } = await supabase.from("orders").insert({
         artwork_id: artworkId || null,
         artwork_title: artworkTitle || null,
@@ -224,6 +235,8 @@ serve(async (req) => {
         amount: session.amount_total ? session.amount_total / 100 : 0,
         currency: session.currency || "eur",
         payment_status: session.payment_status || "paid",
+        session_id: session.metadata?.session_id || null,
+        attribution,
       });
       if (orderError) console.error("Failed to insert order:", orderError);
 

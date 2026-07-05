@@ -61,7 +61,7 @@ serve(async (req) => {
       db: { schema: "cliente_021" },
     });
 
-    const { artwork_id, lang } = await req.json();
+    const { artwork_id, lang, session_id, attribution } = await req.json();
     if (!artwork_id) {
       return new Response(JSON.stringify({ error: "artwork_id is required" }), {
         status: 400,
@@ -145,6 +145,9 @@ serve(async (req) => {
         artwork_slug: artwork.slug,
         artwork_reference: artwork.reference || "",
         event_source_url: `${origin}/artwork/${artwork.slug}`,
+        // Atribuição de origem (UTM/referrer/sessão) — necessária para comissão por lead.
+        session_id: typeof session_id === "string" ? session_id : "",
+        attribution: attribution ? JSON.stringify(attribution).slice(0, 500) : "",
       },
     });
 
