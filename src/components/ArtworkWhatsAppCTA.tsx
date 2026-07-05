@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import { Artwork } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { useT } from '@/i18n';
-import { trackArtwork, trackMetaLead, touchContactDedup } from '@/lib/analytics';
+import { trackArtwork, trackMetaLead, touchContactDedup, generateLeadRefCode, logWhatsAppLead } from '@/lib/analytics';
 
 const WHATSAPP_NUMBER = '351968181117';
 
@@ -10,20 +11,22 @@ interface Props {
 }
 
 /** Mensagem WhatsApp pré-preenchida — sempre em PT, independente do idioma do site. */
-function buildWhatsAppUrl(artwork: Artwork): string {
+function buildWhatsAppUrl(artwork: Artwork, leadRef: string): string {
   const ref = artwork.reference ? ` (ref. ${artwork.reference})` : '';
-  const message = `Olá! Tenho interesse na obra ${artwork.title}${ref}. Pode dar-me mais informações?`;
+  const message = `Olá! Tenho interesse na obra ${artwork.title}${ref}. Pode dar-me mais informações? [cód: ${leadRef}]`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 const ArtworkWhatsAppCTA = ({ artwork }: Props) => {
   const t = useT();
+  const leadRef = useMemo(() => generateLeadRefCode(), [artwork.id]);
 
   // Lead (não Contact): touchContactDedup suprime o Contact do listener global de wa.me.
   const handleClick = () => {
     trackMetaLead(undefined, 'whatsapp');
     touchContactDedup();
     trackArtwork('whatsapp_contact_clicked', artwork);
+    logWhatsAppLead(leadRef, { id: artwork.id, title: artwork.title });
   };
 
   return (
@@ -35,7 +38,7 @@ const ArtworkWhatsAppCTA = ({ artwork }: Props) => {
       className="w-full bg-transparent border border-[#25D366]/60 text-[#128C3E] hover:bg-[#25D366]/10 hover:text-[#0f7a35] gap-2.5 mb-6"
     >
       <a
-        href={buildWhatsAppUrl(artwork)}
+        href={buildWhatsAppUrl(artwork, leadRef)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={t.commerce.whatsappInterest}

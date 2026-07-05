@@ -220,3 +220,22 @@ export function trackMetaContact() {
 export function touchContactDedup() {
   lastContactTs = Date.now();
 }
+
+// ── Referência de lead WhatsApp (comissão / atribuição no AOS) ─────
+// Código curto embutido na mensagem pré-preenchida; ao chegar ao inbox do AOS,
+// liga a conversa à sessão/campanha que a originou — sem depender do Abílio reportar.
+export function generateLeadRefCode(): string {
+  const time = Date.now().toString(36).slice(-4).toUpperCase();
+  const rand = Math.random().toString(36).slice(2, 4).toUpperCase();
+  return `AB-${time}${rand}`;
+}
+
+export function logWhatsAppLead(refCode: string, artwork?: { id: string; title: string }) {
+  supabase.from('whatsapp_leads').insert([{
+    ref_code: refCode,
+    session_id: getAnalyticsSessionId(),
+    attribution: getAttribution(),
+    artwork_id: artwork?.id ?? null,
+    artwork_title: artwork?.title ?? null,
+  }]).then(() => {});
+}

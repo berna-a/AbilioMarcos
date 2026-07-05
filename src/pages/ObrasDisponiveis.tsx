@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '@/components/layout/Layout';
 import { getArtworksBySlugs } from '@/lib/artworks';
 import { Artwork, isOnlineCheckoutEligible, formatPrice } from '@/lib/types';
 import { createCheckoutSession } from '@/lib/checkout';
-import { track, trackArtwork, trackMetaLead, touchContactDedup, trackMetaInitiateCheckout } from '@/lib/analytics';
+import { track, trackArtwork, trackMetaLead, touchContactDedup, trackMetaInitiateCheckout, generateLeadRefCode, logWhatsAppLead } from '@/lib/analytics';
 import { useI18n } from '@/i18n';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
@@ -26,11 +26,14 @@ const ARTWORK_SLUGS = [
 ];
 
 const HERO_IMAGE = 'https://hwpixsuovwxgilyfoszw.supabase.co/storage/v1/object/public/cliente-021/1775564684831-1fm2gxtnd7w.jpg';
-const WA_GENERIC = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Olá! Tenho interesse em obras de Abílio Marcos. Pode dar-me mais informações?')}`;
 
-function buildWaUrl(artwork: Artwork): string {
+function buildGenericWaUrl(leadRef: string): string {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Tenho interesse em obras de Abílio Marcos. Pode dar-me mais informações? [cód: ${leadRef}]`)}`;
+}
+
+function buildWaUrl(artwork: Artwork, leadRef: string): string {
   const ref = artwork.reference ? ` (ref. ${artwork.reference})` : '';
-  const msg = `Olá! Tenho interesse na obra "${artwork.title}"${ref}. Pode dar-me mais informações?`;
+  const msg = `Olá! Tenho interesse na obra "${artwork.title}"${ref}. Pode dar-me mais informações? [cód: ${leadRef}]`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -51,11 +54,13 @@ const ArtworkCard = ({ artwork }: CardProps) => {
   const canCheckout = isOnlineCheckoutEligible(artwork);
   const price = formatPrice(artwork.price);
   const dims = getDimensions(artwork);
+  const leadRef = useMemo(() => generateLeadRefCode(), [artwork.id]);
 
   const handleWhatsApp = () => {
     trackMetaLead(undefined, 'whatsapp');
     touchContactDedup();
     trackArtwork('whatsapp_contact_clicked', artwork);
+    logWhatsAppLead(leadRef, { id: artwork.id, title: artwork.title });
   };
 
   const handleCheckout = async () => {
@@ -113,7 +118,7 @@ const ArtworkCard = ({ artwork }: CardProps) => {
 
       <div className="mt-auto space-y-2">
         <a
-          href={buildWaUrl(artwork)}
+          href={buildWaUrl(artwork, leadRef)}
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleWhatsApp}
@@ -145,6 +150,8 @@ const ArtworkCard = ({ artwork }: CardProps) => {
 const ObrasDisponiveis = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [fetchDone, setFetchDone] = useState(false);
+  const genericLeadRef = useMemo(() => generateLeadRefCode(), []);
+  const waGenericUrl = useMemo(() => buildGenericWaUrl(genericLeadRef), [genericLeadRef]);
 
   // noindex — landing de campanha paga, não deve ser indexada
   useEffect(() => {
@@ -168,6 +175,7 @@ const ObrasDisponiveis = () => {
     trackMetaLead(undefined, 'whatsapp');
     touchContactDedup();
     track('whatsapp_contact_clicked', { page_type: 'landing_obras' });
+    logWhatsAppLead(genericLeadRef);
   };
 
   return (
@@ -214,7 +222,7 @@ const ObrasDisponiveis = () => {
             className="flex flex-col sm:flex-row gap-3"
           >
             <a
-              href={WA_GENERIC}
+              href={waGenericUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={trackGenericWa}
@@ -271,7 +279,7 @@ const ObrasDisponiveis = () => {
             ))}
           </div>
           <a
-            href={WA_GENERIC}
+            href={waGenericUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={trackGenericWa}
@@ -332,7 +340,7 @@ const ObrasDisponiveis = () => {
         <h2 className="text-2xl md:text-3xl font-light tracking-[0.03em] mb-3">Ainda tem dúvidas?</h2>
         <p className="text-[13px] tracking-[0.04em] text-foreground/55 mb-8">Fale diretamente com o artista.</p>
         <a
-          href={WA_GENERIC}
+          href={waGenericUrl}
           target="_blank"
           rel="noopener noreferrer"
           onClick={trackGenericWa}
