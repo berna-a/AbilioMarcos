@@ -19,7 +19,7 @@ function buildWhatsAppUrl(artwork: Artwork, leadRef: string): string {
 
 const ArtworkWhatsAppCTA = ({ artwork }: Props) => {
   const t = useT();
-  const leadRef = useMemo(() => generateLeadRefCode(), [artwork.id]);
+  const leadRef = useMemo(() => generateLeadRefCode(), []);
 
   // Lead (não Contact): touchContactDedup suprime o Contact do listener global de wa.me.
   const handleClick = () => {

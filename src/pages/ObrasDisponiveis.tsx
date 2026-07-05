@@ -54,7 +54,7 @@ const ArtworkCard = ({ artwork }: CardProps) => {
   const canCheckout = isOnlineCheckoutEligible(artwork);
   const price = formatPrice(artwork.price);
   const dims = getDimensions(artwork);
-  const leadRef = useMemo(() => generateLeadRefCode(), [artwork.id]);
+  const leadRef = useMemo(() => generateLeadRefCode(), []);
 
   const handleWhatsApp = () => {
     trackMetaLead(undefined, 'whatsapp');
