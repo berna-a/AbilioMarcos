@@ -31,6 +31,10 @@ function buildGenericWaUrl(leadRef: string): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Tenho interesse em obras de Abílio Marcos. Pode dar-me mais informações? [cód: ${leadRef}]`)}`;
 }
 
+function buildVisitaWaUrl(leadRef: string): string {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Gostaria de marcar uma visita ao atelier de Abílio Marcos. [cód: ${leadRef}]`)}`;
+}
+
 function buildWaUrl(artwork: Artwork, leadRef: string): string {
   const ref = artwork.reference ? ` (ref. ${artwork.reference})` : '';
   const msg = `Olá! Tenho interesse na obra "${artwork.title}"${ref}. Pode dar-me mais informações? [cód: ${leadRef}]`;
@@ -152,6 +156,8 @@ const ObrasDisponiveis = () => {
   const [fetchDone, setFetchDone] = useState(false);
   const genericLeadRef = useMemo(() => generateLeadRefCode(), []);
   const waGenericUrl = useMemo(() => buildGenericWaUrl(genericLeadRef), [genericLeadRef]);
+  const visitaLeadRef = useMemo(() => generateLeadRefCode(), []);
+  const waVisitaUrl = useMemo(() => buildVisitaWaUrl(visitaLeadRef), [visitaLeadRef]);
 
   // noindex — landing de campanha paga, não deve ser indexada
   useEffect(() => {
@@ -176,6 +182,14 @@ const ObrasDisponiveis = () => {
     touchContactDedup();
     track('whatsapp_contact_clicked', { page_type: 'landing_obras' });
     logWhatsAppLead(genericLeadRef);
+  };
+
+  // Porta de entrada de baixa fricção: marcar visita ao atelier pesa menos que "comprar".
+  const trackVisitaWa = () => {
+    trackMetaLead(undefined, 'whatsapp');
+    touchContactDedup();
+    track('whatsapp_contact_clicked', { page_type: 'landing_obras', intent: 'visita_atelier' });
+    logWhatsAppLead(visitaLeadRef);
   };
 
   return (
@@ -338,16 +352,29 @@ const ObrasDisponiveis = () => {
       {/* ── CTA final ── */}
       <section className="px-6 md:px-12 lg:px-24 py-16 md:py-24 border-t border-foreground/10 text-center">
         <h2 className="text-2xl md:text-3xl font-light tracking-[0.03em] mb-3">Ainda tem dúvidas?</h2>
-        <p className="text-[13px] tracking-[0.04em] text-foreground/55 mb-8">Fale diretamente com o artista.</p>
-        <a
-          href={waGenericUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={trackGenericWa}
-          className="inline-flex items-center justify-center bg-foreground text-background px-10 py-3.5 text-[12px] tracking-[0.25em] uppercase hover:bg-foreground/80 transition-colors duration-300"
-        >
-          Falar com o artista
-        </a>
+        <p className="text-[13px] tracking-[0.04em] text-foreground/55 mb-8">
+          Fale diretamente com o artista — ou veja as obras ao vivo no atelier, em Santo Estêvão das Galés, Mafra.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href={waGenericUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={trackGenericWa}
+            className="inline-flex items-center justify-center bg-foreground text-background px-10 py-3.5 text-[12px] tracking-[0.25em] uppercase hover:bg-foreground/80 transition-colors duration-300"
+          >
+            Falar com o artista
+          </a>
+          <a
+            href={waVisitaUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={trackVisitaWa}
+            className="inline-flex items-center justify-center border border-foreground/40 text-foreground px-10 py-3.5 text-[12px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition-colors duration-300"
+          >
+            Marcar visita ao atelier
+          </a>
+        </div>
       </section>
     </Layout>
   );
