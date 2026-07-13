@@ -237,5 +237,9 @@ export function logWhatsAppLead(refCode: string, artwork?: { id: string; title: 
     attribution: getAttribution(),
     artwork_id: artwork?.id ?? null,
     artwork_title: artwork?.title ?? null,
-  }]).then(() => {});
+  }]).then(({ error }) => {
+    // Insert é fire-and-forget (não pode bloquear o clique de WhatsApp), mas
+    // uma falha aqui apaga a lead sem deixar rasto — nunca voltar a falhar em silêncio.
+    if (error) console.error('logWhatsAppLead failed:', error);
+  });
 }
