@@ -121,10 +121,10 @@ const ArtworkCard = ({ artwork }: CardProps) => {
       </div>
 
       <div className="mt-auto space-y-2">
+        {/* Sem target="_blank": no browser interno do Instagram/Facebook (iOS) isso
+            impede o deep-link para a app do WhatsApp — o clique fica sem efeito. */}
         <a
           href={buildWaUrl(artwork, leadRef)}
-          target="_blank"
-          rel="noopener noreferrer"
           onClick={handleWhatsApp}
           className="inline-flex w-full items-center justify-center border border-foreground/30 text-foreground px-4 py-2.5 text-[12px] tracking-[0.2em] uppercase hover:bg-foreground hover:text-background transition-colors duration-300"
         >
@@ -237,8 +237,6 @@ const ObrasDisponiveis = () => {
           >
             <a
               href={waGenericUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               onClick={trackGenericWa}
               className="inline-flex items-center justify-center bg-white text-black px-8 py-3 text-[12px] tracking-[0.25em] uppercase hover:bg-white/90 transition-colors duration-300"
             >
@@ -294,8 +292,6 @@ const ObrasDisponiveis = () => {
           </div>
           <a
             href={waGenericUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={trackGenericWa}
             className="inline-flex items-center mt-10 border border-foreground text-foreground px-8 py-3 text-[12px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition-colors duration-300"
           >
@@ -358,8 +354,6 @@ const ObrasDisponiveis = () => {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href={waGenericUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={trackGenericWa}
             className="inline-flex items-center justify-center bg-foreground text-background px-10 py-3.5 text-[12px] tracking-[0.25em] uppercase hover:bg-foreground/80 transition-colors duration-300"
           >
@@ -367,8 +361,6 @@ const ObrasDisponiveis = () => {
           </a>
           <a
             href={waVisitaUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={trackVisitaWa}
             className="inline-flex items-center justify-center border border-foreground/40 text-foreground px-10 py-3.5 text-[12px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition-colors duration-300"
           >

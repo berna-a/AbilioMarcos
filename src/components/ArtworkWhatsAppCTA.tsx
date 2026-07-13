@@ -37,10 +37,10 @@ const ArtworkWhatsAppCTA = ({ artwork }: Props) => {
       onClick={handleClick}
       className="w-full bg-transparent border border-[#25D366]/60 text-[#128C3E] hover:bg-[#25D366]/10 hover:text-[#0f7a35] gap-2.5 mb-6"
     >
+      {/* Sem target="_blank": no browser interno do Instagram/Facebook (iOS) isso
+          impede o deep-link para a app do WhatsApp — o clique fica sem efeito. */}
       <a
         href={buildWhatsAppUrl(artwork, leadRef)}
-        target="_blank"
-        rel="noopener noreferrer"
         aria-label={t.commerce.whatsappInterest}
       >
         <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden="true">
