@@ -28,11 +28,11 @@ const ARTWORK_SLUGS = [
 const HERO_IMAGE = 'https://hwpixsuovwxgilyfoszw.supabase.co/storage/v1/object/public/cliente-021/1775564684831-1fm2gxtnd7w.jpg';
 
 function buildGenericWaUrl(leadRef: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Tenho interesse em obras de Abílio Marcos. Pode dar-me mais informações? [cód: ${leadRef}]`)}`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Vi as obras disponíveis no site do Abílio Marcos e gostava de saber mais — pode enviar-me fotos e preços do que tem disponível? [cód: ${leadRef}]`)}`;
 }
 
 function buildVisitaWaUrl(leadRef: string): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Gostaria de marcar uma visita ao atelier de Abílio Marcos. [cód: ${leadRef}]`)}`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Gostaria de marcar uma visita ao atelier de Abílio Marcos para ver as obras pessoalmente. Que dias tem disponíveis? [cód: ${leadRef}]`)}`;
 }
 
 function buildWaUrl(artwork: Artwork, leadRef: string): string {
