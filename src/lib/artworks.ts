@@ -1,103 +1,82 @@
-import { supabase } from '@/lib/supabase';
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../convex/_generated/api";
 import { Artwork } from '@/lib/types';
+import type { Doc } from "../../convex/_generated/dataModel";
+
+const getConvexClient = () => {
+  const url = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_CONVEX_URL)
+    ? import.meta.env.VITE_CONVEX_URL
+    : "https://deafening-cormorant-584.eu-west-1.convex.cloud";
+  return new ConvexHttpClient(url);
+};
+
+const mapArtwork = (a: Doc<"artworks"> | null | undefined): Artwork => {
+  if (!a) return a;
+  return { ...a, id: a._id, old_id: a.old_id || a._id };
+};
 
 export const getPublishedArtworks = async (): Promise<Artwork[]> => {
-  const { data, error } = await supabase
-    .from('artworks')
-    .select('*')
-    .eq('status', 'published')
-    .in('availability', ['available', 'exhibition'])
-    .not('primary_image_url', 'is', null)
-    .order('year', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching artworks:', error);
+  try {
+    const client = getConvexClient();
+    const data = await client.query(api.artworks.getPublishedArtworks);
+    return (data || []).map(mapArtwork);
+  } catch (error) {
+    console.error("Error fetching artworks from Convex:", error);
     return [];
   }
-  return data || [];
 };
 
 export const getFeaturedArtworks = async (): Promise<Artwork[]> => {
-  const { data, error } = await supabase
-    .from('artworks')
-    .select('*')
-    .eq('status', 'published')
-    .eq('is_featured', true)
-    .order('year', { ascending: false })
-    .limit(3);
-
-  if (error) {
-    console.error('Error fetching featured artworks:', error);
+  try {
+    const client = getConvexClient();
+    const data = await client.query(api.artworks.getFeaturedArtworks);
+    return (data || []).map(mapArtwork);
+  } catch (error) {
+    console.error("Error fetching featured artworks from Convex:", error);
     return [];
   }
-  return data || [];
 };
 
-/**
- * Most recent published artworks for the public homepage "Recent Works" section.
- * Ordered by created_at (newest first), independent of `is_featured`.
- */
 export const getRecentArtworks = async (limit = 6): Promise<Artwork[]> => {
-  const { data, error } = await supabase
-    .from('artworks')
-    .select('*')
-    .eq('status', 'published')
-    .in('availability', ['available', 'exhibition'])
-    .not('primary_image_url', 'is', null)
-    .order('created_at', { ascending: false })
-    .limit(limit);
-
-  if (error) {
-    console.error('Error fetching recent artworks:', error);
+  try {
+    const client = getConvexClient();
+    const data = await client.query(api.artworks.getRecentArtworks, { limit });
+    return (data || []).map(mapArtwork);
+  } catch (error) {
+    console.error("Error fetching recent artworks from Convex:", error);
     return [];
   }
-  return data || [];
 };
-
-// `getSelectedArtworks` removed in V1 — Selected Works is no longer used publicly.
-// `is_featured` is preserved in the data model for future use.
-
 
 export const getArtworkBySlug = async (slug: string): Promise<Artwork | null> => {
-  const { data, error } = await supabase
-    .from('artworks')
-    .select('*')
-    .eq('slug', slug)
-    .eq('status', 'published')
-    .single();
-
-  if (error) {
-    console.error('Error fetching artwork:', error);
+  try {
+    const client = getConvexClient();
+    const data = await client.query(api.artworks.getArtworkBySlug, { slug });
+    return data ? mapArtwork(data) : null;
+  } catch (error) {
+    console.error("Error fetching artwork by slug from Convex:", error);
     return null;
   }
-  return data;
 };
 
 export const getRelatedArtworks = async (currentId: string, limit = 3): Promise<Artwork[]> => {
-  const { data, error } = await supabase
-    .from('artworks')
-    .select('*')
-    .eq('status', 'published')
-    .neq('id', currentId)
-    .order('year', { ascending: false })
-    .limit(limit);
-
-  if (error) {
-    console.error('Error fetching related artworks:', error);
+  try {
+    const client = getConvexClient();
+    const data = await client.query(api.artworks.getRelatedArtworks, { currentId, limit });
+    return (data || []).map(mapArtwork);
+  } catch (error) {
+    console.error("Error fetching related artworks from Convex:", error);
     return [];
   }
-  return data || [];
 };
 
-/** Fetch a curated set of artworks by slug, preserving the requested order. */
 export const getArtworksBySlugs = async (slugs: string[]): Promise<Artwork[]> => {
-  const { data, error } = await supabase
-    .from('artworks')
-    .select('*')
-    .in('slug', slugs)
-    .eq('status', 'published')
-    .eq('availability', 'available');
-  if (error) { console.error('Error fetching artworks by slug:', error); return []; }
-  const map = new Map((data ?? []).map(a => [a.slug, a]));
-  return slugs.map(s => map.get(s)).filter(Boolean) as Artwork[];
+  try {
+    const client = getConvexClient();
+    const data = await client.query(api.artworks.getArtworksBySlugs, { slugs });
+    return (data || []).map(mapArtwork);
+  } catch (error) {
+    console.error("Error fetching artworks by slugs from Convex:", error);
+    return [];
+  }
 };

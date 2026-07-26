@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Dumps da migração Supabase→Convex — contêm dados de clientes (PII). Nunca versionar.
+migration_data/
+convex_import/
+supabase-data.sql
+supabase/.temp/

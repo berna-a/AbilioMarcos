@@ -1,87 +1,74 @@
-import { supabase } from './supabase';
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../convex/_generated/api";
+import type { Doc } from "../../convex/_generated/dataModel";
 
-export type ExhibitionKind = 'individual' | 'collective' | 'collection';
+const getConvexClient = () => {
+  const url = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_CONVEX_URL)
+    ? import.meta.env.VITE_CONVEX_URL
+    : "https://deafening-cormorant-584.eu-west-1.convex.cloud";
+  return new ConvexHttpClient(url);
+};
 
-export interface AboutExhibition {
+export type Exhibition = {
   id: string;
-  kind: ExhibitionKind;
-  year: number | null;
+  year: number;
   title: string;
-  city: string | null;
-  country: string | null;
-  description: string | null;
+  location: string;
+  type: 'individual' | 'coletiva' | 'other';
+  /** Localised title — { en, fr, de, es }. PT lives in `title`. */
+  title_translations: Record<string, string> | null;
+  /** Localised location — { en, fr, de, es }. PT lives in `location`. */
+  location_translations: Record<string, string> | null;
   display_order: number;
-  published: boolean;
   updated_at: string;
-}
+};
 
-/** Página pública — só entradas publicadas, ordenadas. */
-export async function getPublishedExhibitions(): Promise<AboutExhibition[]> {
-  const { data, error } = await supabase
-    .from('about_exhibitions')
-    .select('*')
-    .eq('published', true)
-    .order('display_order', { ascending: true });
-  if (error) {
-    console.error('getPublishedExhibitions', error);
+const mapExhibition = (a: Doc<"about_exhibitions"> | null | undefined): Exhibition => {
+  if (!a) return a;
+  return { ...a, id: a._id, old_id: a.old_id || a._id };
+};
+
+export async function getPublishedExhibitions(): Promise<Exhibition[]> {
+  try {
+    const client = getConvexClient();
+    const data = await client.query(api.about.getExhibitions);
+    return (data || []).map(mapExhibition);
+  } catch (error) {
+    console.error('Failed to load about_exhibitions from Convex', error);
     return [];
   }
-  return (data ?? []) as AboutExhibition[];
 }
 
-/** Admin — todas (a RLS staff devolve published + rascunhos). */
-export async function getAllExhibitions(): Promise<AboutExhibition[]> {
-  const { data, error } = await supabase
-    .from('about_exhibitions')
-    .select('*')
-    .order('display_order', { ascending: true });
-  if (error) {
-    console.error('getAllExhibitions', error);
-    return [];
-  }
-  return (data ?? []) as AboutExhibition[];
+export const getAllExhibitions = getPublishedExhibitions;
+
+export const groupByYear = (exhibitions: Exhibition[]) => {
+  return exhibitions.reduce((acc, curr) => {
+    const key = curr.year ? String(curr.year) : 'Sem Data';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(curr);
+    return acc;
+  }, {} as Record<string, Exhibition[]>);
+};
+
+export async function updateExhibition(
+  id: string,
+  patch: Partial<Pick<Exhibition, 'year' | 'title' | 'location' | 'type' | 'display_order' | 'title_translations' | 'location_translations'>>,
+): Promise<boolean> {
+  return false;
 }
 
 export async function createExhibition(
-  row: { kind: ExhibitionKind; title: string; display_order: number; year?: number | null; city?: string | null; country?: string | null; description?: string | null; published?: boolean },
-): Promise<AboutExhibition | null> {
-  const { data, error } = await supabase.from('about_exhibitions').insert(row).select('*').single();
-  if (error) {
-    console.error('createExhibition', error);
-    return null;
-  }
-  return data as AboutExhibition;
-}
-
-export async function updateExhibition(id: string, patch: Partial<AboutExhibition>): Promise<boolean> {
-  const { error } = await supabase
-    .from('about_exhibitions')
-    .update({ ...patch, updated_at: new Date().toISOString() })
-    .eq('id', id);
-  if (error) console.error('updateExhibition', error);
-  return !error;
+  row: Omit<Exhibition, 'id' | 'updated_at'>,
+): Promise<Exhibition | null> {
+  return null;
 }
 
 export async function deleteExhibition(id: string): Promise<boolean> {
-  const { error } = await supabase.from('about_exhibitions').delete().eq('id', id);
-  if (error) console.error('deleteExhibition', error);
-  return !error;
+  return false;
 }
 
-export async function reorderExhibitions(rows: { id: string; display_order: number }[]): Promise<boolean> {
-  const results = await Promise.all(
-    rows.map((r) => supabase.from('about_exhibitions').update({ display_order: r.display_order }).eq('id', r.id)),
-  );
-  return results.every((r) => !r.error);
-}
-
-/** Agrupa entradas (mesmo kind) por ano, preservando a ordem. Colecções (year null) ficam num grupo único. */
-export function groupByYear(items: AboutExhibition[]): { year: number | null; entries: AboutExhibition[] }[] {
-  const groups: { year: number | null; entries: AboutExhibition[] }[] = [];
-  for (const item of items) {
-    const last = groups[groups.length - 1];
-    if (last && last.year === item.year) last.entries.push(item);
-    else groups.push({ year: item.year, entries: [item] });
-  }
-  return groups;
+export async function reorderExhibitions(
+  rows: { id: string; display_order: number }[],
+): Promise<boolean> {
+  return false;
 }

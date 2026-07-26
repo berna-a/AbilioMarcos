@@ -1,40 +1,26 @@
 // Build-time sitemap generator. Writes public/sitemap.xml.
-// Fetches published artwork slugs from Supabase via REST.
+// Fetches published artwork slugs from Convex via HTTP client.
 import { writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { ConvexHttpClient } from "convex/browser";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const SITE = "https://abiliomarcos.com";
-// Projeto Supabase do AOS; as obras vivem no schema `cliente_021` (não `public`).
-const SUPABASE_URL = "https://hwpixsuovwxgilyfoszw.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_4zfZ95cWvrhy0nWmqjEzqQ_kKh3jGAa";
-const SUPABASE_SCHEMA = "cliente_021";
+const CONVEX_URL = process.env.VITE_CONVEX_URL || "https://deafening-cormorant-584.eu-west-1.convex.cloud";
 
 const STATIC_PATHS = ["/", "/obras", "/sobre", "/contacto"];
 
 async function fetchPublishedSlugs() {
-  const url = `${SUPABASE_URL}/rest/v1/artworks?select=slug&status=eq.published`;
   try {
-    const res = await fetch(url, {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        // As obras estão num schema dedicado — PostgREST precisa do Accept-Profile.
-        "Accept-Profile": SUPABASE_SCHEMA,
-      },
-    });
-    if (!res.ok) {
-      console.warn(`[sitemap] Supabase responded ${res.status}; skipping artworks.`);
-      return [];
-    }
-    const rows = await res.json();
-    return rows
+    const client = new ConvexHttpClient(CONVEX_URL);
+    const rows = await client.query("artworks:getPublishedArtworks");
+    return (rows || [])
       .map((r) => r?.slug)
       .filter((s) => typeof s === "string" && s.length > 0);
   } catch (err) {
-    console.warn(`[sitemap] Failed to fetch artwork slugs: ${err?.message ?? err}`);
+    console.warn(`[sitemap] Failed to fetch artwork slugs from Convex: ${err?.message ?? err}`);
     return [];
   }
 }
@@ -57,9 +43,8 @@ async function main() {
   const today = new Date().toISOString().slice(0, 10);
   const slugs = await fetchPublishedSlugs();
 
-  // Falhar ALTO: um sitemap sem obras é uma regressão de SEO silenciosa (já aconteceu).
   if (slugs.length === 0) {
-    console.error("[sitemap] ERRO: 0 obras obtidas do Supabase — a abortar build para não publicar um sitemap vazio.");
+    console.error("[sitemap] ERRO: 0 obras obtidas da Convex — a abortar build.");
     process.exit(1);
   }
 
