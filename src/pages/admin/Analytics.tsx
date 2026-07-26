@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getConvexClient } from '@/lib/convexClient';
+import { api } from '@convex/_generated/api';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { BarChart3, Eye, MousePointer, MessageSquare, ShoppingCart, CheckCircle, Mail, Flame, ExternalLink } from 'lucide-react';
 
@@ -26,11 +27,15 @@ const PERIOD_LABELS: Record<Period, string> = {
 };
 
 // ── Helpers ────────────────────────────────────────────────
-function sinceDate(period: Period): string | null {
+function periodDays(period: Period): number | null {
   if (period === 'all') return null;
-  const d = new Date();
-  d.setDate(d.getDate() - (period === '7d' ? 7 : period === '30d' ? 30 : 90));
-  return d.toISOString();
+  return period === '7d' ? 7 : period === '30d' ? 30 : 90;
+}
+
+/** Same cutoff shape as convex/lib/time.ts#cutoffPg — needed to filter the
+ * (already admin-gated, unfiltered) orders list client-side by period. */
+function cutoffIsoDate(days: number): string {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 }
 
 function countByEvent(events: AnalyticsEvent[], name: string) {
@@ -117,21 +122,31 @@ const AdminAnalytics = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const since = sinceDate(period);
+      const days = periodDays(period);
+      const client = getConvexClient();
 
-      // Events
-      let eventsQuery = supabase.from('analytics_events').select('id, event_name, properties, created_at').order('created_at', { ascending: false }).limit(5000);
-      if (since) eventsQuery = eventsQuery.gte('created_at', since);
+      // Orders — source of truth for confirmed purchases. getOrders() is
+      // admin-gated but unfiltered; period + payment_status are applied here.
+      const [eventsData, allOrders] = await Promise.all([
+        client.query(api.analytics.getAnalyticsEventsAdmin, { sinceDays: days, limit: 5000 }),
+        client.query(api.orders.getOrders, {}),
+      ]);
 
-      // Orders — source of truth for confirmed purchases
-      let ordersQuery = supabase.from('orders').select('amount, currency, payment_status, created_at').eq('payment_status', 'paid');
-      if (since) ordersQuery = ordersQuery.gte('created_at', since);
+      const sinceStr = days != null ? cutoffIsoDate(days) : null;
+      const paidOrders = allOrders.filter(
+        (o) => o.payment_status === 'paid' && (!sinceStr || (o.created_at ?? '') >= sinceStr),
+      );
 
-      const [{ data: eventsData }, { data: ordersData }] = await Promise.all([eventsQuery, ordersQuery]);
-      setEvents(eventsData || []);
-      setOrdersCount((ordersData || []).length);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setOrdersRevenue((ordersData || []).reduce((sum, o: any) => sum + (Number(o.amount) || 0), 0));
+      setEvents(
+        (eventsData || []).map((e) => ({
+          id: e._id,
+          event_name: e.event_name ?? '',
+          properties: e.properties ?? {},
+          created_at: e.created_at ?? '',
+        })),
+      );
+      setOrdersCount(paidOrders.length);
+      setOrdersRevenue(paidOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0));
       setLoading(false);
     };
     fetchData();

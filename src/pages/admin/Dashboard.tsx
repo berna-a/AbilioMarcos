@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getConvexClient } from '@/lib/convexClient';
+import { api } from '@convex/_generated/api';
+import { getInquiries } from '@/lib/inquiries';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Link } from 'react-router-dom';
 import { thumbUrl } from '@/lib/images';
@@ -55,35 +57,31 @@ const Dashboard = () => {
   const [tagRows, setTagRows] = useState<TagRow[]>([]);
 
   useEffect(() => {
-    supabase.rpc('dashboard_tag_breakdown', { p_days: 30, p_dimension: tagDim }).then(({ data }) => {
-      setTagRows(((data || []) as TagRow[]).map((r) => ({ ...r, views: Number(r.views), interests: Number(r.interests), rate: Number(r.rate) })));
+    const client = getConvexClient();
+    client.query(api.dashboard.tagBreakdown, { p_days: 30, p_dimension: tagDim }).then((data) => {
+      setTagRows((data || []).map((r) => ({ ...r, views: Number(r.views), interests: Number(r.interests), rate: Number(r.rate) })));
     });
   }, [tagDim]);
 
   useEffect(() => {
-    const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-    const since60 = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
-
     const load = async () => {
-      const [artRes, leadRes, engagementRes, visitRes, acquireRes, acquirePrevRes] = await Promise.all([
-        supabase.from('artworks').select('availability'),
-        supabase.from('inquiries').select('id, name, email, artwork_title, status, created_at').order('created_at', { ascending: false }).limit(6),
-        supabase.rpc('dashboard_artwork_engagement', { p_days: 30, p_limit: 20 }),
-        supabase.rpc('dashboard_daily_visits', { p_days: 60 }),
-        supabase.from('analytics_events').select('*', { count: 'exact', head: true }).eq('event_name', 'acquire_online_clicked').gte('created_at', since30),
-        supabase.from('analytics_events').select('*', { count: 'exact', head: true }).eq('event_name', 'acquire_online_clicked').gte('created_at', since60).lt('created_at', since30),
+      const client = getConvexClient();
+      const [availabilityCounts, allInquiries, engagementRes, visitRes, curAcquire, prevAcquire] = await Promise.all([
+        client.query(api.adminArtworks.getAvailabilityCountsAdmin, {}),
+        getInquiries(),
+        client.query(api.dashboard.artworkEngagement, { p_days: 30, p_limit: 20 }),
+        client.query(api.dashboard.dailyVisits, { p_days: 60 }),
+        client.query(api.analytics.countEventsAdmin, { event_name: 'acquire_online_clicked', sinceDaysAgo: 30 }),
+        client.query(api.analytics.countEventsAdmin, { event_name: 'acquire_online_clicked', sinceDaysAgo: 60, untilDaysAgo: 30 }),
       ]);
 
-      setSold((artRes.data || []).filter((a: { availability: string }) => a.availability === 'sold').length);
-      setLeads((leadRes.data as Lead[]) || []);
+      setSold(availabilityCounts.sold ?? 0);
+      setLeads(allInquiries.slice(0, 6) as Lead[]);
 
-      const eng = ((engagementRes.data || []) as ArtworkEngagement[]).map((e) => ({
-        ...e, views: Number(e.views), interests: Number(e.interests), rate: Number(e.rate),
-      }));
-      setArtworkEngagement(eng);
+      setArtworkEngagement((engagementRes || []) as ArtworkEngagement[]);
 
       // Visits: split 60d into current (last 30) vs previous (30–60)
-      const allDays = ((visitRes.data as DayVisits[]) || []).map((d) => ({ ...d, visits: Number(d.visits) }));
+      const allDays = (visitRes || []) as DayVisits[];
       const since30ts = Date.now() - 30 * 24 * 60 * 60 * 1000;
       const current30 = allDays.filter((d) => new Date(d.day + 'T00:00:00').getTime() >= since30ts);
       const prev30 = allDays.filter((d) => new Date(d.day + 'T00:00:00').getTime() < since30ts);
@@ -93,9 +91,7 @@ const Dashboard = () => {
       setVisitsDelta(totalPrev > 0 ? Math.round(((totalCurrent - totalPrev) / totalPrev) * 100) : null);
 
       // Acquire clicks + delta
-      const curAcquire = acquireRes.count || 0;
-      const prevAcquire = acquirePrevRes.count || 0;
-      setAcquireClicks(curAcquire);
+      setAcquireClicks(curAcquire || 0);
       setAcquireDelta(prevAcquire > 0 ? Math.round(((curAcquire - prevAcquire) / prevAcquire) * 100) : null);
 
       setLoading(false);

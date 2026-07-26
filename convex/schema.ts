@@ -36,10 +36,17 @@ export default defineSchema({
     old_id: v.optional(v.string()),
   }).index("by_slug", ["slug"]),
 
+  // `title`/`title_translations`/`section`/`display_order` were missing here
+  // (same drift pattern fixed for inquiries/orders/analytics_events/
+  // whatsapp_leads earlier) — confirmed against live data, present on every row.
   about_content: defineTable({
+    title: v.optional(v.string()),
+    section: v.optional(v.string()),
     content: v.optional(v.string()),
+    display_order: v.optional(v.number()),
     created_at: v.optional(v.string()),
     updated_at: v.optional(v.string()),
+    title_translations: v.optional(v.any()),
     content_translations: v.any(),
     id: v.union(v.string(), v.null()),
     old_id: v.optional(v.string()),
@@ -50,6 +57,7 @@ export default defineSchema({
     year: v.union(v.number(), v.null(), v.string()),
     location: v.union(v.string(), v.null()),
     type: v.optional(v.string()),
+    display_order: v.optional(v.number()),
     created_at: v.optional(v.string()),
     updated_at: v.optional(v.string()),
     title_translations: v.any(),
@@ -108,7 +116,15 @@ export default defineSchema({
     session_id: v.optional(v.string()),
     created_at: v.optional(v.string()),
     old_id: v.optional(v.string()),
-  }).index("by_created_at", ["created_at"]).index("by_event_name", ["event_name"]),
+  })
+    .index("by_created_at", ["created_at"])
+    .index("by_event_name", ["event_name"])
+    // `created_at` is a Postgres-style "YYYY-MM-DD HH:MM:SS.ffffff+00" UTC
+    // string — lexicographic order matches chronological order, so range
+    // queries on it work like a real timestamp index. Used by the admin
+    // dashboard (last-30/60-days queries) to avoid scanning the whole
+    // (28k+ and growing) table per event type.
+    .index("by_event_name_and_created_at", ["event_name", "created_at"]),
 
   user_roles: defineTable({
     user_id: v.optional(v.string()),

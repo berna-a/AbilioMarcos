@@ -10,7 +10,9 @@ const getConvexClient = () => {
   return new ConvexHttpClient(url);
 };
 
-const mapArtwork = (a: Doc<"artworks"> | null | undefined): Artwork => {
+// Exported for admin pages (Artworks.tsx, ArtworkForm.tsx) that read the
+// same shape from the admin-gated queries in convex/adminArtworks.ts.
+export const mapArtwork = (a: Doc<"artworks"> | null | undefined): Artwork => {
   if (!a) return a;
   return { ...a, id: a._id, old_id: a.old_id || a._id };
 };

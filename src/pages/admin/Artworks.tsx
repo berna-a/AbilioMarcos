@@ -1,7 +1,10 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
+import { getConvexClient } from '@/lib/convexClient';
+import { api } from '@convex/_generated/api';
+import { mapArtwork } from '@/lib/artworks';
 import { Artwork } from '@/lib/types';
+import type { Id } from '@convex/_generated/dataModel';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Plus, Search, Pencil, Trash2, ChevronUp, ChevronDown, Languages } from 'lucide-react';
 import { useAdmin } from '@/i18n';
@@ -26,9 +29,12 @@ const AdminArtworks = () => {
   const admin = useAdmin();
 
   const fetchArtworks = async () => {
-    const { data, error } = await supabase.from('artworks').select('*').order('year', { ascending: false });
-    if (error) console.error('Error fetching artworks:', error);
-    else setArtworks(data || []);
+    try {
+      const data = await getConvexClient().query(api.adminArtworks.getAllArtworksAdmin, {});
+      setArtworks((data || []).map(mapArtwork).sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0)));
+    } catch (error) {
+      console.error('Error fetching artworks:', error);
+    }
     setLoading(false);
   };
 
@@ -64,9 +70,13 @@ const AdminArtworks = () => {
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(admin.artworks.confirmDelete.replace('{title}', title))) return;
     setDeleting(id);
-    const { error } = await supabase.from('artworks').delete().eq('id', id);
-    if (error) { console.error('Delete error:', error); alert(admin.artworks.deleteError); }
-    else setArtworks((prev) => prev.filter((a) => a.id !== id));
+    try {
+      await getConvexClient().mutation(api.adminArtworks.deleteArtwork, { id: id as Id<'artworks'> });
+      setArtworks((prev) => prev.filter((a) => a.id !== id));
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert(admin.artworks.deleteError);
+    }
     setDeleting(null);
   };
 
@@ -74,30 +84,26 @@ const AdminArtworks = () => {
   const updateField = async (id: string, patch: Partial<Artwork>) => {
     setUpdating(id);
     setArtworks((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)));
-    const { error } = await supabase
-      .from('artworks')
-      .update({ ...patch, updated_at: new Date().toISOString() })
-      .eq('id', id);
-    if (error) {
+    try {
+      await getConvexClient().mutation(api.adminArtworks.updateArtwork, { id: id as Id<'artworks'>, patch });
+      toast.success('Atualizado ✓');
+    } catch (error) {
       console.error('Update error:', error);
       toast.error('Não foi possível guardar. Tenta de novo.');
       await fetchArtworks();
-    } else {
-      toast.success('Atualizado ✓');
     }
     setUpdating(null);
   };
 
   const handleBackfillTranslations = async () => {
     if (!confirm('Traduzir todas as obras sem traduções e todas as secções "Sobre"? Pode demorar alguns minutos.')) return;
-    type Row = { id: string; title?: string | null; description?: string | null; content?: string | null; title_translations?: unknown; description_translations?: unknown; content_translations?: unknown };
+    type Row = { _id: string; title?: string | null; description?: string | null; content?: string | null; title_translations?: unknown; description_translations?: unknown; content_translations?: unknown };
 
-    const { data: artRows } = await supabase
-      .from('artworks')
-      .select('id, title, description, title_translations, description_translations');
-    const { data: aboutRows } = await supabase
-      .from('about_content')
-      .select('id, title, content, title_translations, content_translations');
+    const client = getConvexClient();
+    const [artRows, aboutRows] = await Promise.all([
+      client.query(api.adminArtworks.getAllArtworksAdmin, {}),
+      client.query(api.about.getAllAboutContentAdmin, {}),
+    ]);
 
     const artworkJobs = (artRows ?? []).filter((r: Row) => !r.title_translations || (r.description && !r.description_translations));
     const aboutJobs = (aboutRows ?? []).filter((r: Row) => !r.title_translations || (r.content && !r.content_translations));
@@ -110,7 +116,7 @@ const AdminArtworks = () => {
     setBackfilling({ done, total });
 
     for (const r of artworkJobs as Row[]) {
-      const patch: Record<string, unknown> = {};
+      const patch: { title_translations?: unknown; description_translations?: unknown } = {};
       if (!r.title_translations && r.title) {
         const t = await translateContent(r.title, 'artwork_title');
         if (t) patch.title_translations = t;
@@ -120,13 +126,13 @@ const AdminArtworks = () => {
         if (t) patch.description_translations = t;
       }
       if (Object.keys(patch).length) {
-        await supabase.from('artworks').update(patch).eq('id', r.id);
+        await client.mutation(api.adminArtworks.updateArtwork, { id: r._id as Id<'artworks'>, patch });
       }
       done += 1;
       setBackfilling({ done, total });
     }
     for (const r of aboutJobs as Row[]) {
-      const patch: Record<string, unknown> = {};
+      const patch: { title_translations?: unknown; content_translations?: unknown } = {};
       if (!r.title_translations && r.title) {
         const t = await translateContent(r.title, 'about_title');
         if (t) patch.title_translations = t;
@@ -136,7 +142,7 @@ const AdminArtworks = () => {
         if (t) patch.content_translations = t;
       }
       if (Object.keys(patch).length) {
-        await supabase.from('about_content').update(patch).eq('id', r.id);
+        await client.mutation(api.about.updateAboutTranslations, { id: r._id as Id<'about_content'>, ...patch });
       }
       done += 1;
       setBackfilling({ done, total });

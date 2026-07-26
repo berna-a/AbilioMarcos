@@ -9,16 +9,20 @@
  */
 
 import type * as about from "../about.js";
+import type * as adminArtworks from "../adminArtworks.js";
 import type * as analytics from "../analytics.js";
 import type * as artworks from "../artworks.js";
 import type * as backfill from "../backfill.js";
 import type * as backfillQueries from "../backfillQueries.js";
+import type * as dashboard from "../dashboard.js";
 import type * as files from "../files.js";
 import type * as inquiries from "../inquiries.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_images from "../lib/images.js";
+import type * as lib_time from "../lib/time.js";
 import type * as migrate from "../migrate.js";
 import type * as newsletter from "../newsletter.js";
+import type * as orders from "../orders.js";
 import type * as translate from "../translate.js";
 
 import type {
@@ -29,16 +33,20 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   about: typeof about;
+  adminArtworks: typeof adminArtworks;
   analytics: typeof analytics;
   artworks: typeof artworks;
   backfill: typeof backfill;
   backfillQueries: typeof backfillQueries;
+  dashboard: typeof dashboard;
   files: typeof files;
   inquiries: typeof inquiries;
   "lib/auth": typeof lib_auth;
   "lib/images": typeof lib_images;
+  "lib/time": typeof lib_time;
   migrate: typeof migrate;
   newsletter: typeof newsletter;
+  orders: typeof orders;
   translate: typeof translate;
 }>;
 

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
+import { getConvexClient } from '@/lib/convexClient';
+import { api } from '@convex/_generated/api';
+import type { Id } from '@convex/_generated/dataModel';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { ArrowLeft, Upload, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -13,36 +15,14 @@ import imageCompression from 'browser-image-compression';
 const slugify = (text: string) =>
   text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
 
-const isMissingColumnError = (message: string, column: string) =>
-  message.includes(`'${column}' column`) && message.includes('schema cache');
-
-type ArtworkPayloadValue = string | number | boolean | string[] | Record<string, string> | null;
-
-/** Strip optional columns one by one if Postgrest reports them missing. */
-const TRY_DROP_COLUMNS = ['technique', 'title_translations', 'description_translations', 'theme', 'dominant_color', 'art_style'] as const;
-
-const saveArtwork = async (
-  isNew: boolean,
-  payload: Record<string, ArtworkPayloadValue>,
-  id?: string,
-) => {
-  const attempt = (p: Record<string, ArtworkPayloadValue>) =>
-    isNew
-      ? supabase.from('artworks').insert([p])
-      : supabase.from('artworks').update(p).eq('id', id);
-
-  const current = { ...payload };
-  // Try up to N times, dropping a missing column each time.
-  for (let i = 0; i <= TRY_DROP_COLUMNS.length; i++) {
-    const { error } = await attempt(current);
-    if (!error) return { error: null };
-    const dropped = TRY_DROP_COLUMNS.find(
-      (col) => col in current && isMissingColumnError(error.message, col),
-    );
-    if (!dropped) return { error };
-    delete current[dropped];
-  }
-  return { error: null };
+/** Uploads a file to Convex Storage (admin-gated upload URL) and returns its storageId. */
+const uploadToConvexStorage = async (file: File): Promise<Id<'_storage'>> => {
+  const client = getConvexClient();
+  const uploadUrl = await client.mutation(api.files.generateUploadUrl, {});
+  const res = await fetch(uploadUrl, { method: 'POST', headers: { 'Content-Type': file.type }, body: file });
+  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+  const { storageId } = (await res.json()) as { storageId: Id<'_storage'> };
+  return storageId;
 };
 
 const initialForm = {
@@ -83,15 +63,19 @@ const ArtworkForm = () => {
   const [primaryPreviewLocal, setPrimaryPreviewLocal] = useState('');
   const [translating, setTranslating] = useState(false);
   const [originalText, setOriginalText] = useState({ title: '', description: '' });
+  // Paralelo a form.primary_image_url / additional_images (URLs só para
+  // preview) — o que é realmente gravado é o storageId do Convex Storage.
+  const [primaryStorageId, setPrimaryStorageId] = useState<Id<'_storage'> | null>(null);
+  const [additionalStorageIds, setAdditionalStorageIds] = useState<Id<'_storage'>[]>([]);
 
   useEffect(() => {
     if (isNew) return;
     const fetch = async () => {
-      const { data, error } = await supabase.from('artworks').select('*').eq('id', id).single();
-      if (error || !data) { navigate('/admin/artworks'); return; }
+      const data = await getConvexClient().query(api.adminArtworks.getArtworkByIdAdmin, { id: id as Id<'artworks'> });
+      if (!data) { navigate('/admin/artworks'); return; }
       // Backfill width/height from legacy size_category if absent
-      let width = data.width_cm ?? data.custom_width_cm;
-      let height = data.height_cm ?? data.custom_height_cm;
+      let width: string | number | null = data.custom_width_cm;
+      let height: string | number | null = data.custom_height_cm;
       if (!width || !height) {
         switch (data.size_category) {
           case 'small': width = width || 80; height = height || 80; break;
@@ -119,6 +103,8 @@ const ArtworkForm = () => {
         dominant_color: data.dominant_color || '',
         art_style: data.art_style || '',
       });
+      setPrimaryStorageId(data.primary_storage_id ?? null);
+      setAdditionalStorageIds(data.additional_storage_ids ?? []);
       setSlugManual(true);
       setOriginalText({ title: data.title || '', description: data.description || '' });
       setLoading(false);
@@ -145,7 +131,6 @@ const ArtworkForm = () => {
     // Comprimir + converter para JPEG (fotos de iPhone em HEIC passam a JPEG,
     // que mostra em qualquer browser). Se a conversão falhar, usa o original.
     let compressed: File = file;
-    let outExt = (file.name.split('.').pop() || 'jpg').toLowerCase();
     try {
       compressed = await imageCompression(file, {
         maxWidthOrHeight: 2500,
@@ -154,14 +139,14 @@ const ArtworkForm = () => {
         fileType: 'image/jpeg',
         onProgress: (p) => setUploadProgress(15 + Math.round(p * 0.45)),
       });
-      outExt = 'jpg';
     } catch { /* se falhar, usa o original */ }
 
     setUploadProgress(65);
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${outExt}`;
-    const { error: uploadError } = await supabase.storage.from('cliente-021').upload(path, compressed, { cacheControl: '3600', upsert: false });
-
-    if (uploadError) {
+    let storageId: Id<'_storage'>;
+    try {
+      storageId = await uploadToConvexStorage(compressed);
+    } catch (uploadError) {
+      console.error('Image upload failed:', uploadError);
       setError(t.uploadFailed);
       setUploading(false);
       setUploadProgress(0);
@@ -170,15 +155,17 @@ const ArtworkForm = () => {
     }
 
     setUploadProgress(95);
-    const { data: { publicUrl } } = supabase.storage.from('cliente-021').getPublicUrl(path);
 
+    // Sem URL pública imediata como no Supabase — mantém o preview local
+    // (o storageId, gravado no submit, é resolvido para um URL real na
+    // próxima vez que a obra for carregada).
     if (type === 'primary') {
-      setForm((prev) => ({ ...prev, primary_image_url: publicUrl }));
+      setPrimaryStorageId(storageId);
+      setForm((prev) => ({ ...prev, primary_image_url: localUrl }));
       setPrimaryPreviewLocal('');
-      URL.revokeObjectURL(localUrl);
     } else {
-      setForm((prev) => ({ ...prev, additional_images: [...prev.additional_images, publicUrl] }));
-      URL.revokeObjectURL(localUrl);
+      setAdditionalStorageIds((prev) => [...prev, storageId]);
+      setForm((prev) => ({ ...prev, additional_images: [...prev.additional_images, localUrl] }));
     }
 
     setUploadProgress(100);
@@ -188,6 +175,7 @@ const ArtworkForm = () => {
 
   const removeAdditionalImage = (index: number) => {
     setForm((prev) => ({ ...prev, additional_images: prev.additional_images.filter((_, i) => i !== index) }));
+    setAdditionalStorageIds((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -233,7 +221,7 @@ const ArtworkForm = () => {
       setTranslating(false);
     }
 
-    const payload: Record<string, ArtworkPayloadValue> = {
+    const payload = {
       title: cleanTitle,
       slug: form.slug.trim(),
       year: form.year,
@@ -243,23 +231,38 @@ const ArtworkForm = () => {
       exhibition_name: form.availability === 'exhibition' ? (form.exhibition_name.trim() || null) : null,
       price: priceNum,
       technique: form.technique || DEFAULT_TECHNIQUE,
-      custom_width_cm: widthNum,
-      custom_height_cm: heightNum,
+      custom_width_cm: widthNum != null ? String(widthNum) : null,
+      custom_height_cm: heightNum != null ? String(heightNum) : null,
       reference: form.reference.trim() || null,
       is_featured: form.is_featured,
-      primary_image_url: form.primary_image_url || null,
-      additional_images: form.additional_images.length > 0 ? form.additional_images : null,
       theme: form.theme || null,
       dominant_color: form.dominant_color || null,
       art_style: form.art_style || null,
-      updated_at: new Date().toISOString(),
+      ...(titleTranslations ? { title_translations: titleTranslations } : {}),
+      ...(descTranslations
+        ? { description_translations: descTranslations }
+        : descChanged && !cleanDescription
+          ? { description_translations: null }
+          : {}),
     };
-    if (titleTranslations) payload.title_translations = titleTranslations;
-    if (descTranslations) payload.description_translations = descTranslations;
-    else if (descChanged && !cleanDescription) payload.description_translations = null;
 
-    const { error } = await saveArtwork(isNew, payload, id);
-    if (error) { setError(error.message); setSaving(false); return; }
+    try {
+      const client = getConvexClient();
+      const artworkId = isNew
+        ? await client.mutation(api.adminArtworks.createArtwork, payload)
+        : (await client.mutation(api.adminArtworks.updateArtwork, { id: id as Id<'artworks'>, patch: payload }), id as Id<'artworks'>);
+
+      // Reconcile images against whatever storageIds accumulated while editing.
+      if (primaryStorageId) {
+        await client.mutation(api.adminArtworks.setPrimaryImage, { id: artworkId as Id<'artworks'>, storageId: primaryStorageId });
+      }
+      await client.mutation(api.adminArtworks.setAdditionalImages, { id: artworkId as Id<'artworks'>, storageIds: additionalStorageIds });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erro ao guardar.');
+      setSaving(false);
+      return;
+    }
+
     toast.success(isNew ? 'Obra criada ✓' : 'Guardado ✓');
     navigate('/admin/artworks');
   };
@@ -442,7 +445,7 @@ const ArtworkForm = () => {
                   </div>
                 )}
                 {!uploading && (
-                  <button type="button" onClick={() => { setForm((prev) => ({ ...prev, primary_image_url: '' })); setPrimaryPreviewLocal(''); }} className="absolute top-1 right-1 bg-white/90 p-1 hover:bg-white transition-colors">
+                  <button type="button" onClick={() => { setForm((prev) => ({ ...prev, primary_image_url: '' })); setPrimaryPreviewLocal(''); setPrimaryStorageId(null); }} className="absolute top-1 right-1 bg-white/90 p-1 hover:bg-white transition-colors">
                     <X className="w-3 h-3" />
                   </button>
                 )}

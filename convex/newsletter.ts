@@ -1,5 +1,6 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { nowPg } from "./lib/time";
 
 // Public — footer/inline newsletter signup form. No auth.
 export const subscribe = mutation({
@@ -14,7 +15,7 @@ export const subscribe = mutation({
     await ctx.db.insert("newsletter_subscribers", {
       email,
       attribution: args.attribution ?? null,
-      created_at: new Date().toISOString(),
+      created_at: nowPg(),
     });
   },
 });

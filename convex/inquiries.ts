@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { requireAdmin } from "./lib/auth";
+import { nowPg } from "./lib/time";
 
 // Public — the contact form. No auth (anonymous visitor submitting a lead).
 export const createInquiry = mutation({
@@ -20,7 +21,7 @@ export const createInquiry = mutation({
     await ctx.db.insert("inquiries", {
       ...args,
       status: "new",
-      created_at: new Date().toISOString(),
+      created_at: nowPg(),
     });
   },
 });

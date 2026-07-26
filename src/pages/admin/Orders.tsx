@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-import { supabase } from '@/lib/supabase';
+import { getConvexClient } from '@/lib/convexClient';
+import { api } from '@convex/_generated/api';
+import type { Id } from '@convex/_generated/dataModel';
 import { Search, Package } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -43,9 +45,23 @@ const Orders = () => {
   const [updating, setUpdating] = useState<string | null>(null);
 
   const fetchOrders = async () => {
-    const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-    if (error) console.error('Error fetching orders:', error);
-    else setOrders((data as Order[]) || []);
+    try {
+      const data = await getConvexClient().query(api.orders.getOrders, {});
+      setOrders(
+        (data || []).map((o) => ({
+          id: o._id,
+          artwork_title: o.artwork_title ?? null,
+          customer_email: o.customer_email ?? null,
+          amount: o.amount != null ? Number(o.amount) : null,
+          currency: o.currency ?? null,
+          payment_status: o.payment_status ?? null,
+          shipping_status: o.shipping_status ?? 'aguarda_envio',
+          created_at: o.created_at ?? '',
+        })),
+      );
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
     setLoading(false);
   };
   useEffect(() => { fetchOrders(); }, []);
@@ -62,9 +78,14 @@ const Orders = () => {
   const updateShipping = async (id: string, shipping_status: string) => {
     setUpdating(id);
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, shipping_status } : o)));
-    const { error } = await supabase.from('orders').update({ shipping_status }).eq('id', id);
-    if (error) { console.error('Update error:', error); toast.error('Não foi possível guardar. Tenta de novo.'); await fetchOrders(); }
-    else toast.success('Estado de envio atualizado ✓');
+    try {
+      await getConvexClient().mutation(api.orders.updateShippingStatus, { id: id as Id<'orders'>, shipping_status });
+      toast.success('Estado de envio atualizado ✓');
+    } catch (error) {
+      console.error('Update error:', error);
+      toast.error('Não foi possível guardar. Tenta de novo.');
+      await fetchOrders();
+    }
     setUpdating(null);
   };
 
