@@ -14,16 +14,25 @@ import type * as analytics from "../analytics.js";
 import type * as artworks from "../artworks.js";
 import type * as backfill from "../backfill.js";
 import type * as backfillQueries from "../backfillQueries.js";
+import type * as checkout from "../checkout.js";
+import type * as checkoutQueries from "../checkoutQueries.js";
 import type * as dashboard from "../dashboard.js";
 import type * as files from "../files.js";
+import type * as http from "../http.js";
 import type * as inquiries from "../inquiries.js";
 import type * as lib_auth from "../lib/auth.js";
+import type * as lib_emails from "../lib/emails.js";
 import type * as lib_images from "../lib/images.js";
 import type * as lib_time from "../lib/time.js";
 import type * as migrate from "../migrate.js";
 import type * as newsletter from "../newsletter.js";
 import type * as orders from "../orders.js";
+import type * as stripeWebhook from "../stripeWebhook.js";
+import type * as stripeWebhookAction from "../stripeWebhookAction.js";
+import type * as stripeWebhookMutations from "../stripeWebhookMutations.js";
 import type * as translate from "../translate.js";
+import type * as whatsappLead from "../whatsappLead.js";
+import type * as whatsappLeadQueries from "../whatsappLeadQueries.js";
 
 import type {
   ApiFromModules,
@@ -38,16 +47,25 @@ declare const fullApi: ApiFromModules<{
   artworks: typeof artworks;
   backfill: typeof backfill;
   backfillQueries: typeof backfillQueries;
+  checkout: typeof checkout;
+  checkoutQueries: typeof checkoutQueries;
   dashboard: typeof dashboard;
   files: typeof files;
+  http: typeof http;
   inquiries: typeof inquiries;
   "lib/auth": typeof lib_auth;
+  "lib/emails": typeof lib_emails;
   "lib/images": typeof lib_images;
   "lib/time": typeof lib_time;
   migrate: typeof migrate;
   newsletter: typeof newsletter;
   orders: typeof orders;
+  stripeWebhook: typeof stripeWebhook;
+  stripeWebhookAction: typeof stripeWebhookAction;
+  stripeWebhookMutations: typeof stripeWebhookMutations;
   translate: typeof translate;
+  whatsappLead: typeof whatsappLead;
+  whatsappLeadQueries: typeof whatsappLeadQueries;
 }>;
 
 /**

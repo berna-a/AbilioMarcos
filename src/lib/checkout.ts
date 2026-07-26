@@ -1,4 +1,5 @@
-import { supabase } from '@/lib/supabase';
+import { getConvexClient } from '@/lib/convexClient';
+import { api } from '../../convex/_generated/api';
 import { getAnalyticsSessionId, getAttribution } from '@/lib/analytics';
 
 export interface CheckoutResult {
@@ -6,41 +7,17 @@ export interface CheckoutResult {
   error: string | null;
 }
 
-/** Invoke the create-checkout edge function and return either a Stripe URL or
- *  a useful error reason surfaced from the backend. */
+/** Invoke the createCheckoutSession Convex action and return either a Stripe
+ *  URL or a useful error reason surfaced from the backend. */
 export const createCheckoutSession = async (artworkId: string, lang?: string): Promise<CheckoutResult> => {
   try {
-    const { data, error } = await supabase.functions.invoke('create-checkout-021', {
-      body: {
-        artwork_id: artworkId,
-        lang: lang ?? 'pt',
-        // Carimba a sessão com a origem (UTM/referrer/landing) para atribuição de comissão.
-        session_id: getAnalyticsSessionId(),
-        attribution: getAttribution(),
-      },
+    const data = await getConvexClient().action(api.checkout.createCheckoutSession, {
+      artwork_id: artworkId,
+      lang: lang ?? 'pt',
+      // Carimba a sessão com a origem (UTM/referrer/landing) para atribuição de comissão.
+      session_id: getAnalyticsSessionId(),
+      attribution: getAttribution(),
     });
-
-    if (error) {
-      // Try to extract the backend error body returned by the edge function
-      let backendMessage: string | null = null;
-      const ctx = (error as { context?: Response }).context;
-      if (ctx && typeof ctx.text === 'function') {
-        try {
-          const txt = await ctx.text();
-          if (txt) {
-            try {
-              const parsed = JSON.parse(txt);
-              backendMessage = parsed?.error ?? null;
-            } catch {
-              backendMessage = txt;
-            }
-          }
-        } catch { /* ignore */ }
-      }
-      const message = backendMessage || error.message || 'Unknown checkout error';
-      console.error('[checkout] edge function error:', message, { artworkId, raw: error });
-      return { url: null, error: message };
-    }
 
     if (!data?.url) {
       console.error('[checkout] missing url in response', { artworkId, data });
