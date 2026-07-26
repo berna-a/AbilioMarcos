@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '@/components/layout/Layout';
 import { getArtworksBySlugs } from '@/lib/artworks';
@@ -39,6 +39,35 @@ function buildWaUrl(artwork: Artwork, leadRef: string): string {
   const ref = artwork.reference ? ` (ref. ${artwork.reference})` : '';
   const msg = `Olá! Tenho interesse na obra "${artwork.title}"${ref}. Pode dar-me mais informações? [cód: ${leadRef}]`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
+
+/** Normaliza um valor para forma de slug: minúsculas, sem acentos, só [a-z0-9-]. */
+function toSlugForm(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Deep-link de campanha: o anúncio promete uma obra concreta, logo o visitante
+ * tem de aterrar nessa obra e não na lista geral.
+ *
+ * Os anúncios enviam o slug SEM o sufixo numérico (`utm_content=escape-ii`,
+ * mas a página é `/obra/escape-ii-520`), por isso a correspondência é exacta
+ * primeiro e só depois por prefixo — sempre sobre as obras realmente carregadas
+ * (que já vêm filtradas por `availability = 'available'`), nunca por uma tabela
+ * de tradução fixa. Sem correspondência devolve null e fica-se na lista.
+ */
+function matchArtworkSlug(param: string | null, artworks: Artwork[]): string | null {
+  const wanted = param ? toSlugForm(param) : '';
+  if (!wanted) return null;
+  const exact = artworks.find(a => toSlugForm(a.slug) === wanted);
+  if (exact) return exact.slug;
+  const byPrefix = artworks.find(a => toSlugForm(a.slug).startsWith(`${wanted}-`));
+  return byPrefix?.slug ?? null;
 }
 
 function getDimensions(artwork: Artwork): string {
@@ -154,6 +183,11 @@ const ArtworkCard = ({ artwork }: CardProps) => {
 const ObrasDisponiveis = () => {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [fetchDone, setFetchDone] = useState(false);
+  const [searchParams] = useSearchParams();
+  const deepLinkSlug = useMemo(
+    () => (fetchDone ? matchArtworkSlug(searchParams.get('utm_content'), artworks) : null),
+    [fetchDone, artworks, searchParams],
+  );
   const genericLeadRef = useMemo(() => generateLeadRefCode(), []);
   const waGenericUrl = useMemo(() => buildGenericWaUrl(genericLeadRef), [genericLeadRef]);
   const visitaLeadRef = useMemo(() => generateLeadRefCode(), []);
@@ -191,6 +225,18 @@ const ObrasDisponiveis = () => {
     track('whatsapp_contact_clicked', { page_type: 'landing_obras', intent: 'visita_atelier' });
     logWhatsAppLead(visitaLeadRef);
   };
+
+  // Quem vem de um anúncio de uma obra concreta vai directo para essa obra.
+  // As UTMs seguem intactas (o analytics não perde a origem) e usa-se `replace`
+  // para o botão "voltar" não cair outra vez na lista e criar um ciclo.
+  if (deepLinkSlug) {
+    return (
+      <Navigate
+        to={{ pathname: `/obra/${deepLinkSlug}`, search: searchParams.toString() }}
+        replace
+      />
+    );
+  }
 
   return (
     <Layout>
