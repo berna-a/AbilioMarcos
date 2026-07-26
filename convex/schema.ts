@@ -58,40 +58,57 @@ export default defineSchema({
     old_id: v.optional(v.string()),
   }),
 
+  // Shape matches what actually lived in Supabase (verified against the
+  // migration_data/*.json dumps) — the original guess here (name/email/
+  // message/artwork_id/status only) was missing half the real columns.
   inquiries: defineTable({
+    artwork_id: v.optional(v.union(v.string(), v.null())),
+    artwork_title: v.optional(v.union(v.string(), v.null())),
     name: v.optional(v.string()),
     email: v.optional(v.string()),
+    phone: v.optional(v.union(v.string(), v.null())),
     message: v.optional(v.string()),
-    artwork_id: v.union(v.string(), v.null()),
+    budget_range: v.optional(v.union(v.string(), v.null())),
     status: v.optional(v.string()),
+    attribution: v.optional(v.any()),
+    session_id: v.optional(v.union(v.string(), v.null())),
+    source: v.optional(v.union(v.string(), v.null())),
     created_at: v.optional(v.string()),
     old_id: v.optional(v.string()),
   }),
 
   orders: defineTable({
-    customer_name: v.optional(v.string()),
-    customer_email: v.optional(v.string()),
-    status: v.optional(v.string()),
-    total_amount: v.union(v.number(), v.null()),
+    artwork_id: v.optional(v.union(v.string(), v.null())),
+    artwork_title: v.optional(v.union(v.string(), v.null())),
+    stripe_session_id: v.optional(v.string()),
+    customer_email: v.optional(v.union(v.string(), v.null())),
+    amount: v.optional(v.union(v.number(), v.string(), v.null())),
+    currency: v.optional(v.string()),
+    payment_status: v.optional(v.string()),
+    shipping_status: v.optional(v.string()),
+    session_id: v.optional(v.union(v.string(), v.null())),
+    attribution: v.optional(v.any()),
     created_at: v.optional(v.string()),
     old_id: v.optional(v.string()),
-  }),
+  }).index("by_stripe_session_id", ["stripe_session_id"]),
 
   newsletter_subscribers: defineTable({
     email: v.optional(v.string()),
     status: v.optional(v.string()),
+    attribution: v.optional(v.any()),
     created_at: v.optional(v.string()),
     old_id: v.optional(v.string()),
   }),
 
+  // Real Supabase shape was `event_name` + `properties` (a free-form bag) —
+  // not `event_type`/`page_url`/`metadata` as originally guessed here.
   analytics_events: defineTable({
-    event_type: v.optional(v.string()),
-    page_url: v.optional(v.string()),
+    event_name: v.optional(v.string()),
+    properties: v.optional(v.any()),
     session_id: v.optional(v.string()),
     created_at: v.optional(v.string()),
-    metadata: v.any(),
     old_id: v.optional(v.string()),
-  }),
+  }).index("by_created_at", ["created_at"]).index("by_event_name", ["event_name"]),
 
   user_roles: defineTable({
     user_id: v.optional(v.string()),
@@ -100,11 +117,17 @@ export default defineSchema({
     old_id: v.optional(v.string()),
   }),
 
+  // Real Supabase shape keyed leads by `ref_code` (the "[cód: AB-XXXX]" tag
+  // embedded in the WhatsApp message) — not `phone_number`/`message`.
   whatsapp_leads: defineTable({
-    phone_number: v.optional(v.string()),
-    message: v.optional(v.string()),
-    status: v.optional(v.string()),
+    ref_code: v.optional(v.string()),
+    session_id: v.optional(v.union(v.string(), v.null())),
+    attribution: v.optional(v.any()),
+    artwork_id: v.optional(v.union(v.string(), v.null())),
+    artwork_title: v.optional(v.union(v.string(), v.null())),
+    sale_amount: v.optional(v.union(v.number(), v.null())),
+    sale_closed_at: v.optional(v.union(v.string(), v.null())),
     created_at: v.optional(v.string()),
     old_id: v.optional(v.string()),
-  }),
+  }).index("by_ref_code", ["ref_code"]),
 }, { schemaValidation: false });

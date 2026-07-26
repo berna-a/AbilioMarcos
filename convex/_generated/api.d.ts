@@ -9,12 +9,16 @@
  */
 
 import type * as about from "../about.js";
+import type * as analytics from "../analytics.js";
 import type * as artworks from "../artworks.js";
 import type * as backfill from "../backfill.js";
 import type * as backfillQueries from "../backfillQueries.js";
 import type * as files from "../files.js";
+import type * as inquiries from "../inquiries.js";
+import type * as lib_auth from "../lib/auth.js";
 import type * as lib_images from "../lib/images.js";
 import type * as migrate from "../migrate.js";
+import type * as newsletter from "../newsletter.js";
 
 import type {
   ApiFromModules,
@@ -24,12 +28,16 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   about: typeof about;
+  analytics: typeof analytics;
   artworks: typeof artworks;
   backfill: typeof backfill;
   backfillQueries: typeof backfillQueries;
   files: typeof files;
+  inquiries: typeof inquiries;
+  "lib/auth": typeof lib_auth;
   "lib/images": typeof lib_images;
   migrate: typeof migrate;
+  newsletter: typeof newsletter;
 }>;
 
 /**

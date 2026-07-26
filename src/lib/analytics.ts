@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { supabase } from './supabase';
+import { getConvexClient } from './convexClient';
+import { api } from '../../convex/_generated/api';
 
 // ── Types ──────────────────────────────────────────────────
 interface ArtworkProps {
@@ -131,12 +132,14 @@ export function track(eventName: string, properties: EventProperties = {}) {
     (window as any).fbq('trackCustom', eventName, enriched);
   }
 
-  // 3. Supabase (fire-and-forget, never block UI)
-  supabase.from('analytics_events').insert([{
-    event_name: eventName,
-    properties: enriched,
-    session_id: getSessionId(),
-  }]).then(() => {});
+  // 3. Convex (fire-and-forget, never block UI)
+  getConvexClient()
+    .mutation(api.analytics.trackEvent, {
+      event_name: eventName,
+      properties: enriched,
+      session_id: getSessionId(),
+    })
+    .catch((error) => console.error('track() failed to reach Convex:', error));
 }
 
 // Exportados para carimbar leads com a origem (atribuição/CRM/comissões)
@@ -231,15 +234,15 @@ export function generateLeadRefCode(): string {
 }
 
 export function logWhatsAppLead(refCode: string, artwork?: { id: string; title: string }) {
-  supabase.from('whatsapp_leads').insert([{
-    ref_code: refCode,
-    session_id: getAnalyticsSessionId(),
-    attribution: getAttribution(),
-    artwork_id: artwork?.id ?? null,
-    artwork_title: artwork?.title ?? null,
-  }]).then(({ error }) => {
+  getConvexClient()
+    .mutation(api.analytics.logWhatsAppLead, {
+      ref_code: refCode,
+      session_id: getAnalyticsSessionId(),
+      attribution: getAttribution(),
+      artwork_id: artwork?.id ?? undefined,
+      artwork_title: artwork?.title ?? undefined,
+    })
     // Insert é fire-and-forget (não pode bloquear o clique de WhatsApp), mas
     // uma falha aqui apaga a lead sem deixar rasto — nunca voltar a falhar em silêncio.
-    if (error) console.error('logWhatsAppLead failed:', error);
-  });
+    .catch((error) => console.error('logWhatsAppLead failed:', error));
 }

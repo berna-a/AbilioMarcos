@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useT } from "@/i18n";
-import { supabase } from "@/lib/supabase";
-import { track } from "@/lib/analytics";
+import { getConvexClient } from "@/lib/convexClient";
+import { api } from "../../convex/_generated/api";
+import { track, getAttribution } from "@/lib/analytics";
 
 interface CollectorSignupProps {
   variant?: "inline" | "footer";
@@ -18,8 +19,12 @@ const CollectorSignup = ({ variant = "inline" }: CollectorSignupProps) => {
     if (!email || submitting) return;
     setSubmitting(true);
     try {
-      await supabase.from('newsletter_subscribers').insert([{ email: email.trim().toLowerCase() }]);
-    } catch {
+      await getConvexClient().mutation(api.newsletter.subscribe, {
+        email: email.trim().toLowerCase(),
+        attribution: getAttribution(),
+      });
+    } catch (error) {
+      console.error('newsletter subscribe failed:', error);
       // still show success — don't expose internals
     }
     track('newsletter_signup', { email: email.trim().toLowerCase() });
