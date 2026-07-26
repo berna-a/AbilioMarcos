@@ -1,4 +1,5 @@
-import { supabase } from './supabase';
+import { getConvexClient } from './convexClient';
+import { api } from '../../convex/_generated/api';
 
 export type TranslationContext =
   | 'artwork_title'
@@ -9,9 +10,9 @@ export type TranslationContext =
 export type TranslationMap = Record<'en' | 'fr' | 'de' | 'es', string>;
 
 /**
- * Calls the `translate-content` edge function and returns translations
- * for EN/FR/DE/ES from a Portuguese source. Returns null on failure;
- * callers should keep going (the public UI falls back to PT).
+ * Traduz para EN/FR/DE/ES a partir do português via convex/translate.ts
+ * (Claude Haiku). Devolve null em caso de falha; quem chama deve continuar —
+ * a UI pública cai sempre para PT.
  */
 export async function translateContent(
   text: string,
@@ -20,16 +21,14 @@ export async function translateContent(
   const trimmed = (text ?? '').trim();
   if (!trimmed) return {};
   try {
-    const { data, error } = await supabase.functions.invoke('translate-content-021', {
-      body: { text: trimmed, context, targetLangs: ['en', 'fr', 'de', 'es'] },
+    const translations = await getConvexClient().action(api.translate.translateContent, {
+      text: trimmed,
+      context,
+      targetLangs: ['en', 'fr', 'de', 'es'],
     });
-    if (error) {
-      console.warn('translate-content error', error);
-      return null;
-    }
-    return (data?.translations ?? {}) as Partial<TranslationMap>;
+    return (translations ?? {}) as Partial<TranslationMap>;
   } catch (e) {
-    console.warn('translate-content exception', e);
+    console.warn('translateContent error', e);
     return null;
   }
 }

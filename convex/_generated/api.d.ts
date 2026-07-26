@@ -19,6 +19,7 @@ import type * as lib_auth from "../lib/auth.js";
 import type * as lib_images from "../lib/images.js";
 import type * as migrate from "../migrate.js";
 import type * as newsletter from "../newsletter.js";
+import type * as translate from "../translate.js";
 
 import type {
   ApiFromModules,
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   "lib/images": typeof lib_images;
   migrate: typeof migrate;
   newsletter: typeof newsletter;
+  translate: typeof translate;
 }>;
 
 /**
