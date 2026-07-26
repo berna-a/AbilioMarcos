@@ -10,7 +10,10 @@
 
 import type * as about from "../about.js";
 import type * as artworks from "../artworks.js";
+import type * as backfill from "../backfill.js";
+import type * as backfillQueries from "../backfillQueries.js";
 import type * as files from "../files.js";
+import type * as lib_images from "../lib/images.js";
 import type * as migrate from "../migrate.js";
 
 import type {
@@ -22,7 +25,10 @@ import type {
 declare const fullApi: ApiFromModules<{
   about: typeof about;
   artworks: typeof artworks;
+  backfill: typeof backfill;
+  backfillQueries: typeof backfillQueries;
   files: typeof files;
+  "lib/images": typeof lib_images;
   migrate: typeof migrate;
 }>;
 

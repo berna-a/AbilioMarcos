@@ -12,6 +12,12 @@ export default defineSchema({
     price: v.union(v.string(), v.number(), v.null()),
     primary_image_url: v.union(v.string(), v.null()),
     additional_images: v.union(v.array(v.string()), v.null()),
+    // Preferred image storage from here on: a Convex `_storage` id resolved to
+    // a URL at read time via ctx.storage.getUrl(). This survives switching
+    // Convex deployments (dev → prod) — unlike `primary_image_url`, which used
+    // to hold the resolved URL baked in for one specific deployment.
+    primary_storage_id: v.optional(v.id("_storage")),
+    additional_storage_ids: v.optional(v.array(v.id("_storage"))),
     is_featured: v.optional(v.boolean()),
     created_at: v.optional(v.string()),
     updated_at: v.optional(v.string()),

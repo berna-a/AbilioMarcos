@@ -25,7 +25,10 @@ const ARTWORK_SLUGS = [
   'encruzilhada-de-cores',
 ];
 
-const HERO_IMAGE = 'https://hwpixsuovwxgilyfoszw.supabase.co/storage/v1/object/public/cliente-021/1775564684831-1fm2gxtnd7w.jpg';
+// A imagem do hero É a obra "Jardins da cidade" (1.ª de ARTWORK_SLUGS) — em vez
+// de um URL Supabase hardcoded (que ficava preso a um bucket específico),
+// deriva-se da própria obra já carregada por getArtworksBySlugs abaixo.
+const HERO_ARTWORK_SLUG = 'jardins-da-cidade-141';
 
 function buildGenericWaUrl(leadRef: string): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Olá! Vi as obras disponíveis no site do Abílio Marcos e gostava de saber mais — pode enviar-me fotos e preços do que tem disponível? [cód: ${leadRef}]`)}`;
@@ -158,6 +161,7 @@ const ObrasDisponiveis = () => {
   const waGenericUrl = useMemo(() => buildGenericWaUrl(genericLeadRef), [genericLeadRef]);
   const visitaLeadRef = useMemo(() => generateLeadRefCode(), []);
   const waVisitaUrl = useMemo(() => buildVisitaWaUrl(visitaLeadRef), [visitaLeadRef]);
+  const heroImage = artworks.find((a) => a.slug === HERO_ARTWORK_SLUG)?.primary_image_url ?? undefined;
 
   // noindex — landing de campanha paga, não deve ser indexada
   useEffect(() => {
@@ -196,12 +200,12 @@ const ObrasDisponiveis = () => {
     <Layout>
       {/* ── Hero ── */}
       <section className="relative mt-16 md:mt-[76px] h-[70vh] min-h-[440px] overflow-hidden bg-gallery-charcoal">
-        <img
-          src={HERO_IMAGE}
+        {heroImage && <img
+          src={heroImage}
           alt="Jardins da cidade — Abílio Marcos"
           className="absolute inset-0 w-full h-full object-cover opacity-55"
           {...({ fetchpriority: 'high' } as Record<string, string>)}
-        />
+        />}
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/25 to-black/75" />
         <div className="relative z-10 h-full flex flex-col items-center justify-end pb-14 px-6 text-center text-white">
           <motion.p

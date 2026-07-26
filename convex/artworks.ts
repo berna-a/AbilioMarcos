@@ -1,16 +1,18 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { resolveArtworkImages, resolveArtworkImagesList } from "./lib/images";
 
 export const getPublishedArtworks = query({
   args: {},
   handler: async (ctx) => {
     const list = await ctx.db.query("artworks").collect();
-    return list.filter(
+    const filtered = list.filter(
       (a) =>
         a.status === "published" &&
         ["available", "exhibition"].includes(a.availability || "") &&
-        a.primary_image_url
+        (a.primary_image_url || a.primary_storage_id)
     ).sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
+    return resolveArtworkImagesList(ctx, filtered);
   },
 });
 
@@ -18,10 +20,11 @@ export const getFeaturedArtworks = query({
   args: {},
   handler: async (ctx) => {
     const list = await ctx.db.query("artworks").collect();
-    return list
+    const filtered = list
       .filter((a) => a.status === "published" && a.is_featured)
       .sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0))
       .slice(0, 3);
+    return resolveArtworkImagesList(ctx, filtered);
   },
 });
 
@@ -30,15 +33,16 @@ export const getRecentArtworks = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 6;
     const list = await ctx.db.query("artworks").collect();
-    return list
+    const filtered = list
       .filter(
         (a) =>
           a.status === "published" &&
           ["available", "exhibition"].includes(a.availability || "") &&
-          a.primary_image_url
+          (a.primary_image_url || a.primary_storage_id)
       )
       .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
       .slice(0, limit);
+    return resolveArtworkImagesList(ctx, filtered);
   },
 });
 
@@ -50,7 +54,7 @@ export const getArtworkBySlug = query({
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
     if (item && item.status === "published") {
-      return item;
+      return resolveArtworkImages(ctx, item);
     }
     return null;
   },
@@ -61,10 +65,11 @@ export const getRelatedArtworks = query({
   handler: async (ctx, args) => {
     const limit = args.limit ?? 3;
     const list = await ctx.db.query("artworks").collect();
-    return list
+    const filtered = list
       .filter((a) => a.status === "published" && a._id !== args.currentId && a.old_id !== args.currentId)
       .sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0))
       .slice(0, limit);
+    return resolveArtworkImagesList(ctx, filtered);
   },
 });
 
@@ -73,6 +78,7 @@ export const getArtworksBySlugs = query({
   handler: async (ctx, args) => {
     const list = await ctx.db.query("artworks").collect();
     const map = new Map(list.map((a) => [a.slug, a]));
-    return args.slugs.map((s) => map.get(s)).filter(Boolean);
+    const found = args.slugs.map((s) => map.get(s)).filter((a): a is NonNullable<typeof a> => !!a);
+    return resolveArtworkImagesList(ctx, found);
   },
 });
