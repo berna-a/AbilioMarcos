@@ -1,7 +1,54 @@
 # ESTADO — Site Abílio Marcos (fonte de verdade única)
 
 > **Qualquer sessão Claude Code lê este ficheiro ANTES de mexer.** Atualiza-o ao fim de mudanças relevantes.
-> Última atualização: 22-06-2026.
+> Última atualização: 26-07-2026.
+
+## 🚧 Migração Supabase → Convex — EM CURSO (branch `migracao-convex-wip`, NÃO deployada)
+
+Branch de trabalho: `migracao-convex-wip`. Produção (`abiliomarcos.com` via Vercel) continua
+100% em Supabase — o Vercel prod nem tem `VITE_CONVEX_URL` definido. Esta secção substitui,
+por agora, o resto deste ficheiro sempre que houver conflito (o resto documenta a era Supabase).
+
+**✅ Feito e testado nesta branch:**
+- Dados + imagens: 94 obras, 153 exposições, 28k+ eventos migrados para Convex. As 94 obras
+  guardam `primary_storage_id`/`additional_storage_ids` (Convex `_storage`), não URL absoluta —
+  sobrevive a trocar de deployment. `images.ts` volta a reconhecer URLs Convex (WebP/srcset/cache).
+- Escritas públicas (analytics, inquiries, newsletter, whatsapp_leads) → Convex, deixaram de cair
+  no vazio.
+- Clerk ligado a sério (`ClerkProvider`/`ConvexProviderWithClerk`/`AuthContext` real) — mas sem
+  chave real ainda, ver pendências abaixo. Sem chave, o site público funciona à mesma e o
+  back-office fica bloqueado de forma segura (nunca finge sucesso).
+- Back-office completo portado: Dashboard (+3 RPCs), Artworks, ArtworkForm (upload de imagens via
+  Convex Storage), Orders, Analytics. Gate de admin por email (`ADMIN_EMAILS`, Convex env var) —
+  decisão tomada porque o `user_roles` antigo chaveava por UUID do Supabase Auth (não existe no Clerk).
+- Tradução (`translate.ts`) portada para Convex action — precisa de `ANTHROPIC_API_KEY`.
+- Checkout Stripe + webhook + resolve-whatsapp-lead portados para Convex (`checkout.ts`,
+  `stripeWebhook*.ts`, `whatsappLead*.ts`, `http.ts`) — **nunca testados com chave real**.
+- **Deployment de produção Convex criado**: `prod:enduring-spoonbill-461` (antes só havia
+  `dev:deafening-cormorant-584`). Schema+funções+índices deployados; dados+imagens (94 obras,
+  182 ficheiros) clonados de dev via `convex export --include-file-storage` +
+  `convex import --replace-all`. Verificado: URLs de imagem resolvem correctamente no domínio
+  de produção.
+
+**🔴 Por fazer antes de qualquer corte real:**
+1. Criar app Clerk a sério → `VITE_CLERK_PUBLISHABLE_KEY` (frontend/Vercel) +
+   `npx convex env set CLERK_JWT_ISSUER_DOMAIN <domínio real>` (dev E prod — hoje têm um
+   placeholder que bloqueia tudo de propósito).
+2. Definir `ADMIN_EMAILS` a sério (dev e prod têm placeholder que bloqueia toda a gente).
+3. Chaves Stripe (`STRIPE_SECRET_KEY_021`, `STRIPE_WEBHOOK_SECRET_021`) — testar em modo teste
+   antes de sequer pensar em live. `SITE_URL_021` já está definido (https://abiliomarcos.com).
+4. `RESEND_API_KEY` (+ opcionais `ORDER_FROM_EMAIL_021`/`ORDER_REPLY_TO_021`/
+   `ORDER_NOTIFY_EMAIL_021`), `META_PIXEL_ID`/`META_CAPI_ACCESS_TOKEN`,
+   `WHATSAPP_LEAD_RESOLVER_SECRET_021`, `ANTHROPIC_API_KEY`.
+5. Configurar o endpoint do webhook no dashboard Stripe do Abílio:
+   `{VITE_CONVEX_SITE_URL}/stripe-webhook-021`.
+6. Só depois de tudo isto testado: apontar Vercel para o Convex de produção e fazer o deploy —
+   **decisão do Bernardo, não avançar sozinho**.
+7. Correr 7 dias em paralelo (Supabase continua a servir produção) antes de considerar cancelar
+   o Supabase Pro — o mesmo projecto Supabase aloja legado do AOS (`stripe-webhook` sem `-021`,
+   faturação), nunca tocar nele.
+
+Ver relatório completo da sessão de migração para detalhes técnicos ficheiro-a-ficheiro.
 
 ## 🔴 Upload de imagens — bug crítico corrigido (22-06, LIVE)
 - **O upload do admin NUNCA funcionou** (o Abílio foi o 1.º a usá-lo a sério). 3 causas:
