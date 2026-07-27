@@ -23,7 +23,10 @@ export interface Artwork {
   description: string | null;
   status: 'draft' | 'published' | 'archived';
   availability: 'available' | 'sold' | 'not_for_sale' | 'exhibition';
-  price: number | null;
+  /** Convex schema allows string|number|null — legacy rows imported from
+   *  Supabase kept price as text. Always run through `toNumericPrice()`
+   *  before doing arithmetic or `Number.isFinite` checks. */
+  price: number | string | null;
   /** Real artwork dimensions in cm (preferred). */
   width_cm: number | null;
   height_cm: number | null;
@@ -61,12 +64,25 @@ export type ArtworkUpdate = Partial<ArtworkInsert>;
  *  Quando o Stripe estiver ativado: muda para `true` + redeploy. */
 export const CHECKOUT_ENABLED: boolean = true;
 
+/** Normalize a price value that may arrive from Convex as a string, a
+ *  number, or null (see `schema.ts`: `price: v.union(v.string(), v.number(),
+ *  v.null())` — legacy rows imported from Supabase kept the text type).
+ *  Without this coercion, `Number.isFinite("500")` is `false` (it does NOT
+ *  coerce strings), which silently disabled online checkout and broke
+ *  thousands-separator formatting for every artwork with a string price. */
+export const toNumericPrice = (price: number | string | null | undefined): number | null => {
+  if (price == null) return null;
+  const n = typeof price === 'string' ? Number(price) : price;
+  return Number.isFinite(n) ? n : null;
+};
+
 /** Derive sales mode from price.
  *  All artworks with a valid positive price are eligible for direct online
  *  purchase via Stripe, regardless of price tier. Anything else falls back
  *  to inquiry. */
-export const getSalesMode = (price: number | null): 'direct_purchase' | 'hybrid' | 'inquiry_only' => {
-  if (price == null || !Number.isFinite(price) || price <= 0) return 'inquiry_only';
+export const getSalesMode = (price: number | string | null): 'direct_purchase' | 'hybrid' | 'inquiry_only' => {
+  const p = toNumericPrice(price);
+  if (p == null || p <= 0) return 'inquiry_only';
   return 'direct_purchase';
 };
 
@@ -84,14 +100,15 @@ export const isOnlineCheckoutEligible = (
   if (!CHECKOUT_ENABLED) return false;
   if (artwork.status !== 'published') return false;
   if (artwork.availability !== 'available') return false;
-  const p = artwork.price;
-  return p != null && Number.isFinite(p) && p > 0;
+  const p = toNumericPrice(artwork.price);
+  return p != null && p > 0;
 };
 
 /** Format price for display — European style: 1.500 € */
-export const formatPrice = (price: number | null): string | null => {
-  if (price == null) return null;
-  return `${price.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} €`;
+export const formatPrice = (price: number | string | null): string | null => {
+  const p = toNumericPrice(price);
+  if (p == null) return null;
+  return `${p.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} €`;
 };
 
 /** Resolve actual width/height in cm, falling back to legacy fields when present. */
