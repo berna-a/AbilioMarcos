@@ -1,3 +1,4 @@
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { MutationCtx, QueryCtx } from "../_generated/server";
 
 /**
@@ -18,16 +19,26 @@ import { MutationCtx, QueryCtx } from "../_generated/server";
  * is the one place to swap out.
  */
 export async function requireAdmin(ctx: QueryCtx | MutationCtx): Promise<{ email: string }> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity || !identity.email) {
+  // `ctx.auth.getUserIdentity()` NÃO chega a ter `email` sob o provider
+  // Password do Convex Auth — só devolve `issuer`/`subject`/`tokenIdentifier`
+  // (confirmado 27-07-2026: causava "Not authenticated" em todas as queries
+  // admin, sempre, independentemente de qualquer sessão). O email real vive
+  // na tabela `users` (authTables), à mesma que `convex/users.ts:viewer` usa
+  // — por isso o gate tem de ir lá buscar, tal como o resto do back-office.
+  const userId = await getAuthUserId(ctx);
+  if (!userId) {
+    throw new Error("Not authenticated");
+  }
+  const user = await ctx.db.get(userId);
+  if (!user || !user.email) {
     throw new Error("Not authenticated");
   }
   const allowlist = (process.env.ADMIN_EMAILS ?? "")
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
-  if (!allowlist.includes(identity.email.toLowerCase())) {
+  if (!allowlist.includes(user.email.toLowerCase())) {
     throw new Error("Not authorized");
   }
-  return { email: identity.email };
+  return { email: user.email };
 }

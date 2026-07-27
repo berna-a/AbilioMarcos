@@ -6,6 +6,15 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 8080
+    },
+    {
+      "name": "abilio-migracao-worktree",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd '/Users/bernardo/Developer/clientes/_worktrees/AbilioMarcos-migracao' && bun run dev"
+      ],
+      "port": 8080
     }
   ]
 }

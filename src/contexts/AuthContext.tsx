@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, ReactNode } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 import { useAuthActions, useAuthToken, useConvexAuth } from '@convex-dev/auth/react';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
@@ -39,12 +39,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Dashboard/Artworks/Orders/Analytics/etc. fora de hooks React) autenticado
   // com o mesmo token da sessão actual — sem isto, essas queries/mutations
   // gate-adas por `requireAdmin` falhavam sempre com "Not authenticated".
+  //
+  // Chamado directamente no corpo do render (não num `useEffect`): um efeito
+  // só corre depois de todo o commit fechar, incluindo os efeitos de
+  // montagem dos componentes filhos — e Dashboard.tsx (entre outros) dispara
+  // as suas queries admin logo no efeito de montagem. Isso causava uma
+  // corrida real: o Painel arrancava a buscar dados ANTES do token estar
+  // definido aqui, ficava preso em "A carregar…" para sempre (verificado
+  // 27-07-2026 — reproduzido em login limpo, 2×). Escrever este valor
+  // durante o render é seguro (só actualiza uma variável de módulo fora do
+  // React, é idempotente) e garante ordem: o pai sempre renderiza antes dos
+  // filhos.
   const token = useAuthToken();
-  useEffect(() => {
-    setConvexAuthToken(token ?? null);
-  }, [token]);
+  setConvexAuthToken(token ?? null);
 
-  const loading = authLoading || (isAuthenticated && viewer === undefined);
+  const loading = authLoading || (isAuthenticated && (viewer === undefined || token === null));
 
   const user: User | null =
     isAuthenticated && viewer ? { id: viewer.id, email: viewer.email } : null;

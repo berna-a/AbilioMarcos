@@ -12,6 +12,8 @@ import type * as about from "../about.js";
 import type * as adminArtworks from "../adminArtworks.js";
 import type * as analytics from "../analytics.js";
 import type * as artworks from "../artworks.js";
+import type * as auth from "../auth.js";
+import type * as authAdmin from "../authAdmin.js";
 import type * as backfill from "../backfill.js";
 import type * as backfillQueries from "../backfillQueries.js";
 import type * as checkout from "../checkout.js";
@@ -31,6 +33,7 @@ import type * as stripeWebhook from "../stripeWebhook.js";
 import type * as stripeWebhookAction from "../stripeWebhookAction.js";
 import type * as stripeWebhookMutations from "../stripeWebhookMutations.js";
 import type * as translate from "../translate.js";
+import type * as users from "../users.js";
 import type * as whatsappLead from "../whatsappLead.js";
 import type * as whatsappLeadQueries from "../whatsappLeadQueries.js";
 
@@ -45,6 +48,8 @@ declare const fullApi: ApiFromModules<{
   adminArtworks: typeof adminArtworks;
   analytics: typeof analytics;
   artworks: typeof artworks;
+  auth: typeof auth;
+  authAdmin: typeof authAdmin;
   backfill: typeof backfill;
   backfillQueries: typeof backfillQueries;
   checkout: typeof checkout;
@@ -64,6 +69,7 @@ declare const fullApi: ApiFromModules<{
   stripeWebhookAction: typeof stripeWebhookAction;
   stripeWebhookMutations: typeof stripeWebhookMutations;
   translate: typeof translate;
+  users: typeof users;
   whatsappLead: typeof whatsappLead;
   whatsappLeadQueries: typeof whatsappLeadQueries;
 }>;

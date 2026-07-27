@@ -1,7 +1,7 @@
 # ESTADO — Site Abílio Marcos (fonte de verdade única)
 
 > **Qualquer sessão Claude Code lê este ficheiro ANTES de mexer.** Atualiza-o ao fim de mudanças relevantes.
-> Última atualização: 26-07-2026.
+> Última atualização: 27-07-2026.
 
 ## 🚧 Migração Supabase → Convex — EM CURSO (branch `migracao-convex-wip`, NÃO deployada)
 
@@ -15,12 +15,29 @@ por agora, o resto deste ficheiro sempre que houver conflito (o resto documenta 
   sobrevive a trocar de deployment. `images.ts` volta a reconhecer URLs Convex (WebP/srcset/cache).
 - Escritas públicas (analytics, inquiries, newsletter, whatsapp_leads) → Convex, deixaram de cair
   no vazio.
-- Clerk ligado a sério (`ClerkProvider`/`ConvexProviderWithClerk`/`AuthContext` real) — mas sem
-  chave real ainda, ver pendências abaixo. Sem chave, o site público funciona à mesma e o
-  back-office fica bloqueado de forma segura (nunca finge sucesso).
+- **Auth trocado de Clerk para Convex Auth (`@convex-dev/auth`, login nativo)** — decisão tomada
+  27-07-2026 porque o Clerk nunca chegou a ter chave real (ver histórico abaixo). Convex Auth não
+  depende de nenhuma chave externa: JWTs assinados com `JWT_PRIVATE_KEY`/`JWKS`, já geradas e
+  guardadas como env vars **tanto no dev (`deafening-cormorant-584`) como no prod
+  (`enduring-spoonbill-461`)** — confirmado por `npx convex env list` / `--prod`.
+  `src/main.tsx` usa `ConvexAuthProvider`; `src/contexts/AuthContext.tsx` mantém a mesma interface
+  pública (`session`/`user`/`loading`/`signIn`/`signOut`) que os consumidores (`ProtectedRoute`,
+  `AdminLayout`, `Login.tsx`) já usavam. Contas de admin geridas por `convex/authAdmin.ts`
+  (`npx convex run authAdmin:createAdmin` / `authAdmin:resetAdminPassword`, nunca pelo browser) —
+  já existem em dev e prod para `bernardo@ardo.vc` e `eduardo@ardo.media` (criadas numa tentativa
+  anterior desta migração; passwords repostas 27-07-2026 só no dev, ver relatório da sessão).
+  **Bug real corrigido 27-07-2026**: `requireAdmin` (`convex/lib/auth.ts`) usava
+  `identity.email` de `ctx.auth.getUserIdentity()` — mas o Convex Auth (provider Password) NUNCA
+  preenche esse campo (só `issuer`/`subject`/`tokenIdentifier`), por isso TODAS as queries admin
+  falhavam sempre com "Not authenticated" (Painel ficava preso em "A carregar…" para sempre).
+  Corrigido para usar `getAuthUserId(ctx)` + `ctx.db.get(userId)` (o mesmo padrão que
+  `convex/users.ts:viewer` já usava com sucesso). Verificado end-to-end no browser: login → Painel
+  com dados reais → Obras → logout, zero erros de consola.
+  `npx tsc --noEmit`, `npm run lint` e `npm test` passam (0 erros).
 - Back-office completo portado: Dashboard (+3 RPCs), Artworks, ArtworkForm (upload de imagens via
   Convex Storage), Orders, Analytics. Gate de admin por email (`ADMIN_EMAILS`, Convex env var) —
-  decisão tomada porque o `user_roles` antigo chaveava por UUID do Supabase Auth (não existe no Clerk).
+  decisão tomada porque o `user_roles` antigo chaveava por UUID do Supabase Auth (não existe sob
+  Convex Auth). `ADMIN_EMAILS` já definido a sério em dev E prod (`bernardo@ardo.vc,eduardo@ardo.media`).
 - Tradução (`translate.ts`) portada para Convex action — precisa de `ANTHROPIC_API_KEY`.
 - Checkout Stripe + webhook + resolve-whatsapp-lead portados para Convex (`checkout.ts`,
   `stripeWebhook*.ts`, `whatsappLead*.ts`, `http.ts`) — **nunca testados com chave real**.
@@ -31,10 +48,10 @@ por agora, o resto deste ficheiro sempre que houver conflito (o resto documenta 
   de produção.
 
 **🔴 Por fazer antes de qualquer corte real:**
-1. Criar app Clerk a sério → `VITE_CLERK_PUBLISHABLE_KEY` (frontend/Vercel) +
-   `npx convex env set CLERK_JWT_ISSUER_DOMAIN <domínio real>` (dev E prod — hoje têm um
-   placeholder que bloqueia tudo de propósito).
-2. Definir `ADMIN_EMAILS` a sério (dev e prod têm placeholder que bloqueia toda a gente).
+1. Repor passwords de admin em prod (só o dev foi resetado nesta sessão, ver relatório).
+2. `requireAdmin` foi corrigido só no código-fonte + dev; o deployment de produção
+   (`prod:enduring-spoonbill-461`) só recebe esta correcção quando o Bernardo decidir promover
+   este branch — **não fazer sozinho**.
 3. Chaves Stripe (`STRIPE_SECRET_KEY_021`, `STRIPE_WEBHOOK_SECRET_021`) — testar em modo teste
    antes de sequer pensar em live. `SITE_URL_021` já está definido (https://abiliomarcos.com).
 4. `RESEND_API_KEY` (+ opcionais `ORDER_FROM_EMAIL_021`/`ORDER_REPLY_TO_021`/
