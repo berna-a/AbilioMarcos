@@ -1,8 +1,13 @@
 import { httpRouter } from "convex/server";
+import { auth } from "./auth";
 import { handleStripeWebhook } from "./stripeWebhook";
 import { handleResolveWhatsAppLead } from "./whatsappLead";
 
 const http = httpRouter();
+
+// Rotas do Convex Auth (troca de tokens, etc.) — login nativo, tudo dentro
+// do Convex.
+auth.addHttpRoutes(http);
 
 // Configurar no dashboard Stripe do Abílio como:
 //   {VITE_CONVEX_SITE_URL}/stripe-webhook-021

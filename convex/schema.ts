@@ -1,7 +1,13 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
+  // Tabelas do Convex Auth (users/authAccounts/authSessions/...) — login
+  // nativo. Ver convex/auth.ts e convex/lib/auth.ts (o gate de admin por
+  // ADMIN_EMAILS lê `identity.email`, preenchido pelo Convex Auth).
+  ...authTables,
+
   artworks: defineTable({
     title: v.optional(v.string()),
     slug: v.optional(v.string()),

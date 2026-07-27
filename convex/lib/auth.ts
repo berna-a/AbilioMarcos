@@ -5,10 +5,11 @@ import { MutationCtx, QueryCtx } from "../_generated/server";
  *
  * Decision (documented, not asked mid-migration — see final report): the old
  * `user_roles` table keyed admins by their Supabase Auth UUID
- * (`user_id`). Once auth moves to Clerk, those UUIDs are meaningless — Clerk
- * mints its own user ids. Rather than block the whole back-office port on a
- * new admin-management UI, admin access is gated by e-mail against the
- * `ADMIN_EMAILS` Convex env var (comma-separated), e.g.:
+ * (`user_id`). Those UUIDs are meaningless under Convex Auth — each auth
+ * provider mints its own user ids. Rather than block the
+ * whole back-office port on a new admin-management UI, admin access is
+ * gated by e-mail against the `ADMIN_EMAILS` Convex env var
+ * (comma-separated), e.g.:
  *
  *   npx convex env set ADMIN_EMAILS "bernardo@abreu.me,abilio@example.com"
  *

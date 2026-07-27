@@ -1,5 +1,8 @@
-import { createContext, useContext, ReactNode } from 'react';
-import { useAuth as useClerkAuthState, useClerk, useSignIn, useUser } from '@clerk/clerk-react';
+import { createContext, useContext, useEffect, ReactNode } from 'react';
+import { useAuthActions, useAuthToken, useConvexAuth } from '@convex-dev/auth/react';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
+import { setConvexAuthToken } from '@/lib/convexClient';
 
 export interface User {
   id: string;
@@ -20,60 +23,47 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Decidido durante a migração (ver relatório): em vez de a app rebentar
-// quando ainda não há chave Clerk configurada, o back-office fica bloqueado
-// de forma previsível ("autenticação não configurada") e o site público
-// continua a funcionar. Assim que `VITE_CLERK_PUBLISHABLE_KEY` for definida
-// (main.tsx passa a montar o ClerkProvider real), este ramo troca sozinho.
-const CLERK_ENABLED = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+// Login nativo via Convex Auth (ver ESTADO.md). Não há chave externa
+// nenhuma que possa faltar — as chaves JWT vivem no próprio deployment
+// Convex — por isso já não existe um "modo desligado" (o antigo
+// DisabledAuthProvider): a autenticação está sempre disponível assim que o
+// site fala com o Convex.
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const { isLoading: authLoading, isAuthenticated } = useConvexAuth();
+  const { signIn: convexSignIn, signOut: convexSignOut } = useAuthActions();
+  // `"skip"` evita a query enquanto não há sessão — devolve `undefined`
+  // (ainda a carregar) ou `null` (sem conta) consoante o caso.
+  const viewer = useQuery(api.users.viewer, isAuthenticated ? {} : 'skip');
 
-const DisabledAuthProvider = ({ children }: { children: ReactNode }) => (
-  <AuthContext.Provider
-    value={{
-      session: null,
-      user: null,
-      loading: false,
-      signIn: async () => ({ error: new Error('Autenticação não configurada (falta VITE_CLERK_PUBLISHABLE_KEY).') }),
-      signOut: async () => {},
-    }}
-  >
-    {children}
-  </AuthContext.Provider>
-);
+  // Mantém o `ConvexHttpClient` de src/lib/convexClient.ts (usado por
+  // Dashboard/Artworks/Orders/Analytics/etc. fora de hooks React) autenticado
+  // com o mesmo token da sessão actual — sem isto, essas queries/mutations
+  // gate-adas por `requireAdmin` falhavam sempre com "Not authenticated".
+  const token = useAuthToken();
+  useEffect(() => {
+    setConvexAuthToken(token ?? null);
+  }, [token]);
 
-const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
-  const { isLoaded: authLoaded } = useClerkAuthState();
-  const { isLoaded: userLoaded, isSignedIn, user: clerkUser } = useUser();
-  const { signIn: clerkSignIn, isLoaded: signInLoaded, setActive } = useSignIn();
-  const clerk = useClerk();
+  const loading = authLoading || (isAuthenticated && viewer === undefined);
 
-  const loading = !authLoaded || !userLoaded;
-
-  const user: User | null = isSignedIn && clerkUser
-    ? { id: clerkUser.id, email: clerkUser.primaryEmailAddress?.emailAddress }
-    : null;
+  const user: User | null =
+    isAuthenticated && viewer ? { id: viewer.id, email: viewer.email } : null;
 
   const signIn = async (email: string, password: string): Promise<{ error: Error | null }> => {
-    if (!signInLoaded || !clerkSignIn) {
-      return { error: new Error('Autenticação ainda a carregar — tenta novamente.') };
-    }
     try {
-      const result = await clerkSignIn.create({ identifier: email, password });
-      if (result.status === 'complete') {
-        await setActive({ session: result.createdSessionId });
-        return { error: null };
-      }
-      // Estados intermédios (2FA, verificação adicional) não estão a ser
-      // pedidos pelo back-office do Abílio — tratados como falha de login.
-      return { error: new Error(`Login incompleto (estado: ${result.status}).`) };
+      await convexSignIn('password', { email, password, flow: 'signIn' });
+      return { error: null };
     } catch (e) {
+      // A mensagem crua do Convex Auth ("Invalid credentials" etc.) não é
+      // para mostrar ao utilizador — Login.tsx já traduz qualquer erro
+      // não-nulo para "email ou password incorretos".
       const message = e instanceof Error ? e.message : 'Credenciais inválidas.';
       return { error: new Error(message) };
     }
   };
 
   const signOut = async () => {
-    await clerk.signOut();
+    await convexSignOut();
   };
 
   return (
@@ -81,10 +71,6 @@ const ClerkAuthProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  return CLERK_ENABLED ? <ClerkAuthProvider>{children}</ClerkAuthProvider> : <DisabledAuthProvider>{children}</DisabledAuthProvider>;
 };
 
 export const useAuth = () => {
