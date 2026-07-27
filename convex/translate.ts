@@ -7,9 +7,10 @@
 // tradução multilíngue estava morta em produção antes desta migração — isto
 // não é uma regressão, é a primeira vez que fica realmente ligada.
 //
-// Precisa de ANTHROPIC_API_KEY nas env vars do Convex:
-//   npx convex env set ANTHROPIC_API_KEY <valor>
-// (mesma chave que seria usada no Supabase — nunca tive acesso ao valor.)
+// Precisa de OPENROUTER_API_KEY nas env vars do Convex (o Bernardo usa
+// OpenRouter como agregador único para chamadas de API a LLMs, não contas
+// directas por laboratório):
+//   npx convex env set OPENROUTER_API_KEY <valor>
 
 import { action } from "./_generated/server";
 import { v } from "convex/values";
@@ -33,8 +34,8 @@ const CONTEXT_GUIDANCE: Record<Context, string> = {
 const LANG_NAMES: Record<Lang, string> = { en: "English", fr: "French", de: "German", es: "Spanish" };
 
 async function translateOnce(text: string, ctx: Context, langs: Lang[]): Promise<Partial<Record<Lang, string>>> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY is not configured");
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY is not configured");
 
   const langList = langs.map((l) => `"${l}" (${LANG_NAMES[l]})`).join(", ");
   const prompt = [
@@ -49,15 +50,14 @@ async function translateOnce(text: string, ctx: Context, langs: Lang[]): Promise
     text,
   ].join("\n");
 
-  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+  const resp = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
+      Authorization: `Bearer ${apiKey}`,
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
+      model: "anthropic/claude-haiku-4.5",
       max_tokens: 4096,
       messages: [{ role: "user", content: prompt }],
     }),
@@ -65,11 +65,11 @@ async function translateOnce(text: string, ctx: Context, langs: Lang[]): Promise
 
   if (!resp.ok) {
     const errText = await resp.text();
-    throw new Error(`Anthropic API ${resp.status}: ${errText}`);
+    throw new Error(`OpenRouter API ${resp.status}: ${errText}`);
   }
 
   const data = await resp.json();
-  const rawText: string = data?.content?.[0]?.text ?? "";
+  const rawText: string = data?.choices?.[0]?.message?.content ?? "";
   const jsonMatch = rawText.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error("No JSON found in response");
 
